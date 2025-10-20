@@ -1,0 +1,159 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "run-servers",
+            "detail": "Démarre le frontend et le backend",
+            "group": "build",
+            "dependsOn": [
+                "run-angular",
+                "run-dotnet"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "run-angular",
+            "detail": "Démarre le frontend",
+            "type": "shell",
+            "command": "npm start",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "group": "build",
+            "presentation": {
+                "group": "servers"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "run-dotnet",
+            "detail": "Démarre le backend",
+            "type": "shell",
+            "command": "dotnet watch",
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "group": "build",
+            "presentation": {
+                "group": "servers"
+            },
+            "dependsOn": [
+                "start-postgresql"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "start-postgresql",
+            "detail": "Démarre PostgreSQL",
+            "windows": {
+                "type": "process",
+                "command": "${workspaceFolder}/scripts/windows/pg-start.bat"
+            },
+            "osx": {
+                "command": "bash",
+                "args": ["${workspaceFolder}/scripts/mac/pg-start.sh"]
+            },
+            "group": "build",
+            "presentation": {
+                "group": "servers",
+                "reveal": "always",
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "init-postgresql",
+            "detail": "Initialise la base de données PostgreSQL",
+            "windows": {
+                "type": "process",
+                "command": "${workspaceFolder}/scripts/windows/pg-init.bat"
+            },
+            "osx": {
+                "command": "bash",
+                "args": ["${workspaceFolder}/scripts/mac/pg-init.sh"]
+            },
+            "group": "build",
+            "presentation": {
+                "group": "servers",
+                "reveal": "always",
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "stop-postgresql",
+            "detail": "Arrête PostgreSQL",
+            "windows": {
+                "type": "process",
+                "command": "${workspaceFolder}/scripts/windows/pg-stop.bat"
+            },
+            "osx": {
+                "command": "bash",
+                "args": ["${workspaceFolder}/scripts/mac/pg-stop.sh"]
+            },
+            "group": "build",
+            "presentation": {
+                "group": "servers",
+                "reveal": "always",
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build-frontend",
+            "detail": "Compile le frontend en vue d'un déploiement",
+            "type": "shell",
+            "command": "npm run build",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "group": "build",
+            "presentation": {
+                "group": "servers"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish-prepare",
+            "detail": "Compile le frontend et le backend en vue d'un déploiement",
+            "type": "shell",
+            "command": "bash publish-prepare.sh",
+            "options": {
+                "cwd": "${workspaceFolder}/docker"
+            },
+            "group": "build",
+            "presentation": {
+                "group": "servers"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish-docker-desktop",
+            "detail": "Publie l'application vers Docker Desktop",
+            "type": "shell",
+            "command": "bash publish-docker-desktop.sh",
+            "options": {
+                "cwd": "${workspaceFolder}/docker"
+            },
+            "group": "build",
+            "presentation": {
+                "group": "servers"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish-docker-infolab",
+            "detail": "Publie l'application vers le serveur infolab",
+            "type": "shell",
+            "command": "bash publish-docker-infolab.sh",
+            "options": {
+                "cwd": "${workspaceFolder}/docker"
+            },
+            "group": "build",
+            "presentation": {
+                "group": "servers"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
