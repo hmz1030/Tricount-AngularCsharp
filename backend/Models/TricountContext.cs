@@ -15,11 +15,12 @@ public class TricountContext(DbContextOptions<TricountContext> options) : DbCont
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<User>()
+        _ = modelBuilder.Entity<User>()
             .HasData(
-                new User { Id = 1, Name = "User 1" },
-                new User { Id = 2, Name = "User 2" },
-                new User { Id = 3, Name = "User 3" }
+                new User { Name = "User 1", Email = "user1@gmail.com", Password = "password" },
+                new User { Name = "User 2", Email = "user2@gmail.com", Password = "password" },
+                new User { Name = "User 3", Email = "user3@gmail.com", Password = "password" },
+                new User { Name = "Admin", Email = "admin@gmail.com", Password = "adminpassword", Role = Role.Admin }
             );
     }
 
