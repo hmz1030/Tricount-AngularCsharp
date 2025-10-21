@@ -1,10 +1,10 @@
 using Tricount.Models.Entities;
 
-class Administrator : User
+public class Administrator : User
 {
-    public Administrator(string name, string email, string password)
-        : base(name, email, password)
-    {
+    public Administrator() {
         Role = Role.Admin;
     }
+        
+    
 }

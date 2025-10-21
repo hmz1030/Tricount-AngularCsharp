@@ -20,18 +20,8 @@ public class User
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;
-    public Role Role { get; set; }
+    public Role Role { get; protected set; } = Role.User;
     public string? Iban { get; set; }
-
-    public User(string name, string email, string password, string? iban = null) {
-        Id = _nextId++;
-        Name = name;
-        Email = email;
-        Password = password;
-        Role = Role.User;
-        Iban = iban;
-    }
     
-    public User() { }
     
 }
