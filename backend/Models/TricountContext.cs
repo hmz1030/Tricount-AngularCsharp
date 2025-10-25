@@ -15,14 +15,6 @@ public class TricountContext(DbContextOptions<TricountContext> options) : DbCont
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
 
-        _ = modelBuilder.Entity<User>()
-            .HasData(
-                new User { Name = "User 1", Email = "user1@gmail.com", Password = "password" },
-                new User { Name = "User 2", Email = "user2@gmail.com", Password = "password" },
-                new User { Name = "User 3", Email = "user3@gmail.com", Password = "password" },
-                new User { Name = "Admin", Email = "admin@gmail.com", Password = "adminpassword" }
-            );
-
         // l'entité user...
         modelBuilder.Entity<User>()
             // doit utiliser la propriété role comme discriminateur...
@@ -31,6 +23,25 @@ public class TricountContext(DbContextOptions<TricountContext> options) : DbCont
             .HasValue<User>(Role.User)
             // en en mappant la valeur Role.Administrator sur le type Administrator...
             .HasValue<Administrator>(Role.Admin);
+
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.Id)
+            .ValueGeneratedOnAdd();
+
+        _ = modelBuilder.Entity<User>()
+            .HasData(
+                new User { Id = -1, Name = "User 1", Email = "user1@gmail.com", Password = "password" },
+                new User { Id = -2, Name = "User 2", Email = "user2@gmail.com", Password = "password" },
+                new User { Id = -3, Name = "User 3", Email = "user3@gmail.com", Password = "password" }
+            );
+            
+        _ = modelBuilder.Entity<Administrator>()
+            .HasData(
+                new Administrator { Id = -5, Name = "Admin 1", Email = "admin@gmail.com", Password = "adminpassword" }
+                );
+
+        
     }
 
     public DbSet<User> Users => Set<User>();
