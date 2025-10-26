@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // In production, the Angular files will be served from this directory (see: https://stackoverflow.com/a/55989907)
-builder.Services.AddSpaStaticFiles(cfg => cfg.RootPath = "wwwroot/frontend");
+//builder.Services.AddSpaStaticFiles(cfg => cfg.RootPath = "wwwroot/frontend");
 
 builder.Services.AddDbContext<TricountContext>(opt => opt.UseNpgsql(
     builder.Configuration.GetConnectionString("prid-2526-a06")
@@ -31,8 +31,8 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 // Seed the database
@@ -46,12 +46,12 @@ context?.Database.EnsureCreated();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.UseSpaStaticFiles();
+//app.UseSpaStaticFiles();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseSpa(spa => {});
+//app.UseSpa(spa => {});
 
 app.Run();
