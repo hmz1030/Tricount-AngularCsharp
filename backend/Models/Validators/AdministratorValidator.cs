@@ -1,0 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Tricount.Models.Entities;
+
+namespace Tricount.Models.Validators;
+
+public class AdministratorValidator : IEntityTypeConfiguration<Administrator>
+{
+    public void Configure(EntityTypeBuilder<Administrator> e) 
+    {
+        e.HasData(new Administrator { Id = 9, Name = "Admin", Email = "admin@epfc.eu", Password = "Password1" });
+
+    }
+}
