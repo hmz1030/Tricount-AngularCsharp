@@ -3,9 +3,9 @@ using Tricount.Models.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
-namespace Tricount.Models.Validators;
+namespace Tricount.Models.Configurations;
 
-public class UserConfigurations : IEntityTypeConfiguration<User>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> e) 
     {

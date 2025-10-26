@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tricount.Models;
+using Tricount.Models.DTO;
+using Tricount.Models.Entities;
 
 namespace Tricount.Controllers;
 
@@ -23,6 +25,22 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     public async Task<ActionResult> ResetDatabase() {
         await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
+        return NoContent();
+    }
+
+    //POST: rpc/signup
+    [AllowAnonymous]
+    [HttpPost("signup")]
+    public async Task<ActionResult<UserDTO>> Signup (UserDTO userDTO, TricountContext context) {
+        var user = new User {
+            Email = userDTO.Email,
+            Password = userDTO.Password,
+            Name = userDTO.Name,
+            Iban = userDTO.Iban,
+        };
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+
         return NoContent();
     }
 }

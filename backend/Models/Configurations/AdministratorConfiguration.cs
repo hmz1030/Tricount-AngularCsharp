@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Tricount.Models.Entities;
 
-namespace Tricount.Models.Validators;
+namespace Tricount.Models.Configurations;
 
-public class AdministratorValidator : IEntityTypeConfiguration<Administrator>
+public class AdministratorConfiguration : IEntityTypeConfiguration<Administrator>
 {
     public void Configure(EntityTypeBuilder<Administrator> e) 
     {
