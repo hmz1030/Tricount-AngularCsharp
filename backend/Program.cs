@@ -1,7 +1,10 @@
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Tricount.Models;
+using Tricount.Models.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,7 @@ builder.Services.AddDbContext<TricountContext>(opt => opt.UseNpgsql(
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
 // Auto Mapper Configurations
 builder.Services.AddScoped(provider => new MapperConfiguration(cfg => {

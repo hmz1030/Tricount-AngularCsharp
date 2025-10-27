@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tricount.Models;
 using Tricount.Models.DTO;
 using Tricount.Models.Entities;
+using Tricount.Models.Validators;
 
 namespace Tricount.Controllers;
 
@@ -31,13 +32,24 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     //POST: rpc/signup
     [AllowAnonymous]
     [HttpPost("signup")]
-    public async Task<ActionResult<UserDTO>> Signup (UserDTO userDTO, TricountContext context) {
+    public async Task<ActionResult<UserDTO>> Signup ([FromBody] UserDTO userDTO, [FromServices] UserValidator validator) {
         var user = new User {
             Email = userDTO.Email,
             Password = userDTO.Password,
             Name = userDTO.Name,
-            Iban = userDTO.Iban,
+            Iban  = string.IsNullOrWhiteSpace(userDTO.Iban) ? null : userDTO.Iban.Trim(),
+            Role = Role.User
         };
+
+        var vr = await validator.ValidateOnCreate(user);
+        if (!vr.IsValid)
+            return BadRequest(new {
+                code = "P0001",
+                details = (string?)null,
+                hint = (string?)null,
+                message = string.Join("; ", vr.Errors.Select(e => e.ErrorMessage))
+            });
+        
         context.Users.Add(user);
         await context.SaveChangesAsync();
 

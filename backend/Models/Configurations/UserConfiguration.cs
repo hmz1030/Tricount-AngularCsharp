@@ -26,18 +26,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         e.HasIndex(u => u.Email).IsUnique();
         e.HasIndex(u => u.Name).IsUnique();
 
-        //Nom min 3 caractères
-        e.HasCheckConstraint("CK_User_Name_Length", $"length(\"Name\") >= 3");
+        e.ToTable(t =>
+        {
+            t.HasCheckConstraint("CK_Users_Iban_Format", "\"Iban\" IS NULL OR \"Iban\" ~ '^[A-Z]{2}\\d{2}(\\s\\d{4}){3}$'");
+            t.HasCheckConstraint("CK_Users_Name_Trim",  "\"Name\"  = btrim(\"Name\")");
+            t.HasCheckConstraint("CK_Users_Email_Trim", "\"Email\" = btrim(\"Email\")");
+            t.HasCheckConstraint("CK_User_Name_Length","length(\"Name\") >= 3");
+        });
 
-        //Interdire espaces autour
-        e.HasCheckConstraint("CK_Users_Name_Trim",  "\"Name\"  = btrim(\"Name\")");
-        e.HasCheckConstraint("CK_Users_Email_Trim", "\"Email\" = btrim(\"Email\")");
-
-         // IBAN optionnel au format AA99 9999 9999 9999
-        e.HasCheckConstraint(
-            "CK_Users_Iban_Format",
-            "\"Iban\" IS NULL OR \"Iban\" ~ '^[A-Z]{2}\\d{2}(\\s\\d{4}){3}$'");
-
+        
         //Données de seed
         e.HasData(
             new User { Id = 1, Name = "Boris", Email = "boverhaegen@epfc.eu", Password = "Password1" },
