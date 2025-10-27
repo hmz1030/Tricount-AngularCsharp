@@ -20,7 +20,7 @@ public class User
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;
-    public Role Role { get; protected set; } = Role.User;
+    public Role Role { get; set; } = Role.User;
     public string? Iban { get; set; }
     
     
