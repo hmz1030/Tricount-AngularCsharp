@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Tricount.Models.DTO;
+using Tricount.Models.Entities;
 
 namespace Tricount.Models;
 
@@ -16,5 +18,7 @@ public class MappingProfile : Profile
     */
     public MappingProfile(TricountContext context) {
         _context = context;
+
+    
     }
 }

@@ -61,5 +61,4 @@ Tricounts "1" -- "0..*" Operations : "< contient"
 Participations "1" -- "0..*" Repartitions : "< impliqué dans"
 Operations "1" -- "1..*" Repartitions : "< repartie entre"
 
-
 @enduml
