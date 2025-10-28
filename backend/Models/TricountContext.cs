@@ -22,4 +22,5 @@ public class TricountContext(DbContextOptions<TricountContext> options) : DbCont
     public DbSet<User> Users => Set<User>();
     public DbSet<Administrator> Administrators => Set<Administrator>();
     public DbSet<TricountEntity> Tricounts => Set<TricountEntity>();
+    public DbSet<Participation> Participations => Set<Participation>();
 }
