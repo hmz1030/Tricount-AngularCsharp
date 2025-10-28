@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-namespace Tricount.Models.DTO;
+namespace Tricount.Models.DTO.User;
 
-public class UserDTO
+public class SignupRequestDTO
 {
    [JsonPropertyName("full_name")]
     public string Name { get; set; } = null!;

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using System.Text.RegularExpressions;
 using Tricount.Models.DTO;
+using Tricount.Models.DTO.User;
 using Tricount.Models.Entities;
 
 namespace Tricount.Models;
@@ -19,6 +21,14 @@ public class MappingProfile : Profile
     public MappingProfile(TricountContext context) {
         _context = context;
 
-    
+        CreateMap<SignupRequestDTO, User>()
+            .ForMember(d => d.Email, o => o.MapFrom(s => (s.Email ?? "").Trim()))
+            .ForMember(d => d.Name, o => o.MapFrom(s => (s.Name ?? "").Trim()))
+            .ForMember(d => d.Iban, o => o.MapFrom(s =>
+                string.IsNullOrWhiteSpace(s.Iban)
+                    ? null
+                    : Regex.Replace(s.Iban, @"\s+", " ").Trim().ToUpperInvariant()))
+            .ForMember(d => d.Role, o => o.MapFrom(_ => Role.User))
+            .ForMember(d => d.Password, o => o.Ignore());
     }
 }
