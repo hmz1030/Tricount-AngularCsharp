@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tricount.Helpers;
 using Tricount.Models;
-using Tricount.Models.DTO;
+using Tricount.Models.DTO.User;
 using Tricount.Models.Entities;
 using Tricount.Models.Validators;
 
@@ -32,15 +33,9 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     //POST: rpc/signup
     [AllowAnonymous]
     [HttpPost("signup")]
-    public async Task<ActionResult<UserDTO>> Signup ([FromBody] UserDTO userDTO, [FromServices] UserValidator validator) {
-        var user = new User {
-            Email = userDTO.Email,
-            Password = userDTO.Password,
-            Name = userDTO.Name,
-            Iban  = string.IsNullOrWhiteSpace(userDTO.Iban) ? null : userDTO.Iban.Trim(),
-            Role = Role.User
-        };
-
+    public async Task<ActionResult> Signup ([FromBody] SignupRequestDTO dto, [FromServices] UserValidator validator) {
+        var user = mapper.Map<User>(dto);
+        user.Password = dto.Password;
         var vr = await validator.ValidateOnCreate(user);
         if (!vr.IsValid)
             return BadRequest(new {
@@ -49,6 +44,8 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
                 hint = (string?)null,
                 message = string.Join("; ", vr.Errors.Select(e => e.ErrorMessage))
             });
+
+        user.Password = TokenHelper.GetPasswordHash(dto.Password);
         
         context.Users.Add(user);
         await context.SaveChangesAsync();

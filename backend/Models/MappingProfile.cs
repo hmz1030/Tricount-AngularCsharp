@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using System.Text.RegularExpressions;
 using Tricount.Models.DTO;
+using Tricount.Models.DTO.User;
 using Tricount.Models.Entities;
+using Tricount.Models.DTO.Tricount;
 
 namespace Tricount.Models;
 
@@ -19,6 +22,25 @@ public class MappingProfile : Profile
     public MappingProfile(TricountContext context) {
         _context = context;
 
-    
+        CreateMap<SignupRequestDTO, User>()
+            .ForMember(d => d.Email, o => o.MapFrom(s => (s.Email ?? "").Trim()))
+            .ForMember(d => d.Name, o => o.MapFrom(s => (s.Name ?? "").Trim()))
+            .ForMember(d => d.Iban, o => o.MapFrom(s =>
+                string.IsNullOrWhiteSpace(s.Iban)
+                    ? null
+                    : Regex.Replace(s.Iban, @"\s+", " ").Trim().ToUpperInvariant()))
+            .ForMember(d => d.Role, o => o.MapFrom(_ => Role.User))
+            .ForMember(d => d.Password, o => o.Ignore());
+
+        // Mapping User → UserDTO (pour les participants)
+        CreateMap<User, UserDTO>()
+            .ForMember(d => d.FullName, o => o.MapFrom(s => s.Name))
+            .ForMember(d => d.Role, o => o.MapFrom(s => s.Role == Role.Admin ? "admin" : "basic_user"));
+
+        // Mapping TricountEntity → TricountDTO (pour la response)
+        CreateMap<TricountEntity, TricountDTO>()
+            .ForMember(d => d.Creator, o => o.MapFrom(s => s.CreatorId))
+            .ForMember(d => d.Participants, o => o.MapFrom(s => s.Participants.Select(p => p.User)));
+            //.ForMember(d => d.Operations, o => o.Ignore()); // TODO : mapper les opérations
     }
 }

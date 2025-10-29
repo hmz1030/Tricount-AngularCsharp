@@ -8,7 +8,7 @@ public class TricountEntity{
     public string? Description { get; set; }
     public int CreatorId { get; set; }
     public User Creator { get; set; } = null!;
-    //public ICollection<Participation> Participants { get; set; } = new HashSet<Participation>();
+    public ICollection<Participation> Participants { get; set; } = new HashSet<Participation>();
     public DateTime CreatedAt { get; set; } 
     //public ICollection<Operation> Operations { get; set; } = new HashSet<Operation>();
 

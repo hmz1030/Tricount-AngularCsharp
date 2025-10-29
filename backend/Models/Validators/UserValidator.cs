@@ -22,6 +22,7 @@ public class UserValidator : AbstractValidator<User>
         _context = context;
 
         RuleFor(u => u.Password)
+            .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .Must(StrongPwdRx.IsMatch)
             .WithMessage("Password must be at least 8 characters long and contain at least one digit, one uppercase letter, one lowercase letter and one special character");
