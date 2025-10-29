@@ -91,7 +91,6 @@ public class TricountValidator : AbstractValidator<TricountEntity>
         return await this.ValidateAsync(tricount, o => o.IncludeRuleSets("default", "create"));
     }
 
-    
     /// Validation spécifique pour la modification
     
     public async Task<FluentValidation.Results.ValidationResult> ValidateOnUpdate(TricountEntity tricount)
