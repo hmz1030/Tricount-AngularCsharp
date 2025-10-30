@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tricount.Helpers;
 using Tricount.Models;
+using Tricount.Models.DTO.Tricount;
 using Tricount.Models.DTO.User;
 using Tricount.Models.Entities;
 using Tricount.Models.Validators;
@@ -33,7 +34,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     //POST: rpc/signup
     [AllowAnonymous]
     [HttpPost("signup")]
-    public async Task<ActionResult> Signup ([FromBody] SignupRequestDTO dto, [FromServices] UserValidator validator) {
+    public async Task<ActionResult> Signup([FromBody] SignupRequestDTO dto, [FromServices] UserValidator validator) {
         var user = mapper.Map<User>(dto);
         user.Password = dto.Password;
         var vr = await validator.ValidateOnCreate(user);
@@ -46,10 +47,27 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             });
 
         user.Password = TokenHelper.GetPasswordHash(dto.Password);
-        
+
         context.Users.Add(user);
         await context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+
+    [AllowAnonymous]
+    [HttpPost("save_tricount")]
+    public async Task<bool> save_tricount(TricountSaveDTO tricount) {
+        TricountEntity tricountEntity = new TricountEntity {
+            Id = tricount.Id,
+            Title = tricount.Title,
+            Description = tricount.Description,
+            Participants = tricount.Participants,
+
+        };
+        if(tricount.Id == 0 ) {
+            
+        }
+        return true;
     }
 }
