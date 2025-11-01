@@ -2,10 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Tricount.Models.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata;
+
+
 namespace Tricount.Models.Configurations;
 
-public class OperationConfiguration : IEntityTypeConfiguration<Operation> {
-    
+
+
+public class OperationConfiguration : IEntityTypeConfiguration<Operation>
+{
+
     public void Configure(EntityTypeBuilder<Operation> o) {
 
         o.Property(o => o.Id).UseIdentityByDefaultColumn();
@@ -56,58 +61,58 @@ public class OperationConfiguration : IEntityTypeConfiguration<Operation> {
             Title = "Colruyt",
             TricountId = 4,
             Amount = 100.00m,
-            OperationDate = new DateOnly(2024,10,13),
+            OperationDate = new DateOnly(2024, 10, 13),
             InitiatorId = 2,
-            CreatedAt = new DateTime(2024,10,13,19,09,18)
+            CreatedAt = new DateTime(2024, 10, 13, 19, 09, 18)
         },
         new Operation {
             Id = 2,
             Title = "Plein essence",
             TricountId = 4,
             Amount = 75.00m,
-            OperationDate = new DateOnly(2024,10,13),
+            OperationDate = new DateOnly(2024, 10, 13),
             InitiatorId = 1,
-            CreatedAt = new DateTime(2024,10,13,20,10,41)
+            CreatedAt = new DateTime(2024, 10, 13, 20, 10, 41)
         },
         new Operation {
             Id = 3,
             Title = "Grosses courses LIDL",
             TricountId = 4,
             Amount = 212.47m,
-            OperationDate = new DateOnly(2024,10,13),
+            OperationDate = new DateOnly(2024, 10, 13),
             InitiatorId = 3,
-            CreatedAt = new DateTime(2024,10,13,21,23,49)
+            CreatedAt = new DateTime(2024, 10, 13, 21, 23, 49)
         },
         new Operation {
             Id = 4,
             Title = "Apéros",
             TricountId = 4,
             Amount = 31.90m, // arrondi à 2 décimales
-            OperationDate = new DateOnly(2024,10,13),
+            OperationDate = new DateOnly(2024, 10, 13),
             InitiatorId = 1,
-            CreatedAt = new DateTime(2024,10,13,23,51,20)
+            CreatedAt = new DateTime(2024, 10, 13, 23, 51, 20)
         },
         new Operation {
             Id = 5,
             Title = "Boucherie",
             TricountId = 4,
             Amount = 25.50m,
-            OperationDate = new DateOnly(2024,10,26),
+            OperationDate = new DateOnly(2024, 10, 26),
             InitiatorId = 2,
-            CreatedAt = new DateTime(2024,10,26,09,59,56)
+            CreatedAt = new DateTime(2024, 10, 26, 09, 59, 56)
         },
         new Operation {
             Id = 6,
             Title = "Loterie",
             TricountId = 4,
             Amount = 35.00m,
-            OperationDate = new DateOnly(2024,10,26),
+            OperationDate = new DateOnly(2024, 10, 26),
             InitiatorId = 1,
-            CreatedAt = new DateTime(2024,10,26,10,02,24)
+            CreatedAt = new DateTime(2024, 10, 26, 10, 02, 24)
         }
     );
-        
-        
+
+
     }
-    
+
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.SignalR;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,7 +16,7 @@ public class Operation {
 
     public decimal Amount { get; set; }
 
-     //Date ou la depense à été faite
+    //Date ou la depense à été faite
     public DateOnly OperationDate { get; set; }
     
     public int InitiatorId  { get; set; }
@@ -24,7 +25,6 @@ public class Operation {
    
     //Date/heure d'insertion
     public DateTime CreatedAt { get; set; }
-    
-    
 
+    public ICollection<Repartition> Repartitions { get; set; } = new List<Repartition>();
 }
