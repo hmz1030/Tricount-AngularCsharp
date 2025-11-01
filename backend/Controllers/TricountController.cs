@@ -63,6 +63,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             Title = tricount.Title,
             Description = tricount.Description,
             Participants = tricount.Participants,
+            Creator = User.Identity?.Id
 
         };
         if(tricount.Id == 0 ) {

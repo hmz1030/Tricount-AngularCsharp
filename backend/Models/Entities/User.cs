@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tricount.Models.Entities;
 
@@ -22,6 +23,8 @@ public class User
     public string Password { get; set; } = null!;
     public Role Role { get; set; } = Role.User;
     public string? Iban { get; set; }
+    [NotMapped]//ne pas ajouter de colonne dans la base de donner pour cette attribut
+    public string? token{ get; set; }
     
     
 }
