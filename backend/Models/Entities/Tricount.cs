@@ -10,6 +10,6 @@ public class TricountEntity{
     public User Creator { get; set; } = null!;
     //public ICollection<Participation> Participants { get; set; } = new HashSet<Participation>();
     public DateTime CreatedAt { get; set; } 
-    //public ICollection<Operation> Operations { get; set; } = new HashSet<Operation>();
+    public ICollection<Operation> Operations { get; set; } = new List<Operation>();
 
 }
