@@ -15,7 +15,6 @@ public enum Role
 
 public class User
 {
-    public static int _nextId = 1;
     [Key]
     public int Id { get; set; }
     public string Name { get; set; } = null!;
@@ -25,6 +24,7 @@ public class User
     public string? Iban { get; set; }
     [NotMapped]//ne pas ajouter de colonne dans la base de donner pour cette attribut
     public string? token{ get; set; }
+    public ICollection<TricountEntity> Tricounts { get; set; } = new List<TricountEntity>();
     
     
 }
