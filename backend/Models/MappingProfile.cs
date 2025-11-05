@@ -40,8 +40,8 @@ public class MappingProfile : Profile
         // Mapping TricountEntity → TricountDTO (pour la response)
         CreateMap<TricountEntity, TricountDTO>()
             .ForMember(d => d.Creator, o => o.MapFrom(s => s.CreatorId))
-            .ForMember(d => d.Participants, o => o.MapFrom(s => s.Participants.Select(p => p.User)));
-        //.ForMember(d => d.Operations, o => o.Ignore()); // TODO : mapper les opérations
+            .ForMember(d => d.Participants, o => o.MapFrom(s => s.Participants))
+            .ForMember(d => d.Operations, o => o.Ignore()); 
 
         CreateMap<Operation, OperationDTO>()
             .ForMember(d => d.Title, o => o.MapFrom(s => (s.Title ?? "").Trim()));

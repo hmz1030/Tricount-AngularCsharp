@@ -6,8 +6,34 @@ namespace Tricount.Models.Configurations;
 
 public class TricountConfiguration : IEntityTypeConfiguration<TricountEntity>
 {
-    public void Configure(EntityTypeBuilder<TricountEntity> e) 
+    public void Configure(EntityTypeBuilder<TricountEntity> e)
     {
+    
+            
+        e.HasMany(t=> t.Participants)
+            .WithMany(u=>u.ParticipatingTricounts)
+            .UsingEntity<Participation>(
+                j => j.HasOne(p => p.User)
+                      .WithMany()
+                      .HasForeignKey(p => p.UserId)
+                      .OnDelete(DeleteBehavior.Restrict),
+                j => j.HasOne(p => p.Tricount)
+                      .WithMany()
+                      .HasForeignKey(p => p.TricountId)
+                      .OnDelete(DeleteBehavior.Cascade),
+                 j => {  
+                    j.HasKey(p => new { p.TricountId, p.UserId });
+                j.ToTable("Participations");
+                 j.HasData(new Participation { TricountId = 1, UserId = 1 },
+            new Participation { TricountId = 2, UserId = 1 },
+            new Participation { TricountId = 4, UserId = 1 },
+            new Participation { TricountId = 2, UserId = 2 },
+            new Participation { TricountId = 4, UserId = 2 },
+            new Participation { TricountId = 4, UserId = 3 },
+            new Participation { TricountId = 4, UserId = 4 });
+    }
+                
+            );
         // Identifiant unique auto-incrémenté
         e.Property(t => t.Id).UseIdentityByDefaultColumn();
 
@@ -28,7 +54,7 @@ public class TricountConfiguration : IEntityTypeConfiguration<TricountEntity>
 
         // Relation avec User (Creator)
         e.HasOne(t => t.Creator)
-            .WithMany()
+            .WithMany(u=> u.CreatedTricounts)
             .HasForeignKey(t => t.CreatorId)
             .OnDelete(DeleteBehavior.Restrict);
 

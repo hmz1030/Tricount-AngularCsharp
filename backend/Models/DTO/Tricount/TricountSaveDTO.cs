@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Tricount.Models.DTO.User;
 using Tricount.Models.Entities;
 
 namespace Tricount.Models.DTO.Tricount;
@@ -20,5 +21,5 @@ public class TricountSaveDTO
 
     // IDs des participants (si yen a, hors creator)
     [JsonPropertyName("participants")]
-    public HashSet<Participation> Participants { get; set; } = new HashSet<Participation>()!;
+    public HashSet<int> Participants { get; set; } = new HashSet<int>()!;
 }

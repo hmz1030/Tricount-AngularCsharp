@@ -26,7 +26,7 @@ public class TricountDTO
     [JsonPropertyName("participants")]
     public List<UserDTO> Participants { get; set; } = new();
 
-    // Liste des opérations (TODO : changer object par OperationDTO plus tard)
-    //[JsonPropertyName("operations")]
-    //public List<object> Operations { get; set; } = new();
+    
+    [JsonPropertyName("operations")]
+    public List<OperationDTO> Operations { get; set; } = new();
 }
