@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tricount.Helpers;
 using Tricount.Models;
 using Tricount.Models.DTO.Tricount;
@@ -66,9 +67,18 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             //Creator = User.Identity?.Id apres la creation du login
 
         };
-        if(tricount.Id == 0 ) {
-            
+        if (tricount.Id == 0) {
+
         }
         return true;
+    }
+    //all anonym juste pour le test pcq le login pas encore fait, apres faudra enlever le allowanonymous
+    [AllowAnonymous]
+    [HttpGet("get_all_users")]
+    public async Task<ActionResult<List<UserDTO>>> GetAllUsers() {
+        var users = await context.Users.OrderBy(u=>u.Name).ToListAsync();
+        return mapper.Map<List<UserDTO>>(users);
+
+       
     }
 }
