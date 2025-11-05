@@ -1,13 +1,27 @@
+using System.Text.Json.Serialization;
 using Tricount.Models.DTO.Repartition;
 using Tricount.Models.Entities;
 
 public class OperationDTO
 {
-    public int ID { get; set; }
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+    
+    [JsonPropertyName("title")]
     public string Title { get; set; } = null!;
+    
+    [JsonPropertyName("amount")]
     public decimal Amount { get; set; }
+    
+    [JsonPropertyName("operation_date")]
     public DateOnly OperationDate { get; set; }
+    
+    [JsonPropertyName("initiator")]
     public int InitiatorId { get; set; }
-     public DateTime CreatedAt { get; set; }
-     public ICollection<RepartitionDTO> Repartitions { get; set; } = new List<RepartitionDTO>();
+    
+    [JsonPropertyName("created_at")]
+    public DateTime CreatedAt { get; set; }
+    
+    [JsonPropertyName("repartitions")]
+    public ICollection<RepartitionDTO> Repartitions { get; set; } = new List<RepartitionDTO>();
 }
