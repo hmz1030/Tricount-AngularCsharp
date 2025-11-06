@@ -47,8 +47,15 @@ public class MappingProfile : Profile
             .ForMember(d => d.Title, o => o.MapFrom(s => (s.Title ?? "").Trim()));
         CreateMap<Operation, OperationSaveDTO>()
             .ForMember(d => d.Title, o => o.MapFrom(s => (s.Title ?? "").Trim()))
-            .ForMember(d => d.tricount_id, o => o.MapFrom(s => s.TricountId))
-            .ForMember(d => d.Operation_date, o => o.MapFrom(s => s.OperationDate));
+            .ForMember(d => d.TricountId, o => o.MapFrom(s => s.TricountId))
+            .ForMember(d => d.OperationDate, o => o.MapFrom(s => s.OperationDate));
+
+        // Mapping User → UserLoginDTO (pour la response après login)
+        CreateMap<User, UserLoginDTO>();
+        CreateMap<UserLoginDTO, User>();
+        CreateMap<User, LoginTokenDTO>();
+        CreateMap<LoginTokenDTO, User>();
+        
 
     }
 }

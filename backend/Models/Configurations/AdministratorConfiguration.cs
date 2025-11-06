@@ -8,7 +8,7 @@ public class AdministratorConfiguration : IEntityTypeConfiguration<Administrator
 {
     public void Configure(EntityTypeBuilder<Administrator> e) 
     {
-        e.HasData(new Administrator { Id = 9, Name = "Admin", Email = "admin@epfc.eu", Password = "Password1" });
+        e.HasData(new Administrator { Id = 9, Name = "Admin", Email = "admin@epfc.eu", Password = "Password1," });
 
     }
 }

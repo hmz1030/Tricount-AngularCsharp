@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Text.RegularExpressions;
+using Tricount.Helpers;
 using Tricount.Models.Entities;
 
 namespace Tricount.Models.Validators;
@@ -51,6 +52,14 @@ public class UserValidator : AbstractValidator<User>
             .Must(i => string.IsNullOrWhiteSpace(i) || IbanFormat.IsMatch(i))
             .WithMessage("IBAN must match format: AA99 9999 9999 9999.");
 
+        RuleSet("login", () => {
+            RuleFor(m => m.Token)
+                .NotNull().OverridePropertyName("Password").WithMessage("Incorrect password");
+        });
+
+        RuleFor(u => u.Role)
+            .IsInEnum();
+
 
     }
     public async Task<FluentValidation.Results.ValidationResult> ValidateOnCreate(User member) {
@@ -63,5 +72,12 @@ public class UserValidator : AbstractValidator<User>
 
     private async Task<bool> BeUniqueEmail(string email, CancellationToken token) {
         return !await _context.Users.AnyAsync(u => u.Email == email, token);
+    }
+
+    public async Task<FluentValidation.Results.ValidationResult> ValidateForLogin(User? user) {
+        if (user == null) {
+            return ValidatorHelper.CustomError("Member not found.", "Pseudo");
+        }
+        return await this.ValidateAsync(user!, o => o.IncludeRuleSets("login"));
     }
 }

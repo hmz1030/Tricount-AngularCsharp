@@ -23,7 +23,7 @@ public class User
     public Role Role { get; set; } = Role.User;
     public string? Iban { get; set; }
     [NotMapped]//ne pas ajouter de colonne dans la base de donner pour cette attribut
-    public string? token{ get; set; }
+    public string? Token{ get; set; }
     public ICollection<TricountEntity> CreatedTricounts { get; set; } = new List<TricountEntity>();
     public ICollection<TricountEntity> ParticipatingTricounts { get; set; } = new HashSet<TricountEntity>();
     

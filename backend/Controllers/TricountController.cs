@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using Tricount.Helpers;
 using Tricount.Models;
 using Tricount.Models.DTO.Tricount;
@@ -72,13 +76,36 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         }
         return true;
     }
+
     //all anonym juste pour le test pcq le login pas encore fait, apres faudra enlever le allowanonymous
     [AllowAnonymous]
     [HttpGet("get_all_users")]
     public async Task<ActionResult<List<UserDTO>>> GetAllUsers() {
-        var users = await context.Users.OrderBy(u=>u.Name).ToListAsync();
+        var users = await context.Users.OrderBy(u => u.Name).ToListAsync();
         return mapper.Map<List<UserDTO>>(users);
+    }
+    //Login
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public async Task<ActionResult<UserLoginDTO>> Login(UserWithPasswordDTO dto) {
+        var user = await Login(dto.Email, dto.Password);
+        var result = await new UserValidator(context).ValidateForLogin(user);
+        if (!result.IsValid)
+            return BadRequest(result);
+        return Ok(mapper.Map<LoginTokenDTO>(user));
+    }
+    
+    private async Task<User?> Login(string email, string password) {
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-       
+        if (user == null)
+            return null;
+
+        if (user.Password == password) {
+            user.Token = TokenHelper.GenerateJwtToken(email, user.Role);
+        }
+
+        return user;
+        
     }
 }
