@@ -85,27 +85,20 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return mapper.Map<List<UserDTO>>(users);
     }
     //Login
-    [AllowAnonymous]
-    [HttpPost("login")]
-    public async Task<ActionResult<UserLoginDTO>> Login(UserWithPasswordDTO dto) {
-        var user = await Login(dto.Email, dto.Password);
-        var result = await new UserValidator(context).ValidateForLogin(user);
-        if (!result.IsValid)
-            return BadRequest(result);
-        return Ok(mapper.Map<LoginTokenDTO>(user));
-    }
+[AllowAnonymous]
+[HttpPost("login")]
+public async Task<ActionResult<LoginResponseDTO>> Login(LoginRequestDTO dto) {
+    var user = await context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
     
-    private async Task<User?> Login(string email, string password) {
-        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-
-        if (user == null)
-            return null;
-
-        if (user.Password == password) {
-            user.Token = TokenHelper.GenerateJwtToken(email, user.Role);
-        }
-
-        return user;
-        
-    }
+    if (user == null)
+        return BadRequest(new { message = "Invalid email or password" });
+    
+    var hashedPassword = TokenHelper.GetPasswordHash(dto.Password);
+    if (user.Password != hashedPassword)
+        return BadRequest(new { message = "Invalid email or password" });
+    
+    var token = TokenHelper.GenerateJwtToken(user.Email, user.Role);
+    
+    return Ok(new LoginResponseDTO { Token = token });
+}
 }

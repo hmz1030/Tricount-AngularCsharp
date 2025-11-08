@@ -51,10 +51,10 @@ public class MappingProfile : Profile
             .ForMember(d => d.OperationDate, o => o.MapFrom(s => s.OperationDate));
 
         // Mapping User → UserLoginDTO (pour la response après login)
-        CreateMap<User, UserLoginDTO>();
-        CreateMap<UserLoginDTO, User>();
-        CreateMap<User, LoginTokenDTO>();
-        CreateMap<LoginTokenDTO, User>();
+        //CreateMap<User, UserLoginDTO>();
+        //CreateMap<UserLoginDTO, User>();
+        //CreateMap<User, LoginTokenDTO>();
+        //CreateMap<LoginTokenDTO, User>();
         
 
     }
