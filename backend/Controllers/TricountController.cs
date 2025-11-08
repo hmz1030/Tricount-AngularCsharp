@@ -85,20 +85,31 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return mapper.Map<List<UserDTO>>(users);
     }
     //Login
-[AllowAnonymous]
-[HttpPost("login")]
-public async Task<ActionResult<LoginResponseDTO>> Login(LoginRequestDTO dto) {
-    var user = await context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-    
-    if (user == null)
-        return BadRequest(new { message = "Invalid email or password" });
-    
-    var hashedPassword = TokenHelper.GetPasswordHash(dto.Password);
-    if (user.Password != hashedPassword)
-        return BadRequest(new { message = "Invalid email or password" });
-    
-    var token = TokenHelper.GenerateJwtToken(user.Email, user.Role);
-    
-    return Ok(new LoginResponseDTO { Token = token });
-}
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public async Task<ActionResult<LoginResponseDTO>> Login(LoginRequestDTO dto) {
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+        if (user == null)
+            return BadRequest(new { message = "Invalid email or password" });
+
+        var hashedPassword = TokenHelper.GetPasswordHash(dto.Password);
+        if (user.Password != hashedPassword)
+            return BadRequest(new { message = "Invalid email or password" });
+
+        var token = TokenHelper.GenerateJwtToken(user.Email, user.Role);
+
+        return Ok(new LoginResponseDTO { Token = token });
+    }
+    [HttpGet("get_user_data")]
+    public async Task<ActionResult<UserDTO>> GetUserData(){
+        var mail = User.Identity?.Name;
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == mail);
+        if (user == null) {
+            return NotFound();
+        }
+        return mapper.Map<UserDTO>(user);
+
+
+    }
 }
