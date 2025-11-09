@@ -4,6 +4,7 @@ using Tricount.Models.DTO;
 using Tricount.Models.DTO.User;
 using Tricount.Models.Entities;
 using Tricount.Models.DTO.Tricount;
+using Tricount.Models.DTO.Repartition;
 
 namespace Tricount.Models;
 
@@ -41,14 +42,23 @@ public class MappingProfile : Profile
         CreateMap<TricountEntity, TricountDTO>()
             .ForMember(d => d.Creator, o => o.MapFrom(s => s.CreatorId))
             .ForMember(d => d.Participants, o => o.MapFrom(s => s.Participants))
-            .ForMember(d => d.Operations, o => o.Ignore()); 
+            .ForMember(d => d.Operations, o => o.Ignore());
 
         CreateMap<Operation, OperationDTO>()
             .ForMember(d => d.Title, o => o.MapFrom(s => (s.Title ?? "").Trim()));
-        CreateMap<Operation, OperationSaveDTO>()
-            .ForMember(d => d.Title, o => o.MapFrom(s => (s.Title ?? "").Trim()))
-            .ForMember(d => d.TricountId, o => o.MapFrom(s => s.TricountId))
-            .ForMember(d => d.OperationDate, o => o.MapFrom(s => s.OperationDate));
+
+
+
+
+        CreateMap<OperationSaveDTO, Operation>();
+            
+        
+        CreateMap<Repartition, RepartitionDTO>()
+            .ForMember(d => d.UserId, o => o.MapFrom(s => s.UserId));
+
+        CreateMap<RepartitionDTO, Repartition>()
+            .ForMember(d => d.UserId, o => o.MapFrom(s => s.UserId));
+        
 
         // Mapping User → UserLoginDTO (pour la response après login)
         //CreateMap<User, UserLoginDTO>();

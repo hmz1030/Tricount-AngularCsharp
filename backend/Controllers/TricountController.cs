@@ -77,8 +77,8 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return true;
     }
 
-    //all anonym juste pour le test pcq le login pas encore fait, apres faudra enlever le allowanonymous
-    [AllowAnonymous]
+    
+
     [HttpGet("get_all_users")]
     public async Task<ActionResult<List<UserDTO>>> GetAllUsers() {
         var users = await context.Users.OrderBy(u => u.Name).ToListAsync();
@@ -106,7 +106,8 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         var mail = User.Identity?.Name;
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == mail);
         if (user == null) {
-            return NotFound();
+            return BadRequest(new { message = "User not found" });
+
         }
         return mapper.Map<UserDTO>(user);
 

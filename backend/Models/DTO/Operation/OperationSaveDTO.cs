@@ -20,7 +20,7 @@ public class OperationSaveDTO
     public int TricountId { get; set; }
     
     [JsonPropertyName("initiator")]
-    public int Initiator { get; set; }
+    public int InitiatorId { get; set; }
     
     [JsonPropertyName("repartitions")]
     public List<RepartitionDTO> Repartitions { get; set; } = new List<RepartitionDTO>();
