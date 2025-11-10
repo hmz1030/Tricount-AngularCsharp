@@ -67,14 +67,34 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             Id = tricount.Id,
             Title = tricount.Title,
             Description = tricount.Description,
-            //Participants = tricount.Participants,
-            //Creator = User.Identity?.Id apres la creation du login
+            Participants = await ConvertUsersIdsToUsers(tricount.Participants)?? new HashSet<User>(),
+            //Creator = User.Identity?
 
         };
         if (tricount.Id == 0) {
 
         }
         return true;
+    }
+
+    private async Task<ICollection<User>?> ConvertUsersIdsToUsers(List<int> ids) {
+        HashSet<User> users = new HashSet<User>();
+        for (int i = 0; i < ids.Count; i++) {
+            User? user = await GetUserById(ids[i]);
+            if (user == null) {
+                return null;
+            }
+            users.Add(user);
+        }
+        return users;
+    }
+
+    public async Task<User?> GetUserById(int id) {
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user == null) {
+            return null;
+        }
+        return user;
     }
 
     
