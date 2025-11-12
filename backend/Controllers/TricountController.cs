@@ -102,7 +102,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return Ok(new LoginResponseDTO { Token = token });
     }
     [HttpGet("get_user_data")]
-    public async Task<ActionResult<UserDTO>> GetUserData(){
+    public async Task<ActionResult<UserDTO>> GetUserData() {
         var mail = User.Identity?.Name;
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == mail);
         if (user == null) {
@@ -113,4 +113,36 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
 
 
     }
+    [HttpPost("save_operation")]
+public async Task<ActionResult<OperationDTO>> SaveOperation(OperationSaveDTO dto) {
+    if (dto.Id == 0) {
+        var newOperation = mapper.Map<Operation>(dto);
+        var validator = await new OperationValidator(context).ValidateOperation(newOperation);
+        if (!validator.IsValid) {
+            return BadRequest(new { message = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)) });
+        }
+        context.Operations.Add(newOperation);
+        await context.SaveChangesAsync();
+        return mapper.Map<OperationDTO>(newOperation);
+    } else {
+        var operation = await context.Operations
+            .Include(o => o.Repartitions)
+            .FirstOrDefaultAsync(o => o.Id == dto.Id);
+        
+        if (operation == null)
+            return NotFound();
+        
+        operation.Repartitions.Clear();
+        mapper.Map(dto, operation);
+        
+        var validator = await new OperationValidator(context).ValidateOperation(operation);
+        if (!validator.IsValid) {
+            return BadRequest(new { message = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)) });
+        }
+        
+        await context.SaveChangesAsync();
+        return mapper.Map<OperationDTO>(operation);
+    }
+}
+
 }

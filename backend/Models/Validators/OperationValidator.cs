@@ -33,4 +33,9 @@ public class OperationValidator : AbstractValidator<Operation>
         return await _context.Participations
             .AnyAsync(p => p.TricountId == operation.TricountId && p.UserId == operation.InitiatorId, token);
     }
+    /// Validation spécifique pour la création
+    public async Task<FluentValidation.Results.ValidationResult> ValidateOperation(Operation operation)
+    {
+        return await this.ValidateAsync(operation, o => o.IncludeRuleSets("default"));
+    }
 }
