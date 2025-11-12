@@ -21,5 +21,5 @@ public class TricountSaveDTO
 
     // IDs des participants (si yen a, hors creator)
     [JsonPropertyName("participants")]
-    public HashSet<int> Participants { get; set; } = new HashSet<int>()!;
+    public List<int> Participants { get; set; } = new List<int>()!;
 }
