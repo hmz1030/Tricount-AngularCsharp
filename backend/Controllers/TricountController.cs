@@ -67,7 +67,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             Id = tricount.Id,
             Title = tricount.Title,
             Description = tricount.Description,
-            Participants = await ConvertUsersIdsToUsers(tricount.Participants)?? new HashSet<User>(),
+            Participants = await ConvertUsersIdsToUsers(tricount.Participants) ?? new HashSet<User>(),
             //Creator = User.Identity?
 
         };
@@ -97,7 +97,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return user;
     }
 
-    
+
 
     [HttpGet("get_all_users")]
     public async Task<ActionResult<List<UserDTO>>> GetAllUsers() {
@@ -121,6 +121,9 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
 
         return Ok(new LoginResponseDTO { Token = token });
     }
+
+
+
     [HttpGet("get_user_data")]
     public async Task<ActionResult<UserDTO>> GetUserData() {
         var mail = User.Identity?.Name;
@@ -134,35 +137,46 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
 
     }
     [HttpPost("save_operation")]
-public async Task<ActionResult<OperationDTO>> SaveOperation(OperationSaveDTO dto) {
-    if (dto.Id == 0) {
-        var newOperation = mapper.Map<Operation>(dto);
-        var validator = await new OperationValidator(context).ValidateOperation(newOperation);
-        if (!validator.IsValid) {
-            return BadRequest(new { message = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)) });
+    public async Task<ActionResult<OperationDTO>> SaveOperation(OperationSaveDTO dto) {
+        if (dto.Id == 0) {
+            var newOperation = mapper.Map<Operation>(dto);
+            var validator = await new OperationValidator(context).ValidateOperation(newOperation);
+            if (!validator.IsValid) {
+                return BadRequest(new { message = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)) });
+            }
+            context.Operations.Add(newOperation);
+            await context.SaveChangesAsync();
+            return mapper.Map<OperationDTO>(newOperation);
+        } else {
+            var operation = await context.Operations
+                .Include(o => o.Repartitions)
+                .FirstOrDefaultAsync(o => o.Id == dto.Id);
+
+            if (operation == null)
+                return NotFound();
+
+            operation.Repartitions.Clear();
+            mapper.Map(dto, operation);
+
+            var validator = await new OperationValidator(context).ValidateOperation(operation);
+            if (!validator.IsValid) {
+                return BadRequest(new { message = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)) });
+            }
+
+            await context.SaveChangesAsync();
+            return mapper.Map<OperationDTO>(operation);
         }
-        context.Operations.Add(newOperation);
-        await context.SaveChangesAsync();
-        return mapper.Map<OperationDTO>(newOperation);
-    } else {
-        var operation = await context.Operations
-            .Include(o => o.Repartitions)
-            .FirstOrDefaultAsync(o => o.Id == dto.Id);
-        
-        if (operation == null)
-            return NotFound();
-        
-        operation.Repartitions.Clear();
-        mapper.Map(dto, operation);
-        
-        var validator = await new OperationValidator(context).ValidateOperation(operation);
-        if (!validator.IsValid) {
-            return BadRequest(new { message = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)) });
-        }
-        
-        await context.SaveChangesAsync();
-        return mapper.Map<OperationDTO>(operation);
     }
-}
+    [HttpPost("delete_operation")]
+    public async Task<ActionResult> DeleteOperation(int operationId) {
+        var operation = await context.Operations.FindAsync(operationId);
+        if (operation == null) {
+            return NotFound();
+        }
+    
+        context.Operations.Remove(operation);
+        await context.SaveChangesAsync();   
+        return NoContent();
+    }
 
 }
