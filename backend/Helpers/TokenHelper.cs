@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 using Tricount.Models;
@@ -16,10 +17,10 @@ public class TokenHelper
         this._context = context;
     }
 
-    public static string GenerateJwtToken(string pseudo, Role role) {
+    public static string GenerateJwtToken(string email, Role role) {
         var claims = new Claim[]
                 {
-                        new Claim(ClaimTypes.Name, pseudo),
+                        new Claim(ClaimTypes.Email, email),
                         new Claim(ClaimTypes.Role, role.ToString())
                 };
         return GenerateJwtToken(claims);

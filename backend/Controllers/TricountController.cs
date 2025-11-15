@@ -63,18 +63,30 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     [AllowAnonymous]
     [HttpPost("save_tricount")]
     public async Task<bool> save_tricount(TricountSaveDTO tricount) {
+        User? ConnectedUser = await GetConnectedUser();
+        if(ConnectedUser == null) {
+            return false;
+        }
         TricountEntity tricountEntity = new TricountEntity {
             Id = tricount.Id,
             Title = tricount.Title,
             Description = tricount.Description,
-            Participants = await ConvertUsersIdsToUsers(tricount.Participants)?? new HashSet<User>(),
-            //Creator = User.Identity?
+            Participants = await ConvertUsersIdsToUsers(tricount.Participants) ?? new HashSet<User>(),
+            Creator = ConnectedUser
 
         };
         if (tricount.Id == 0) {
-
+            context.Add(tricountEntity);
+        } else {
+            context.Update(tricountEntity);
         }
         return true;
+    }
+    
+    private async Task<User?> GetConnectedUser() {
+        var email = User.Identity?.Name;
+        User? user = await context.Users.FirstOrDefaultAsync(x => x.Email != email);
+        return user != null ? user : null;
     }
 
     private async Task<ICollection<User>?> ConvertUsersIdsToUsers(List<int> ids) {
