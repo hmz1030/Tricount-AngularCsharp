@@ -89,7 +89,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     
     private async Task<User?> GetConnectedUser() {
         var email = User.Identity?.Name;
-        User? user = await context.Users.FirstOrDefaultAsync(x => x.Email != email);
+        User? user = await context.Users.FirstOrDefaultAsync(x => x.Email == email);
         return user != null ? user : null;
     }
 
@@ -154,6 +154,15 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     }
     [HttpPost("save_operation")]
     public async Task<ActionResult<OperationDTO>> SaveOperation(OperationSaveDTO dto) {
+        var user = await GetConnectedUser(); 
+        var isAdmin  = User.IsInRole(Role.Admin.ToString());
+        if (!isAdmin) {
+        var isParticipant = await context.Participations
+            .AnyAsync(p => p.TricountId == dto.TricountId && p.UserId == user.Id);
+        
+        if (!isParticipant)
+            return Forbid();
+    }
         if (dto.Id == 0) {
             var newOperation = mapper.Map<Operation>(dto);
             var validator = await new OperationValidator(context).ValidateOperation(newOperation);
@@ -162,8 +171,13 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             }
             context.Operations.Add(newOperation);
             await context.SaveChangesAsync();
-            return mapper.Map<OperationDTO>(newOperation);
-        } else {
+              var result = await context.Operations
+            .AsNoTracking()
+            .Include(o => o.Repartitions)
+            .FirstAsync(o => o.Id == newOperation.Id);
+            return mapper.Map<OperationDTO>(result);
+        } 
+        else {
             var operation = await context.Operations
                 .Include(o => o.Repartitions)
                 .FirstOrDefaultAsync(o => o.Id == dto.Id);
@@ -180,7 +194,11 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             }
 
             await context.SaveChangesAsync();
-            return mapper.Map<OperationDTO>(operation);
+             var result = await context.Operations
+            .AsNoTracking()
+            .Include(o => o.Repartitions)
+            .FirstAsync(o => o.Id == dto.Id);
+            return mapper.Map<OperationDTO>(result);
         }
     }
     [HttpPost("delete_operation")]
