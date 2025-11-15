@@ -73,12 +73,15 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             Description = tricount.Description,
             Participants = await ConvertUsersIdsToUsers(tricount.Participants) ?? new HashSet<User>(),
             Creator = ConnectedUser
-
-
         };
+
         if (tricount.Id == 0) {
+            
+            var validate = await new TricountValidator(context).ValidateOnCreate(tricountEntity);
             context.Add(tricountEntity);
         } else {
+
+            var validate = await new TricountValidator(context).ValidateOnCreate(tricountEntity);
             context.Update(tricountEntity);
         }
         return true;
