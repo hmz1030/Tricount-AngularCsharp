@@ -27,10 +27,20 @@ public class OperationValidator : AbstractValidator<Operation>
         RuleFor(o => o)
             .MustAsync(async (operation, token) => await InitiatorIsParticipant(operation, token))
             .WithMessage("L'initiateur doit être un participant du tricount.");
+            
+        // au moins une répartition   
+        RuleFor(o => o.Repartitions)
+            .NotEmpty()
+            .WithMessage("An operation must have at least one repartition");
     }
 
     private async Task<bool> InitiatorIsParticipant(Operation operation, CancellationToken token) {
         return await _context.Participations
             .AnyAsync(p => p.TricountId == operation.TricountId && p.UserId == operation.InitiatorId, token);
+    }
+    /// Validation spécifique pour la création
+    public async Task<FluentValidation.Results.ValidationResult> ValidateOperation(Operation operation)
+    {
+        return await this.ValidateAsync(operation, o => o.IncludeRuleSets("default"));
     }
 }
