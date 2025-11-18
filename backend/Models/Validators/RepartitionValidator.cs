@@ -8,8 +8,7 @@ public class RepartitionValidator : AbstractValidator<Repartition>
 {
     private readonly TricountContext _context;
 
-    public RepartitionValidator(TricountContext context)
-    {
+    public RepartitionValidator(TricountContext context) {
         _context = context;
 
         // Le poids doit être > 0
@@ -19,7 +18,11 @@ public class RepartitionValidator : AbstractValidator<Repartition>
 
         // L'opération doit exister
         RuleFor(r => r.OperationId)
-            .MustAsync(async (operationId, token) => await OperationExists(operationId, token))
+            .MustAsync(async (operationId, token) => {
+                if (operationId == 0)
+                    return true; // faut pas verif ca si create operation du coup on skip
+                return await OperationExists(operationId, token);
+            })
             .WithMessage("L'opération spécifiée n'existe pas.");
 
         // L'utilisateur doit exister
@@ -33,18 +36,15 @@ public class RepartitionValidator : AbstractValidator<Repartition>
             .WithMessage("L'utilisateur doit être participant du tricount associé à cette opération.");
     }
 
-    private async Task<bool> OperationExists(int operationId, CancellationToken token)
-    {
+    private async Task<bool> OperationExists(int operationId, CancellationToken token) {
         return await _context.Operations.AnyAsync(o => o.Id == operationId, token);
     }
 
-    private async Task<bool> UserExists(int userId, CancellationToken token)
-    {
+    private async Task<bool> UserExists(int userId, CancellationToken token) {
         return await _context.Users.AnyAsync(u => u.Id == userId, token);
     }
 
-    private async Task<bool> UserIsParticipant(Repartition repartition, CancellationToken token)
-    {
+    private async Task<bool> UserIsParticipant(Repartition repartition, CancellationToken token) {
         // Récupérer le tricount de l'opération
         var operation = await _context.Operations
             .AsNoTracking()

@@ -20,7 +20,7 @@ public class TokenHelper
     public static string GenerateJwtToken(string email, Role role) {
         var claims = new Claim[]
                 {
-                        new Claim(ClaimTypes.Email, email),
+                        new Claim(ClaimTypes.Name,email),
                         new Claim(ClaimTypes.Role, role.ToString())
                 };
         return GenerateJwtToken(claims);

@@ -64,7 +64,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     [HttpPost("save_tricount")]
     public async Task<bool> save_tricount(TricountSaveDTO tricount) {
         User? ConnectedUser = await GetConnectedUser();
-        if(ConnectedUser == null) {
+        if (ConnectedUser == null) {
             return false;
         }
         TricountEntity tricountEntity = new TricountEntity {
@@ -76,7 +76,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         };
 
         if (tricount.Id == 0) {
-            
+
             var validate = await new TricountValidator(context).ValidateOnCreate(tricountEntity);
             context.Add(tricountEntity);
         } else {
@@ -86,7 +86,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         }
         return true;
     }
-    
+
     private async Task<User?> GetConnectedUser() {
         var email = User.Identity?.Name;
         User? user = await context.Users.FirstOrDefaultAsync(x => x.Email == email);
@@ -155,6 +155,9 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     [HttpPost("save_operation")]
     public async Task<ActionResult<OperationDTO>> SaveOperation(OperationSaveDTO dto) {
         var user = await GetConnectedUser(); 
+        if (user == null) {
+            return Unauthorized();
+        }
         var isAdmin  = User.IsInRole(Role.Admin.ToString());
         if (!isAdmin) {
         var isParticipant = await context.Participations
