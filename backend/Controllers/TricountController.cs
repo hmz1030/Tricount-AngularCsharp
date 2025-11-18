@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Xml;
 using Tricount.Helpers;
 using Tricount.Models;
 using Tricount.Models.DTO.Operation;
@@ -62,31 +63,104 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     }
 
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpPost("save_tricount")]
-    public async Task<bool> save_tricount(TricountSaveDTO tricount) {
+    public async Task<ActionResult<TricountDetailsDTO>> save_tricount([FromBody] TricountSaveDTO dto) {
         User? ConnectedUser = await GetConnectedUser();
         if (ConnectedUser == null) {
-            return false;
+            return Unauthorized();
         }
-        TricountEntity tricountEntity = new TricountEntity {
-            Id = tricount.Id,
-            Title = tricount.Title,
-            Description = tricount.Description,
-            Participants = await ConvertUsersIdsToUsers(tricount.Participants) ?? new HashSet<User>(),
-            Creator = ConnectedUser
-        };
+        
+        // participants
+        var participants = await ConvertUsersIdsToUsers(dto.Participants ?? new List<int>());
+        if(participants == null) {
+            return BadRequest(new {
+                code = "P0001",
+                details = (string?)null,
+                hint = (string?)null,
+                message = "one or more participants not found"
+            });
+        }
 
-        if (tricount.Id == 0) {
+        TricountEntity tricount;
+        if(dto.Id == 0) {
+            //Create
+            //le createur est participant
+            if(!participants.Any(p => p.Id == ConnectedUser.Id))
+                participants.Add(ConnectedUser);
+            tricount = new TricountEntity {
+                Title = dto.Title,
+                Description = dto.Description,
+                Creator = ConnectedUser,
+                CreatorId = ConnectedUser.Id,
+                Participants = participants
+            };
 
-            var validate = await new TricountValidator(context).ValidateOnCreate(tricountEntity);
-            context.Add(tricountEntity);
+            var vr = await new TricountValidator(context).ValidateOnCreate(tricount);
+            if(!vr.IsValid) {
+                return BadRequest(new {
+                    code = "P0001",
+                    details = (string?)null,
+                    hint = (string?)null,
+                    message = string.Join("; ", vr.Errors.Select(e => e.ErrorMessage))
+                });
+            }
+            context.Tricounts.Add(tricount);
         } else {
+            //Update
+            tricount = await context.Tricounts
+                .Include(t => t.Participants)
+                .Include(t => t.Operations)
+                    .ThenInclude(o => o.Repartitions)
+                .FirstOrDefaultAsync(t => t.Id == dto.Id);
+           
+            if(tricount == null) {
+                return BadRequest(new {
+                    code = "P0001",
+                    details = (string?)null,
+                    hint = (string?)null,
+                    message = "tricount not found"
+                });
+            }
 
-            var validate = await new TricountValidator(context).ValidateOnCreate(tricountEntity);
-            context.Update(tricountEntity);
+            //on ne peut pas enlever le createur des participants
+            var creatorId = tricount.CreatorId;
+            var creatorStillInParticipants = participants.Any(p => p.Id == creatorId);
+            if(!creatorStillInParticipants) {
+                return BadRequest(new {
+                    code = "P0001",
+                    details = (string?)null,
+                    hint = (string?)null,
+                    message = "You cannot remove the participation of the owner of a tricount"
+                });
+            }
+
+            tricount.Title = dto.Title;
+            tricount.Description = dto.Description;
+            tricount.Participants = participants;
+
+            var vr = await new TricountValidator(context).ValidateOnCreate(tricount);
+            if (!vr.IsValid)
+            {
+                return BadRequest(new {
+                    code = "P0001",
+                    details = (string?)null,
+                    hint = (string?)null,
+                    message = string.Join("; ", vr.Errors.Select(e => e.ErrorMessage))
+                });
+            }
         }
-        return true;
+
+        //sauvegarde
+        await context.SaveChangesAsync();
+        //afichage reponse
+        var result = await context.Tricounts
+            .AsNoTracking()
+            .Include(t => t.Participants)
+            .Include(t => t.Operations)
+                .ThenInclude(o => o.Repartitions)
+            .FirstAsync(t => t.Id == tricount.Id);
+        return Ok(mapper.Map<TricountDetailsDTO>(result));
     }
 
     private async Task<User?> GetConnectedUser() {
@@ -280,86 +354,3 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return Ok(dto);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
