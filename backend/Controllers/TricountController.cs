@@ -207,9 +207,16 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         }
     }
 
+    [Authorize]
     [HttpPost("delete_operation")]
     public async Task<ActionResult> DeleteOperation([FromBody] OperationDeleteDTO dto) {
         var operation = await context.Operations.FindAsync(dto.Id);
+        var email = User.Identity?.Name;
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        
+        if(user == null)
+            return Unauthorized();
+        
         if (operation == null) {
            {
                 return BadRequest(new {
@@ -219,6 +226,14 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
                     message = "operation not found"
                 });
             }
+        }
+
+        if(user.Role != Role.Admin) {
+            var isParticipant = await context.Participations
+                .AnyAsync(p => p.TricountId == operation.TricountId && p.UserId == user.Id);
+
+            if(!isParticipant)
+                return Forbid();
         }
     
         context.Operations.Remove(operation);
@@ -237,6 +252,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return await context.Users.FirstOrDefaultAsync(e=> e.Name == fullname && e.Id != userid) == null;//true veut dire available
     }
 
+    [Authorize]
     [HttpGet("get_my_tricounts")]
     public async Task<ActionResult<IEnumerable<TricountDetailsDTO>>> GetMyTricounts() {
 
