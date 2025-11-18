@@ -66,6 +66,8 @@ public class MappingProfile : Profile
         //CreateMap<User, LoginTokenDTO>();
         //CreateMap<LoginTokenDTO, User>();
         
-
+        CreateMap<TricountEntity, TricountDetailsDTO>()
+            .ForMember(d => d.Creator, o => o.MapFrom(s => s.CreatorId));
+    
     }
 }

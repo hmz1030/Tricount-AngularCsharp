@@ -8,6 +8,8 @@ public class LoginRequestDTO
     [JsonPropertyName("password")]
     public string Password { get; set; } = null!;
 }
+
+
 public class LoginResponseDTO
 {
     [JsonPropertyName("token")]

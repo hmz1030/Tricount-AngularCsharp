@@ -20,8 +20,8 @@ public class TokenHelper
     public static string GenerateJwtToken(string email, Role role) {
         var claims = new Claim[]
                 {
-                        new Claim(ClaimTypes.Name,email),
-                        new Claim(ClaimTypes.Role, role.ToString())
+                    new Claim(ClaimTypes.Name, email),
+                    new Claim(ClaimTypes.Role, role.ToString())
                 };
         return GenerateJwtToken(claims);
     }
@@ -37,7 +37,7 @@ public class TokenHelper
         var tokenDescriptor = new SecurityTokenDescriptor {
             Subject = new ClaimsIdentity(claims),
             IssuedAt = DateTime.UtcNow,
-            Expires = DateTime.UtcNow.AddMinutes(1440),
+            Expires = DateTime.UtcNow.AddMinutes(10),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);

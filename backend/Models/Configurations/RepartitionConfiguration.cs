@@ -26,7 +26,7 @@ public class RepartitionConfiguration : IEntityTypeConfiguration<Repartition> {
             t.HasCheckConstraint("CK_Repartitions_Weight_Positive", "\"Weight\" > 0");
         });
             
-         // ----- Seed -----
+        // ----- Seed -----
         r.HasData(
             // operation;user;weight
             new Repartition { OperationId = 1, UserId = 1, Weight = 1 },
@@ -45,6 +45,5 @@ public class RepartitionConfiguration : IEntityTypeConfiguration<Repartition> {
             new Repartition { OperationId = 6, UserId = 1, Weight = 1 },
             new Repartition { OperationId = 6, UserId = 3, Weight = 1 }
         );
-    
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Tricount.Helpers;
 using Tricount.Models;
@@ -105,7 +106,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return users;
     }
 
-    public async Task<User?> GetUserById(int id) {
+    private async Task<User?> GetUserById(int id) {
         var user = await context.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (user == null) {
             return null;
@@ -204,6 +205,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             return mapper.Map<OperationDTO>(result);
         }
     }
+
     [HttpPost("delete_operation")]
     public async Task<ActionResult> DeleteOperation(int operationId) {
         var operation = await context.Operations.FindAsync(operationId);
@@ -225,4 +227,113 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return await context.Users.FirstOrDefaultAsync(e=> e.Name == fullname && e.Id != userid) == null;//true veut dire available
     }
 
+    [HttpGet("get_my_tricounts")]
+    public async Task<ActionResult<IEnumerable<TricountDetailsDTO>>> GetMyTricounts() {
+
+        var email = User.Identity?.Name;
+        if(string.IsNullOrEmpty(email))
+            return Unauthorized();
+        
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if(user == null)
+            return Unauthorized();
+        var userId = user.Id;
+
+        var tricounts = await context.Tricounts
+            .Include(t => t.Participants)
+            .Include(t => t.Operations)
+            .ThenInclude(o => o.Repartitions)
+            .Where(t =>
+                t.CreatorId == userId || 
+                t.Participants.Any(u => u.Id == userId)
+            )
+            .OrderByDescending(t => t.CreatedAt)
+            .ToListAsync();
+        
+        var dto = mapper.Map<IEnumerable<TricountDetailsDTO>>(tricounts);
+        return Ok(dto);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
