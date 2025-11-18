@@ -88,6 +88,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             //le createur est participant
             if(!participants.Any(p => p.Id == ConnectedUser.Id))
                 participants.Add(ConnectedUser);
+            
             tricount = new TricountEntity {
                 Title = dto.Title,
                 Description = dto.Description,
@@ -160,6 +161,21 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             .Include(t => t.Operations)
                 .ThenInclude(o => o.Repartitions)
             .FirstAsync(t => t.Id == tricount.Id);
+        
+        result.Participants = result.Participants
+            .OrderBy(p => p.Name)
+            .ToList();
+
+        result.Operations = result.Operations
+            .OrderByDescending(o => o.CreatedAt)
+            .Select(o => {
+                // 🔹 3. Pour chaque opération, trier les répartitions par UserId (1,2,3,…)
+                o.Repartitions = o.Repartitions
+                    .OrderBy(r => r.UserId)
+                    .ToList();
+                return o;
+            })
+            .ToList();
         return Ok(mapper.Map<TricountDetailsDTO>(result));
     }
 
