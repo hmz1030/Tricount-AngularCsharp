@@ -218,7 +218,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     [HttpGet("get_my_tricounts")]
     public async Task<ActionResult<IEnumerable<TricountDetailsDTO>>> GetMyTricounts() {
 
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+        var email = User.Identity?.Name;
         if(string.IsNullOrEmpty(email))
             return Unauthorized();
         
