@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using Tricount.Helpers;
 using Tricount.Models;
+using Tricount.Models.DTO.Operation;
 using Tricount.Models.DTO.Tricount;
 using Tricount.Models.DTO.User;
 using Tricount.Models.Entities;
@@ -207,16 +208,30 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     }
 
     [HttpPost("delete_operation")]
-    public async Task<ActionResult> DeleteOperation(int operationId) {
-        var operation = await context.Operations.FindAsync(operationId);
+    public async Task<ActionResult> DeleteOperation([FromBody] OperationDeleteDTO dto) {
+        //depense avec ses repartitions
+        var operation = await context.Operations
+            .Include(o => o.Repartitions)
+            .FirstOrDefaultAsync(o => o.Id == dto.Id);
+
         if (operation == null) {
-            return NotFound();
+           {
+                return BadRequest(new {
+                    code = "P0001",
+                    details = (string?)null,
+                    hint = (string?)null,
+                    message = "operation not found"
+                });
+            }
         }
-    
+        //Supprimer repartitions et depense
+        context.Repartitions.RemoveRange(operation.Repartitions);
         context.Operations.Remove(operation);
-        await context.SaveChangesAsync();   
+        await context.SaveChangesAsync();  
+
         return NoContent();
     }
+
     [HttpGet("check_email_available")]
     public async Task<bool> check_email_available(string email,int userid) {
         return await context.Users.FirstOrDefaultAsync(e=> e.Email == email && e.Id != userid) == null;//true veut dire available
