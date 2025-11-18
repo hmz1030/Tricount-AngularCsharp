@@ -216,13 +216,13 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return NoContent();
     }
     [HttpGet("check_email_available")]
-    public async Task<bool> check_email_available(string email) {
-        return await context.Users.FirstOrDefaultAsync(e=> e.Email == email) == null;//true veut dire available
+    public async Task<bool> check_email_available(string email,int userid) {
+        return await context.Users.FirstOrDefaultAsync(e=> e.Email == email && e.Id != userid) == null;//true veut dire available
     }
 
     [HttpGet("check_full_name_available")]
-    public async Task<bool> check_full_name_available(string fullname) {
-        return await context.Users.FirstOrDefaultAsync(e=> e.Name == fullname) == null;//true veut dire available
+    public async Task<bool> check_full_name_available(string fullname, int userid) {
+        return await context.Users.FirstOrDefaultAsync(e=> e.Name == fullname && e.Id != userid) == null;//true veut dire available
     }
 
 }
