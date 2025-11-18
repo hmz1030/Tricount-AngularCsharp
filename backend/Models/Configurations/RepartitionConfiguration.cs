@@ -20,7 +20,7 @@ public class RepartitionConfiguration : IEntityTypeConfiguration<Repartition> {
         r.HasOne(r => r.Operation)
             .WithMany(r => r.Repartitions)
             .HasForeignKey(r => r.OperationId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         r.ToTable(t => {
             t.HasCheckConstraint("CK_Repartitions_Weight_Positive", "\"Weight\" > 0");

@@ -209,11 +209,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
 
     [HttpPost("delete_operation")]
     public async Task<ActionResult> DeleteOperation([FromBody] OperationDeleteDTO dto) {
-        //depense avec ses repartitions
-        var operation = await context.Operations
-            .Include(o => o.Repartitions)
-            .FirstOrDefaultAsync(o => o.Id == dto.Id);
-
+        var operation = await context.Operations.FindAsync(dto.Id);
         if (operation == null) {
            {
                 return BadRequest(new {
@@ -224,14 +220,13 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
                 });
             }
         }
-        //Supprimer repartitions et depense
-        context.Repartitions.RemoveRange(operation.Repartitions);
+    
         context.Operations.Remove(operation);
         await context.SaveChangesAsync();  
 
         return NoContent();
     }
-
+    
     [HttpGet("check_email_available")]
     public async Task<bool> check_email_available(string email,int userid) {
         return await context.Users.FirstOrDefaultAsync(e=> e.Email == email && e.Id != userid) == null;//true veut dire available
