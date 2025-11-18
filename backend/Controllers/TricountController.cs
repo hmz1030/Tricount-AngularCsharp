@@ -215,5 +215,14 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         await context.SaveChangesAsync();   
         return NoContent();
     }
+    [HttpGet("check_email_available")]
+    public async Task<bool> check_email_available(string email) {
+        return await context.Users.FirstOrDefaultAsync(e=> e.Email == email) == null;//true veut dire available
+    }
+
+    [HttpGet("check_full_name_available")]
+    public async Task<bool> check_full_name_available(string fullname) {
+        return await context.Users.FirstOrDefaultAsync(e=> e.Name == fullname) == null;//true veut dire available
+    }
 
 }
