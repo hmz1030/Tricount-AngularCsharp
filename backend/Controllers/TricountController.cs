@@ -86,9 +86,9 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         if(dto.Id == 0) {
             //Create
             //le createur est participant
-            if(!participants.Any(p => p.Id == ConnectedUser.Id))
+            if (!participants.Any(p => p.Id == ConnectedUser.Id))
                 participants.Add(ConnectedUser);
-            
+
             tricount = new TricountEntity {
                 Title = dto.Title,
                 Description = dto.Description,
@@ -98,7 +98,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             };
 
             var vr = await new TricountValidator(context).ValidateOnCreate(tricount);
-            if(!vr.IsValid) {
+            if (!vr.IsValid) {
                 return BadRequest(new {
                     code = "P0001",
                     details = (string?)null,
@@ -162,7 +162,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
                 .ThenInclude(o => o.Repartitions)
             .FirstAsync(t => t.Id == tricount.Id);
         
-        result.Participants = result.Participants
+         result.Participants = result.Participants
             .OrderBy(p => p.Name)
             .ToList();
 
@@ -246,11 +246,11 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     }
     [HttpPost("save_operation")]
     public async Task<ActionResult<OperationDTO>> SaveOperation(OperationSaveDTO dto) {
-        var user = await GetConnectedUser(); 
+        var user = await GetConnectedUser();
         if (user == null) {
             return Unauthorized();
         }
-        var isAdmin  = User.IsInRole(Role.Admin.ToString());
+        var isAdmin = User.IsInRole(Role.Admin.ToString());
         if (!isAdmin) {
         var isParticipant = await context.Participations
             .AnyAsync(p => p.TricountId == dto.TricountId && p.UserId == user.Id);
@@ -266,13 +266,12 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             }
             context.Operations.Add(newOperation);
             await context.SaveChangesAsync();
-              var result = await context.Operations
-            .AsNoTracking()
-            .Include(o => o.Repartitions)
-            .FirstAsync(o => o.Id == newOperation.Id);
+            var result = await context.Operations
+          .AsNoTracking()
+          .Include(o => o.Repartitions)
+          .FirstAsync(o => o.Id == newOperation.Id);
             return mapper.Map<OperationDTO>(result);
-        } 
-        else {
+        } else {
             var operation = await context.Operations
                 .Include(o => o.Repartitions)
                 .FirstOrDefaultAsync(o => o.Id == dto.Id);
@@ -369,4 +368,43 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         var dto = mapper.Map<IEnumerable<TricountDetailsDTO>>(tricounts);
         return Ok(dto);
     }
+    [Authorize]
+    [HttpPost("delete_tricount")]
+    public async Task<ActionResult> DeleteTricount([FromBody] TricountDeleteDTO dto) {
+        var tricount = await context.Tricounts
+            .Include(t => t.Operations)
+                .ThenInclude(o => o.Repartitions)
+            .FirstOrDefaultAsync(t => t.Id == dto.Id);
+        
+        var email = User.Identity?.Name;
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        
+        if(user == null)
+            return Unauthorized();
+        
+        if (tricount == null) {
+            return BadRequest(new {
+                code = "P0001",
+                details = (string?)null,
+                hint = (string?)null,
+                message = "tricount not found"
+            });
+        }
+
+        if(user.Role != Role.Admin) {
+            if (tricount.CreatorId != user.Id) {
+                return Forbid();
+            }
+        }
+    
+        // Supprimer d'abord toutes les operations et les répartitions ( en cascade)
+        context.Operations.RemoveRange(tricount.Operations);
+        
+        // Ensuite supprimer le tricount
+        context.Tricounts.Remove(tricount);
+        await context.SaveChangesAsync();  
+
+        return NoContent();
+    }
+
 }

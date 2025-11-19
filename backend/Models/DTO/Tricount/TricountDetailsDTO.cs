@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Tricount.Models.DTO.User;
 
 namespace Tricount.Models.DTO.Tricount;
