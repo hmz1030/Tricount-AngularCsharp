@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,4 +28,11 @@ public class Operation {
     public DateTime CreatedAt { get; set; }
 
     public ICollection<Repartition> Repartitions { get; set; } = new List<Repartition>();
+
+    // Méthode pour récupérer une opération avec ses répartitions
+    public static async Task<Operation?> GetByIdWithRepartitions(TricountContext context, int id) {
+        return await context.Operations
+            .Include(o => o.Repartitions)
+            .FirstOrDefaultAsync(o => o.Id == id);
+    }
 }

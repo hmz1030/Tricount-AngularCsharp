@@ -272,9 +272,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
           .FirstAsync(o => o.Id == newOperation.Id);
             return mapper.Map<OperationDTO>(result);
         } else {
-            var operation = await context.Operations
-                .Include(o => o.Repartitions)
-                .FirstOrDefaultAsync(o => o.Id == dto.Id);
+            var operation = await Operation.GetByIdWithRepartitions(context, dto.Id);
 
             if (operation == null)
                 return NotFound();

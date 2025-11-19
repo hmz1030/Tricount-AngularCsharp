@@ -69,4 +69,9 @@ public class OperationValidator : AbstractValidator<Operation>
     public async Task<FluentValidation.Results.ValidationResult> ValidateOperation(Operation operation) {
         return await this.ValidateAsync(operation, o => o.IncludeRuleSets("default"));
     }
+    public static async Task<Operation?> GetByIdWithRepartitions(TricountContext context, int id) {
+    return await context.Operations
+        .Include(o => o.Repartitions)
+        .FirstOrDefaultAsync(o => o.Id == id);
+}
 }
