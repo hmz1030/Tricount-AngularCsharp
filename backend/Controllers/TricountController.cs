@@ -367,6 +367,27 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return Ok(dto);
     }
     [Authorize]
+    [HttpGet("get_tricount_balance")]
+    public async Task<ActionResult<IEnumerable<TricountBalanceDTO>>> GetTricountBalance([FromQuery] int tricount_id) {
+        var user = await GetConnectedUser();
+        if (user == null)
+            return Unauthorized();
+        
+        var tricount = await TricountEntity.GetByIdWithDetails(context, tricount_id);
+        
+        if (tricount == null)
+            return NotFound();
+        
+        var isAdmin = User.IsInRole(Role.Admin.ToString());
+        if (!isAdmin && tricount.CreatorId != user.Id && !tricount.Participants.Any(p => p.Id == user.Id))
+            return Forbid();
+        
+        var balance = tricount.CalculateBalance();
+        
+        return Ok(balance);
+    }
+
+    [Authorize]
     [HttpPost("delete_tricount")]
     public async Task<ActionResult> DeleteTricount([FromBody] TricountDeleteDTO dto) {
         var tricount = await context.Tricounts
