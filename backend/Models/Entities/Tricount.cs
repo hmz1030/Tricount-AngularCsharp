@@ -26,6 +26,8 @@ public class TricountEntity{
 
     // Calcul ddla balance
     public List<TricountBalanceDTO> CalculateBalance() {
+        // dictionnary, tableau associatif, key = id user et value la balance du user, comme ca
+        // on accede plus facilement
         var balances = new Dictionary<int, TricountBalanceDTO>();
         
         // faut init la balance a zero pour chacun 
@@ -56,9 +58,10 @@ public class TricountEntity{
             }
         }
         
-        // Calculer la balance pour chaque participant
         foreach (var balance in balances.Values) {
-            balance.Balance = balance.Paid - balance.Due;
+            balance.Paid = Math.Round(balance.Paid, 2);
+            balance.Due = Math.Round(balance.Due, 2);
+            balance.Balance = Math.Round(balance.Paid - balance.Due, 2);
         }
         
         return balances.Values.OrderBy(b => b.User).ToList();
