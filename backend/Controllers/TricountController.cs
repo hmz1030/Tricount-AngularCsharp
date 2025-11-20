@@ -65,7 +65,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
 
     [Authorize]
     [HttpPost("save_tricount")]
-    public async Task<ActionResult<TricountDetailsDTO>> save_tricount([FromBody] TricountSaveDTO dto) {
+    public async Task<ActionResult<TricountDetailsDTO>> SaveTricount([FromBody] TricountSaveDTO dto) {
         
         //Recuperer l'user connecté
         var user = await GetConnectedUser();
