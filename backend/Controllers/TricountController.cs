@@ -123,6 +123,17 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
                     message = "tricount not found"
                 });
             }
+            bool isParticipant = tricount.Participants.Any(p => p.Id == ConnectedUser.Id);
+
+            if (ConnectedUser.Role != Role.Admin && !isParticipant)
+            {
+                return BadRequest(new {
+                    code = "P0001",
+                    details = (string?)null,
+                    hint = (string?)null,
+                    message = "access denied"
+                });
+            }
 
             var newParticipantsIds = participants.Select(p => p.Id).ToHashSet();
             //on ne peut pas enlever le createur 
