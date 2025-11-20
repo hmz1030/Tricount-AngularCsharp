@@ -76,12 +76,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         // participants -> Users
         var participants = await ConvertUsersIdsToUsers(dto.Participants ?? new List<int>());
         if (participants == null) {
-            return BadRequest(new {
-                code = "P0001",
-                details = (string?)null,
-                hint = (string?)null,
-                message = "one or more participants not found"
-            });
+            return BadRequest(Error("one or more participants not found"));
         }
 
         if(dto.Id == 0)
