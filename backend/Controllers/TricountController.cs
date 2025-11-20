@@ -451,4 +451,27 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return NoContent();
     }
 
+    [HttpPost("check_tricount_title_available")]
+    public async Task<IActionResult> check_tricount_title_available(TricountTitleCheckDTO dto) {
+        //if tricount id is none existant then its a create so its always a true
+        var c_email = User.Identity?.Name;
+
+        if(string.IsNullOrEmpty(c_email)) {
+            return Unauthorized("User not authenticated");
+        }
+        
+        var user = await context.Users.FirstOrDefaultAsync(u=> u.Email == c_email);
+        if(user == null) {
+            return Unauthorized("User not found");
+        }
+        var creator_id = user.Id;
+       
+        //next step is 
+        var answer =  !await context.Tricounts.AnyAsync(
+            t=> t.CreatorId == creator_id && 
+            t.Title.Trim().ToLower() == dto.Title.Trim().ToLower() && 
+            t.Id != dto.Id);
+        return Ok(answer);
+    }
+
 }
