@@ -66,14 +66,16 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     [Authorize]
     [HttpPost("save_tricount")]
     public async Task<ActionResult<TricountDetailsDTO>> save_tricount([FromBody] TricountSaveDTO dto) {
-        User? ConnectedUser = await GetConnectedUser();
-        if (ConnectedUser == null) {
+        
+        //Recuperer l'user connecté
+        var user = await GetConnectedUser();
+        if (user == null) {
             return Unauthorized();
         }
-        
-        // participants
+
+        // participants -> Users
         var participants = await ConvertUsersIdsToUsers(dto.Participants ?? new List<int>());
-        if(participants == null) {
+        if (participants == null) {
             return BadRequest(new {
                 code = "P0001",
                 details = (string?)null,
@@ -82,134 +84,125 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             });
         }
 
-        TricountEntity tricount;
-        if(dto.Id == 0) {
-            //Create
-            //le createur est participant
-            if (!participants.Any(p => p.Id == ConnectedUser.Id))
-                participants.Add(ConnectedUser);
+        if(dto.Id == 0)
+            return await CreateTricount(dto, user, participants);
+        
+        return await UpdateTricount(dto, user, participants);
+    }
 
-            tricount = new TricountEntity {
-                Title = dto.Title,
-                Description = dto.Description,
-                Creator = ConnectedUser,
-                CreatorId = ConnectedUser.Id,
-                Participants = participants
-            };
+    private async Task<ActionResult<TricountDetailsDTO>> CreateTricount(
+        TricountSaveDTO dto,
+        User user,
+        ICollection<User> participants) 
+    {
+        // Le createur doit être participant
+        if(!participants.Any(p => p.Id == user.Id))
+            participants.Add(user);
+        
+        var tricount = new TricountEntity {
+            Title = dto.Title,
+            Description = dto.Description,
+            Creator = user,
+            CreatorId = user.Id,
+            Participants = participants
+        };
 
-            var vr = await new TricountValidator(context).ValidateOnCreate(tricount);
-            if (!vr.IsValid) {
-                return BadRequest(new {
-                    code = "P0001",
-                    details = (string?)null,
-                    hint = (string?)null,
-                    message = string.Join("; ", vr.Errors.Select(e => e.ErrorMessage))
-                });
-            }
-            context.Tricounts.Add(tricount);
-        } else {
-            //Update
-            tricount = await context.Tricounts
-                .Include(t => t.Participants)
-                .Include(t => t.Operations)
-                    .ThenInclude(o => o.Repartitions)
-                .FirstOrDefaultAsync(t => t.Id == dto.Id);
-           
-            if(tricount == null) {
-                return BadRequest(new {
-                    code = "P0001",
-                    details = (string?)null,
-                    hint = (string?)null,
-                    message = "tricount not found"
-                });
-            }
-            bool isParticipant = tricount.Participants.Any(p => p.Id == ConnectedUser.Id);
+        var vr = await new TricountValidator(context).ValidateOnCreate(tricount);
+        if (!vr.IsValid)
+            return BadRequest(Error(string.Join("; ", vr.Errors.Select(e => e.ErrorMessage))));
 
-            if (ConnectedUser.Role != Role.Admin && !isParticipant)
-            {
-                return BadRequest(new {
-                    code = "P0001",
-                    details = (string?)null,
-                    hint = (string?)null,
-                    message = "access denied"
-                });
-            }
-
-            var newParticipantsIds = participants.Select(p => p.Id).ToHashSet();
-            //on ne peut pas enlever le createur 
-            var creatorId = tricount.CreatorId;
-            if (!newParticipantsIds.Contains(creatorId)) {
-                return BadRequest(new {
-                    code = "P0001",
-                    details = (string?)null,
-                    hint = (string?)null,
-                    message = "You cannot remove the participation of the owner of a tricount"
-                });
-            }
-
-            //on ne peut pas enlever un participant impliqué dans des depenses
-            var impliedUserIds = tricount.Operations
-                .SelectMany(o =>
-                    o.Repartitions.Select(r => r.UserId)
-                        .Append(o.InitiatorId)
-                )
-                .Distinct()
-                .ToList();
-            var removedImpliedUserIds = impliedUserIds
-                .Where(id => !newParticipantsIds.Contains(id))
-                .ToList();
-
-            if (removedImpliedUserIds.Any()) {
-                return BadRequest(new {
-                    code = "P0001",
-                    details = (string?)null,
-                    hint = (string?)null,
-                    message = "You cannot remove a participant implied in operations for this tricount"
-                });
-            }
-
-            tricount.Title = dto.Title;
-            tricount.Description = dto.Description;
-            tricount.Participants = participants;
-
-            var vr = await new TricountValidator(context).ValidateOnUpdate(tricount);
-            if (!vr.IsValid)
-            {
-                return BadRequest(new {
-                    code = "P0001",
-                    details = (string?)null,
-                    hint = (string?)null,
-                    message = string.Join("; ", vr.Errors.Select(e => e.ErrorMessage))
-                });
-            }
-        }
-
-        //sauvegarde
+        context.Tricounts.Add(tricount);
         await context.SaveChangesAsync();
-        //afichage reponse
+
+        return await CreateTricountResponse(tricount.Id);
+    }
+
+    private async Task<ActionResult<TricountDetailsDTO>> UpdateTricount(
+        TricountSaveDTO dto,
+        User user,
+        ICollection<User> newParticipants)
+    {
+        var tricount = await context.Tricounts
+            .Include(t => t.Participants)
+            .Include(t => t.Operations)
+                .ThenInclude(o => o.Repartitions)
+            .FirstOrDefaultAsync(t => t.Id == dto.Id);
+
+        if (tricount == null)
+            return BadRequest(Error("tricount not found"));
+
+        // droits = admin OU participant
+        bool isAdmin = user.Role == Role.Admin;
+        bool isParticipant = tricount.Participants.Any(p => p.Id == user.Id);
+
+        if (!isAdmin && !isParticipant)
+            return BadRequest(Error("access denied"));
+
+        // Liste IDs
+        var newIds = newParticipants.Select(p => p.Id).ToHashSet();
+
+        // 1) On ne peut pas retirer le créateur
+        if (!newIds.Contains(tricount.CreatorId))
+            return BadRequest(Error("You cannot remove the participation of the owner of a tricount"));
+
+        // 2) On ne peut pas retirer un user impliqué dans opérations
+        var impliedUsers = tricount.Operations
+            .SelectMany(o => o.Repartitions.Select(r => r.UserId).Append(o.InitiatorId))
+            .Distinct();
+
+        if (impliedUsers.Any(id => !newIds.Contains(id)))
+            return BadRequest(Error("You cannot remove a participant implied in operations for this tricount"));
+
+        // 3) Mise à jour
+        tricount.Title = dto.Title;
+        tricount.Description = dto.Description;
+        tricount.Participants = newParticipants;
+
+        var vr = await new TricountValidator(context).ValidateOnUpdate(tricount);
+        if (!vr.IsValid)
+            return BadRequest(Error(string.Join("; ", vr.Errors.Select(e => e.ErrorMessage))));
+
+        await context.SaveChangesAsync();
+
+        return await CreateTricountResponse(tricount.Id);
+    }
+
+    private async Task<ActionResult<TricountDetailsDTO>> CreateTricountResponse(int id)
+    {
         var result = await context.Tricounts
             .AsNoTracking()
             .Include(t => t.Participants)
             .Include(t => t.Operations)
                 .ThenInclude(o => o.Repartitions)
-            .FirstAsync(t => t.Id == tricount.Id);
-        
-         result.Participants = result.Participants
-            .OrderBy(p => p.Name)
-            .ToList();
+            .FirstAsync(t => t.Id == id);
 
+        result.Participants = result.Participants.OrderBy(p => p.Name).ToList();
         result.Operations = result.Operations
             .OrderByDescending(o => o.CreatedAt)
             .Select(o => {
-                // 🔹 3. Pour chaque opération, trier les répartitions par UserId (1,2,3,…)
-                o.Repartitions = o.Repartitions
-                    .OrderBy(r => r.UserId)
-                    .ToList();
+                o.Repartitions = o.Repartitions.OrderBy(r => r.UserId).ToList();
                 return o;
             })
             .ToList();
+
         return Ok(mapper.Map<TricountDetailsDTO>(result));
     }
+
+    private object Error(string msg) => new {
+        code = "P0001",
+        details = (string?)null,
+        hint = (string?)null,
+        message = msg
+    };
+
+
+
+
+
+
+
+
+
 
     private async Task<User?> GetConnectedUser() {
         var email = User.Identity?.Name;
@@ -284,12 +277,12 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         }
         var isAdmin = User.IsInRole(Role.Admin.ToString());
         if (!isAdmin) {
-        var isParticipant = await context.Participations
-            .AnyAsync(p => p.TricountId == dto.TricountId && p.UserId == user.Id);
-        
-        if (!isParticipant)
-            return Forbid();
-    }
+            var isParticipant = await context.Participations
+                .AnyAsync(p => p.TricountId == dto.TricountId && p.UserId == user.Id);
+
+            if (!isParticipant)
+                return Forbid();
+        }
         if (dto.Id == 0) {
             var newOperation = mapper.Map<Operation>(dto);
             var validator = await new OperationValidator(context).ValidateOperation(newOperation);
@@ -318,10 +311,10 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             }
 
             await context.SaveChangesAsync();
-             var result = await context.Operations
-            .AsNoTracking()
-            .Include(o => o.Repartitions)
-            .FirstAsync(o => o.Id == dto.Id);
+            var result = await context.Operations
+           .AsNoTracking()
+           .Include(o => o.Repartitions)
+           .FirstAsync(o => o.Id == dto.Id);
             return mapper.Map<OperationDTO>(result);
         }
     }
@@ -332,12 +325,12 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         var operation = await context.Operations.FindAsync(dto.Id);
         var email = User.Identity?.Name;
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-        
-        if(user == null)
+
+        if (user == null)
             return Unauthorized();
-        
+
         if (operation == null) {
-           {
+            {
                 return BadRequest(new {
                     code = "P0001",
                     details = (string?)null,
@@ -347,28 +340,28 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             }
         }
 
-        if(user.Role != Role.Admin) {
+        if (user.Role != Role.Admin) {
             var isParticipant = await context.Participations
                 .AnyAsync(p => p.TricountId == operation.TricountId && p.UserId == user.Id);
 
-            if(!isParticipant)
+            if (!isParticipant)
                 return Forbid();
         }
-    
+
         context.Operations.Remove(operation);
-        await context.SaveChangesAsync();  
+        await context.SaveChangesAsync();
 
         return NoContent();
     }
-    
+
     [HttpPost("check_email_available")]
     public async Task<bool> check_email_available(UserMailCheckDTO dto) {
-        return  !await context.Users.AnyAsync(e=> e.Email == dto.Email && e.Id != dto.Id);//true veut dire available
+        return !await context.Users.AnyAsync(e => e.Email == dto.Email && e.Id != dto.Id);//true veut dire available
     }
 
     [HttpPost("check_full_name_available")]
     public async Task<bool> check_full_name_available(UserNameCheckDTO dto) {
-        return !await context.Users.AnyAsync(e=> e.Name == dto.FullName && e.Id != dto.Id);//true veut dire available
+        return !await context.Users.AnyAsync(e => e.Name == dto.FullName && e.Id != dto.Id);//true veut dire available
     }
 
     [Authorize]
@@ -376,11 +369,11 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     public async Task<ActionResult<IEnumerable<TricountDetailsDTO>>> GetMyTricounts() {
 
         var email = User.Identity?.Name;
-        if(string.IsNullOrEmpty(email))
+        if (string.IsNullOrEmpty(email))
             return Unauthorized();
-        
+
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-        if(user == null)
+        if (user == null)
             return Unauthorized();
 
         IQueryable<TricountEntity> query = context.Tricounts
@@ -388,9 +381,9 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             .Include(t => t.Operations)
                 .ThenInclude(o => o.Repartitions);
 
-        if(user.Role != Role.Admin) {
+        if (user.Role != Role.Admin) {
             var userId = user.Id;
-            query = query.Where(t => 
+            query = query.Where(t =>
                 t.CreatorId == userId ||
                 t.Participants.Any(u => u.Id == userId)
                 );
@@ -408,18 +401,18 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         var user = await GetConnectedUser();
         if (user == null)
             return Unauthorized();
-        
+
         var tricount = await TricountEntity.GetByIdWithDetails(context, tricount_id);
-        
+
         if (tricount == null)
             return NotFound();
-        
+
         var isAdmin = User.IsInRole(Role.Admin.ToString());
         if (!isAdmin && tricount.CreatorId != user.Id && !tricount.Participants.Any(p => p.Id == user.Id))
             return Forbid();
-        
+
         var balance = tricount.CalculateBalance();
-        
+
         return Ok(balance);
     }
 
@@ -430,13 +423,13 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             .Include(t => t.Operations)
                 .ThenInclude(o => o.Repartitions)
             .FirstOrDefaultAsync(t => t.Id == dto.Id);
-        
+
         var email = User.Identity?.Name;
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-        
-        if(user == null)
+
+        if (user == null)
             return Unauthorized();
-        
+
         if (tricount == null) {
             return BadRequest(new {
                 code = "P0001",
@@ -446,18 +439,18 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             });
         }
 
-        if(user.Role != Role.Admin) {
+        if (user.Role != Role.Admin) {
             if (tricount.CreatorId != user.Id) {
                 return Forbid();
             }
         }
-    
+
         // Supprimer d'abord toutes les operations et les répartitions ( en cascade)
         context.Operations.RemoveRange(tricount.Operations);
-        
+
         // Ensuite supprimer le tricount
         context.Tricounts.Remove(tricount);
-        await context.SaveChangesAsync();  
+        await context.SaveChangesAsync();
 
         return NoContent();
     }
@@ -467,20 +460,20 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         //if tricount id is none existant then its a create so its always a true
         var c_email = User.Identity?.Name;
 
-        if(string.IsNullOrEmpty(c_email)) {
+        if (string.IsNullOrEmpty(c_email)) {
             return Unauthorized("User not authenticated");
         }
-        
-        var user = await context.Users.FirstOrDefaultAsync(u=> u.Email == c_email);
-        if(user == null) {
+
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == c_email);
+        if (user == null) {
             return Unauthorized("User not found");
         }
         var creator_id = user.Id;
-       
+
         //next step is 
-        var answer =  !await context.Tricounts.AnyAsync(
-            t=> t.CreatorId == creator_id && 
-            t.Title.Trim().ToLower() == dto.Title.Trim().ToLower() && 
+        var answer = !await context.Tricounts.AnyAsync(
+            t => t.CreatorId == creator_id &&
+            t.Title.Trim().ToLower() == dto.Title.Trim().ToLower() &&
             t.Id != dto.Id);
         return Ok(answer);
     }
