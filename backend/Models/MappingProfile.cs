@@ -45,10 +45,10 @@ public class MappingProfile : Profile
             .ForMember(d => d.Operations, o => o.Ignore());
 
         CreateMap<Operation, OperationDTO>()
-            .ForMember(d => d.Title, o => o.MapFrom(s => (s.Title ?? "").Trim()));
-
-
-
+            .ForMember(d => d.Title, o => o.MapFrom(s => (s.Title ?? "").Trim()))
+            .ForMember(d => d.Repartitions, o => o.MapFrom(
+                s => s.Repartitions.OrderBy(r => r.UserId)
+            ));
 
         CreateMap<OperationSaveDTO, Operation>();
             
@@ -67,7 +67,15 @@ public class MappingProfile : Profile
         //CreateMap<LoginTokenDTO, User>();
         
         CreateMap<TricountEntity, TricountDetailsDTO>()
-            .ForMember(d => d.Creator, o => o.MapFrom(s => s.CreatorId));
+            .ForMember(d => d.Creator,   o => o.MapFrom(s => s.CreatorId))
+            .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt))
+            .ForMember(d => d.Participants, o => o.MapFrom(
+                s => s.Participants.OrderBy(p => p.Email)
+            ))
+            .ForMember(d => d.Operations, o => o.MapFrom(
+                s => s.Operations.OrderByDescending(op => op.CreatedAt)
+            ));
+
     
     }
 }

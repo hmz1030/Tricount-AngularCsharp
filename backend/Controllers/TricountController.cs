@@ -124,10 +124,10 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
                 });
             }
 
-            //on ne peut pas enlever le createur des participants
+            var newParticipantsIds = participants.Select(p => p.Id).ToHashSet();
+            //on ne peut pas enlever le createur 
             var creatorId = tricount.CreatorId;
-            var creatorStillInParticipants = participants.Any(p => p.Id == creatorId);
-            if(!creatorStillInParticipants) {
+            if (!newParticipantsIds.Contains(creatorId)) {
                 return BadRequest(new {
                     code = "P0001",
                     details = (string?)null,
@@ -136,11 +136,32 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
                 });
             }
 
+            //on ne peut pas enlever un participant impliqué dans des depenses
+            var impliedUserIds = tricount.Operations
+                .SelectMany(o =>
+                    o.Repartitions.Select(r => r.UserId)
+                        .Append(o.InitiatorId)
+                )
+                .Distinct()
+                .ToList();
+            var removedImpliedUserIds = impliedUserIds
+                .Where(id => !newParticipantsIds.Contains(id))
+                .ToList();
+
+            if (removedImpliedUserIds.Any()) {
+                return BadRequest(new {
+                    code = "P0001",
+                    details = (string?)null,
+                    hint = (string?)null,
+                    message = "You cannot remove a participant implied in operations for this tricount"
+                });
+            }
+
             tricount.Title = dto.Title;
             tricount.Description = dto.Description;
             tricount.Participants = participants;
 
-            var vr = await new TricountValidator(context).ValidateOnCreate(tricount);
+            var vr = await new TricountValidator(context).ValidateOnUpdate(tricount);
             if (!vr.IsValid)
             {
                 return BadRequest(new {
@@ -350,19 +371,23 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
         if(user == null)
             return Unauthorized();
-        var userId = user.Id;
 
-        var tricounts = await context.Tricounts
+        IQueryable<TricountEntity> query = context.Tricounts
             .Include(t => t.Participants)
             .Include(t => t.Operations)
-            .ThenInclude(o => o.Repartitions)
-            .Where(t =>
-                t.CreatorId == userId || 
+                .ThenInclude(o => o.Repartitions);
+
+        if(user.Role != Role.Admin) {
+            var userId = user.Id;
+            query = query.Where(t => 
+                t.CreatorId == userId ||
                 t.Participants.Any(u => u.Id == userId)
-            )
+                );
+        }
+        var tricounts = await query
             .OrderByDescending(t => t.CreatedAt)
             .ToListAsync();
-        
+
         var dto = mapper.Map<IEnumerable<TricountDetailsDTO>>(tricounts);
         return Ok(dto);
     }

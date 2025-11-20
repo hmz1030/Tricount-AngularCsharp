@@ -87,7 +87,7 @@ public class OperationConfiguration : IEntityTypeConfiguration<Operation>
             Id = 4,
             Title = "Apéros",
             TricountId = 4,
-            Amount = 31.90m, // arrondi à 2 décimales
+            Amount = 31.897456217m, // arrondi à 2 décimales
             OperationDate = new DateOnly(2024, 10, 13),
             InitiatorId = 1,
             CreatedAt = new DateTime(2024, 10, 13, 23, 51, 20)
