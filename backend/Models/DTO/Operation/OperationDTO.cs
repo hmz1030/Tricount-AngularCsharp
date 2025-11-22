@@ -23,5 +23,5 @@ public class OperationDTO
     public DateTime CreatedAt { get; set; }
     
     [JsonPropertyName("repartitions")]
-    public List<RepartitionDTO> Repartitions { get; set; } = new List<RepartitionDTO>();
+    public ICollection<RepartitionDTO> Repartitions { get; set; } = new List<RepartitionDTO>();
 }
