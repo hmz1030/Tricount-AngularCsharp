@@ -126,21 +126,21 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         if (tricount == null)
             return BadRequest(Error("tricount not found"));
 
-        // droits = admin OU participant
+       
         bool isAdmin = user.Role == Role.Admin;
         bool isParticipant = tricount.Participants.Any(p => p.Id == user.Id);
 
         if (!isAdmin && !isParticipant)
             return BadRequest(Error("access denied"));
 
-        // Liste IDs
+        // Liste ID
         var newIds = newParticipants.Select(p => p.Id).ToHashSet();
 
-        // 1) On ne peut pas retirer le créateur
+        // On ne peut pas retirer le créateur
         if (!newIds.Contains(tricount.CreatorId))
             return BadRequest(Error("You cannot remove the participation of the owner of a tricount"));
 
-        // 2) On ne peut pas retirer un user impliqué dans opérations
+        // On ne peut pas retirer un user impliqué dans opérations
         var impliedUsers = tricount.Operations
             .SelectMany(o => o.Repartitions.Select(r => r.UserId).Append(o.InitiatorId))
             .Distinct();
@@ -148,7 +148,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         if (impliedUsers.Any(id => !newIds.Contains(id)))
             return BadRequest(Error("You cannot remove a participant implied in operations for this tricount"));
 
-        // 3) Mise à jour
+        // Mise à jour
         tricount.Title = dto.Title;
         tricount.Description = dto.Description;
         tricount.Participants = newParticipants;
@@ -374,7 +374,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         IQueryable<TricountEntity> query = context.Tricounts
             .Include(t => t.Participants)
             .Include(t => t.Operations)
-                .ThenInclude(o => o.Repartitions);
+                .ThenInclude(o=>o.Repartitions.OrderBy(r=>r.UserId)); // tri par id pcq ya warning dans les test;
 
         if (user.Role != Role.Admin) {
             var userId = user.Id;

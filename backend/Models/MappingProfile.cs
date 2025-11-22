@@ -46,9 +46,7 @@ public class MappingProfile : Profile
 
         CreateMap<Operation, OperationDTO>()
             .ForMember(d => d.Title, o => o.MapFrom(s => (s.Title ?? "").Trim()))
-            .ForMember(d => d.Repartitions, o => o.MapFrom(
-                s => s.Repartitions.OrderBy(r => r.UserId)
-            ));
+            .ForMember(d => d.Repartitions, o => o.MapFrom(s => s.Repartitions));
 
         CreateMap<OperationSaveDTO, Operation>();
             
