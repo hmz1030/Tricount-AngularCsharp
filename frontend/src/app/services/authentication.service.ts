@@ -46,6 +46,7 @@ export class AuthenticationService {
 
     logout() {
         sessionStorage.removeItem('currentUser');
+        sessionStorage.removeItem('authToken');
         this.currentUser = undefined;
     }
 }
