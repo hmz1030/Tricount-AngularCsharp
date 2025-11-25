@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { BASE_URL } from 'src/main';
 import { User } from '../models/user';
 import { plainToInstance } from 'class-transformer';  
@@ -38,6 +38,10 @@ export class AuthenticationService {
             }
             return response;
         }));
+    }
+    signup(email: string, password: string, fullName: string, iban?: string): Observable<LoginResponse> {
+        return this.http.post<LoginResponse>(`${this.baseUrl}rpc/signup`, { email, password, full_name : fullName, iban })
+            .pipe(switchMap(res=>this.login(email,password)));
     }
 
     logout() {
