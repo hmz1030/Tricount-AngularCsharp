@@ -31,6 +31,7 @@ export class AuthenticationService {
     return this.http.post<LoginResponse>(`${this.baseUrl}rpc/login`, { email, password })
         .pipe(map(response => {
             if (response && response.token) {
+                sessionStorage.setItem('authToken', response.token);
                 const user = plainToInstance(User, response);
                 sessionStorage.setItem('currentUser', JSON.stringify(user));
                 this.currentUser = user;
