@@ -288,8 +288,9 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             await context.SaveChangesAsync();
             var result = await context.Operations
           .AsNoTracking()
-          .Include(o => o.Repartitions)
+          //.Include(o => o.Repartitions) ne pas inclure les repartitions pour respecter l'ordre!!
           .FirstAsync(o => o.Id == newOperation.Id);
+          result.Repartitions = dto.Repartitions.Select(r=> new Repartition { OperationId = result.Id, UserId = r.UserId, Weight = r.Weight }).ToList();
             return mapper.Map<OperationDTO>(result);
         } else {
             var operation = await Operation.GetByIdWithRepartitions(context, dto.Id);
