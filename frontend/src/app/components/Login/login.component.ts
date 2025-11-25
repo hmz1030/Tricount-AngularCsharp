@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormControl, FormGroup, FormGroupDirective, Validators} from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
@@ -19,9 +19,10 @@ export class LoginComponent implements OnInit{
     password! : FormControl;
     loginForm!: FormGroup;
 
-    constructor(private authService: AuthenticationService){
-
-    }
+    constructor(
+        private authService: AuthenticationService,
+        private router: Router
+    ){}
 
     ngOnInit() {
         this.email = new FormControl('',Validators.required);
@@ -44,6 +45,7 @@ export class LoginComponent implements OnInit{
             next: (response) => {
                 console.log("Login Succesful!",response);
                 console.log("Token",response.token);
+                this.router.navigate(['tricounts']);
             },
             error: (error) => {
                 console.error("Login failed:", error);
