@@ -1,4 +1,5 @@
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import 'reflect-metadata';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_ID, enableProdMode, InjectionToken } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
@@ -6,6 +7,7 @@ import { provideRouter } from '@angular/router';
 import { AppComponent } from './app/components/app/app.component';
 import { environment } from './environments/environment';
 import { appRoutes } from './app/routing/app.routing';
+import { AuthInterceptor } from './app/core/auth.interceptor';
 
 export const BASE_URL = new InjectionToken<string>('BASE_URL');
 
@@ -19,6 +21,11 @@ const providers = [
     provideAnimationsAsync(),
     { provide: APP_ID, useValue: 'prid-tuto' },
     { provide: BASE_URL, useFactory: getBaseUrl, deps: [] },
+    {
+        provide: HTTP_INTERCEPTORS,
+        useClass: AuthInterceptor,
+        multi: true
+    }
 ];
 
 if (environment.production) {

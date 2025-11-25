@@ -1,0 +1,31 @@
+<mat-list>
+
+  @for (t of tricounts; track t.id) {
+    <mat-list-item>
+      <mat-icon matListIcon>folder</mat-icon>
+
+      <div matLine class="title">
+        {{ t.title }}
+      </div>
+
+      <div matLine class="date">
+        {{ t.created_at | date:'medium' }}
+        <!-- ou createdAt selon ton modèle TS -->
+      </div>
+
+      <button mat-icon-button color="primary">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </mat-list-item>
+
+    <mat-divider></mat-divider>
+  }
+
+  @empty {
+    <div class="empty">
+      <mat-icon>info</mat-icon>
+      Aucun tricount trouvé.
+    </div>
+  }
+
+</mat-list>

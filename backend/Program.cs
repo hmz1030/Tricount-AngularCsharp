@@ -78,7 +78,22 @@ builder.Services.AddAuthentication(x => {
         };
     });
 
+// Ajouter CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
+
+// Activer CORS
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
@@ -92,6 +107,7 @@ using var context = scope.ServiceProvider.GetService<TricountContext>();
 if (app.Environment.IsDevelopment()) {
     context?.Database.EnsureDeleted();
 }
+
 
 context?.Database.EnsureCreated();
 
