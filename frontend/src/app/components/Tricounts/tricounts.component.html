@@ -1,31 +1,81 @@
-<mat-list>
+<!-- HEADER BLEU -->
+<header class="tc-header">
+  <!-- Icône menu à gauche -->
+  <button class="tc-icon-btn" (click)="toggleSidePanel()">
+    <mat-icon>menu</mat-icon>
+  </button>
 
-  @for (t of tricounts; track t.id) {
-    <mat-list-item>
-      <mat-icon matListIcon>folder</mat-icon>
+  <span class="tc-header-title">Your tricounts</span>
 
-      <div matLine class="title">
-        {{ t.title }}
+  <span class="tc-header-spacer"></span>
+
+  <!-- Icône refresh à droite -->
+  <button class="tc-icon-btn" (click)="loadTricounts()">
+    <!-- Chemin à adapter selon où tu mets tes SVG -->
+    <img src="assets/icons/refresh.svg" alt="Refresh" class="tc-icon-img" />
+  </button>
+
+  <!-- Icône add à droite -->
+  <button class="tc-icon-btn" (click)="onAddTricount()">
+    <img src="assets/icons/add.svg" alt="Add" class="tc-icon-img" />
+  </button>
+</header>
+
+<!-- PANNEAU LATERAL (40% largeur) -->
+<div class="tc-sidepanel" [class.open]="isSidePanelOpen">
+  <div class="tc-sidepanel-header">
+    <span>Menu</span>
+    <button class="tc-icon-btn" (click)="closeSidePanel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <ul class="tc-sidepanel-list">
+    <li>
+      <a [routerLink]="['/tricounts']" (click)="closeSidePanel()">Home</a>
+    </li>
+    <li>
+      <button class="tc-link-btn" (click)="logout()">Logout</button>
+    </li>
+  </ul>
+</div>
+
+<!-- OVERLAY sombre quand le panneau est ouvert -->
+<div class="tc-overlay" *ngIf="isSidePanelOpen" (click)="closeSidePanel()"></div>
+
+<!-- CONTENU DE LA PAGE -->
+<div class="tc-content">
+  <div class="tricounts-container">
+    @for (t of tricounts; track t.id) {
+      <mat-card class="tricount-card">
+        <div class="tricount-row">
+          <div class="tricount-left">
+            <div class="tricount-title">
+              {{ t.title }}
+            </div>
+
+            <div class="tricount-subtitle">
+              {{ t.description || 'No description' }}
+            </div>
+
+            <div class="tricount-meta">
+              by Boris
+            </div>
+          </div>
+
+          <div class="tricount-right">
+            you're alone
+            <!-- plus tard: "with 3 friends" etc -->
+          </div>
+        </div>
+      </mat-card>
+    }
+
+    @empty {
+      <div class="empty">
+        <mat-icon>info</mat-icon>
+        Aucun tricount trouvé.
       </div>
-
-      <div matLine class="date">
-        {{ t.created_at | date:'medium' }}
-        <!-- ou createdAt selon ton modèle TS -->
-      </div>
-
-      <button mat-icon-button color="primary">
-        <mat-icon>chevron_right</mat-icon>
-      </button>
-    </mat-list-item>
-
-    <mat-divider></mat-divider>
-  }
-
-  @empty {
-    <div class="empty">
-      <mat-icon>info</mat-icon>
-      Aucun tricount trouvé.
-    </div>
-  }
-
-</mat-list>
+    }
+  </div>
+</div>

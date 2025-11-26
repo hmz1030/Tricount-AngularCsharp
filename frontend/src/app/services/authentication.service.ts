@@ -39,6 +39,7 @@ export class AuthenticationService {
             return response;
         }));
     }
+    
     signup(email: string, password: string, fullName: string, iban?: string): Observable<LoginResponse> {
         return this.http.post<LoginResponse>(`${this.baseUrl}rpc/signup`, { email, password, full_name : fullName, iban })
             .pipe(switchMap(res=>this.login(email,password)));
