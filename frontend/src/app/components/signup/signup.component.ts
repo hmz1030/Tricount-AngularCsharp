@@ -39,9 +39,15 @@ export class SignupComponent {
         private router: Router,
         public authService: AuthenticationService
     ) {
-        this.ctlEmail = this.fb.control('', [Validators.required, Validators.email]);
-        this.ctlFullName = this.fb.control('', [Validators.required, Validators.minLength(3)]);
-        this.ctlPassword = this.fb.control('', [Validators.required, Validators.minLength(8)]);
+        this.ctlEmail = this.fb.control('', [Validators.required, Validators.email], [this.emailUsed()]);
+        this.ctlFullName = this.fb.control('', [Validators.required, Validators.minLength(3)], [this.fullNameUsed()]);
+        this.ctlPassword = this.fb.control('',
+            [Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(/^(?=.*[!@#$%^&*])/),
+            Validators.pattern(/^(?=.*[A-Z])/),
+            Validators.pattern(/^(?=.*[0-9])/)
+            ]);
         this.ctlPasswordConfirm = this.fb.control('', [Validators.required]);
         this.ctlIban = this.fb.control('');
         this.frm = this.fb.group({
@@ -52,7 +58,7 @@ export class SignupComponent {
             iban: this.ctlIban
         }, { validators: this.crossValidations });
     }
-     emailUsed(): AsyncValidatorFn {
+    emailUsed(): AsyncValidatorFn {
         let timeout: NodeJS.Timeout;
         return (ctl: AbstractControl) => {
             clearTimeout(timeout);
@@ -99,22 +105,22 @@ export class SignupComponent {
             : { passwordNotConfirmed: true };
     }
     signup() {
-    if (this.frm.invalid) {
-      return;
+        if (this.frm.invalid) {
+            return;
+        }
+
+        const { email, password, fullName, iban } = this.frm.value;
+
+        this.authService.signup(email, password, fullName, iban || undefined).subscribe({
+            next: () => {
+                if (this.authService.currentUser) {
+                    this.router.navigate(['/tricounts']);
+                }
+            },
+            error: err => {
+                console.error('Erreur signup:', err);
+            }
+        });
     }
 
-    const { email, password, fullName, iban } = this.frm.value;
-
-    this.authService.signup(email, password, fullName, iban || undefined).subscribe({
-      next: () => {
-        if (this.authService.currentUser) {
-          this.router.navigate(['/tricounts']);
-        }
-      },
-      error: err => {
-        console.error('Erreur signup:', err);
-      }
-    });
-  }
-    
 }
