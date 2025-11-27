@@ -50,4 +50,11 @@ export class AuthenticationService {
         sessionStorage.removeItem('authToken');
         this.currentUser = undefined;
     }
+    isEmailAvailable(email: string): Observable<boolean> {
+        return this.http.post<boolean>(`${this.baseUrl}rpc/check_email_available`, { email });
+    }
+
+    isFullNameAvailable(fullName: string): Observable<boolean> {
+        return this.http.post<boolean>(`${this.baseUrl}rpc/check_full_name_available`, { fullName });
+    }
 }
