@@ -52,6 +52,45 @@ export class SignupComponent {
             iban: this.ctlIban
         }, { validators: this.crossValidations });
     }
+     emailUsed(): AsyncValidatorFn {
+        let timeout: NodeJS.Timeout;
+        return (ctl: AbstractControl) => {
+            clearTimeout(timeout);
+            const email = ctl.value;
+            return new Promise(resolve => {
+                timeout = setTimeout(() => {
+                    if (email.length === 0) {
+                        resolve(null);
+                    } else {
+                        this.authService.isEmailAvailable(email).subscribe(available => {
+                            resolve(available ? null : { emailUsed: true });
+                        });
+                    }
+                }, 300);
+            });
+        };
+    }
+
+    // validator, Grâce au setTimeout et clearTimeout, on ne déclenche le service que 
+    // s'il n'y a pas eu de frappe depuis 300 ms.
+    fullNameUsed(): AsyncValidatorFn {
+        let timeout: NodeJS.Timeout;
+        return (ctl: AbstractControl) => {
+            clearTimeout(timeout);
+            const fullName = ctl.value;
+            return new Promise(resolve => {
+                timeout = setTimeout(() => {
+                    if (fullName.length === 0) {
+                        resolve(null);
+                    } else {
+                        this.authService.isFullNameAvailable(fullName).subscribe(available => {
+                            resolve(available ? null : { fullNameUsed: true });
+                        });
+                    }
+                }, 300);
+            });
+        };
+    }
     crossValidations(group: AbstractControl): ValidationErrors | null {
         const password = group.get('password');
         const passwordConfirm = group.get('passwordConfirm');
