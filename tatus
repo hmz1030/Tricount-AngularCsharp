@@ -1,0 +1,576 @@
+[33mcommit 97c82b67fbb44e007929634ce2fae3f02cc3a4c7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m)[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Wed Nov 26 16:02:32 2025 +0100
+
+    feat(view_tricounts): affichage du menu et amelioration de la page avec du css
+
+[33mcommit 9dd0371e1cbd03b4c2d31cc86dc234cef839aa11[m[33m ([m[1;31morigin/develop[m[33m)[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 25 19:06:09 2025 +0100
+
+    fix: suppression des composants de base
+
+[33mcommit 4e17509645292c53bef284aed552e8592319ce8f[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Tue Nov 25 19:03:43 2025 +0100
+
+    feat(logout) : remove le token de authToken
+
+[33mcommit 4d5152ae7abb5f859f39834c1b7b4939da665e5c[m
+Merge: 52e06a0 0da1da3
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 25 18:43:39 2025 +0100
+
+    Merge branches 'develop' and 'develop' of https://bitbucket.org/benoit_penelle/prid-2526-a06 into develop
+
+[33mcommit 52e06a0a70a732f453a21c8d6d75dd3945ef04ee[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 25 18:42:08 2025 +0100
+
+    fix: correction
+
+[33mcommit 0da1da308f64cbb5f7b66945e71739a120231623[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Tue Nov 25 18:18:03 2025 +0100
+
+    feat(signup) : création du service signup
+
+[33mcommit d3094a7dcf6b3bc7b2e0ac6998d8eb76a0183886[m
+Merge: 316264c 4f8df98
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 25 17:44:33 2025 +0100
+
+    Merge branch 'view_tricounts' into develop
+
+[33mcommit 4f8df9843bb81287b3eb465168288a0ed5a4a889[m[33m ([m[1;32mview_tricounts[m[33m)[m
+Merge: bb1fb39 316264c
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 25 17:43:28 2025 +0100
+
+    merge
+
+[33mcommit 316264c2349e028a953491df9786f0d4ee14b555[m
+Merge: 5096fd9 3905d67
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Tue Nov 25 16:52:04 2025 +0100
+
+    Merge branch 'develop' of https://bitbucket.org/benoit_penelle/prid-2526-a06 into develop
+
+[33mcommit 5096fd91118612083938c2094e66752fb3e4fc38[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Tue Nov 25 16:50:54 2025 +0100
+
+    feat(LoginComponent,authenticateservice): une premiere version
+
+[33mcommit bb1fb390efe197149d726b8825ced1288f169415[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 25 16:18:48 2025 +0100
+
+    feat(view_tricounts): creation du modele service et vue
+
+[33mcommit 3905d676a2e08f9ccd7e1b8f47e970b15d35e9cd[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Mon Nov 24 16:26:02 2025 +0100
+
+    ordre des repartitons save_operation réglé
+
+[33mcommit bd488000e6f3348b39d6470d84b5b6f6fd50a799[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Mon Nov 24 15:53:43 2025 +0100
+
+    feat(view_tricounts): creation du modele Tricount
+
+[33mcommit 3f7322200c4749cff2ebb95a1c8b88b0b91d1ca9[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sat Nov 22 17:10:19 2025 +0100
+
+    feat(operation_dto) : icollection au lieu de list
+
+[33mcommit 84e367a1d97cf83132ba30f8ace0684b07a58d63[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sat Nov 22 16:35:01 2025 +0100
+
+    fix(test) : reglage des warning saveoperation/get_my_tricounts
+
+[33mcommit 69dd96c2b871c800bc73a5977e8dc20af3e770df[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Thu Nov 20 17:38:22 2025 +0100
+
+    fix(save_tricount): simplification d'une erreur
+
+[33mcommit 887c968edb975beedb3b404d496eb92b7b8157de[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Thu Nov 20 17:36:52 2025 +0100
+
+    fix(save_tricount): correction titre
+
+[33mcommit b6803f24504233cf49e69b7244e8a087bcbd28fa[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Thu Nov 20 17:34:53 2025 +0100
+
+    fix(save_tricount): factorisation de la methode en separant la logique
+
+[33mcommit 5085d4926c7dc03264ad33075d92d2255e6ee813[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Thu Nov 20 17:10:53 2025 +0100
+
+    fix: dernière correction dans save tricount pour ne pas permettre que quelqu'un qui n'est pas participant puisse editer le tricount
+
+[33mcommit d84b26df3f8523fa31f06dbc82e33fd0a59cf220[m
+Merge: f913770 13140f4
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Thu Nov 20 16:45:43 2025 +0100
+
+    Merge branch 'develop' of https://bitbucket.org/benoit_penelle/prid-2526-a06 into develop
+
+[33mcommit f9137709c7661bf3ebe9cd5ef52c1a8285c14a0d[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Thu Nov 20 16:45:35 2025 +0100
+
+    fix: correction de save_tricount et get_my_tricounts pour passer les test
+
+[33mcommit 13140f4a2033ba2b636a9a05bb0a7137ce73a187[m
+Merge: 06519af 155ffc1
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Thu Nov 20 16:32:11 2025 +0100
+
+    feat(ControllerTricount): endpoint check
+
+[33mcommit 06519aff086b10239f19b0045a5dd518895b725f[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Thu Nov 20 16:19:52 2025 +0100
+
+    feat(TricountController): fin du check tricount title available
+
+[33mcommit 155ffc12b9a9518ce01441e422040311498e9031[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Thu Nov 20 14:53:00 2025 +0100
+
+    fix: suppression classe inutile
+
+[33mcommit d1f426ada26b53da686e298235edd2c61512b1fe[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Thu Nov 20 13:37:49 2025 +0100
+
+    feat(TricountController): fin des endpoints check email et fullname
+
+[33mcommit ce40bdd16818e70e0bda582d42863a1916849425[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 19 22:47:58 2025 +0100
+
+    feat(tricount_balance) : arrondi a deux decimal
+
+[33mcommit cecf1811657a5424d88e2caeb12e87f3155d8433[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 19 22:36:14 2025 +0100
+
+    feat(tricount_balance) : endpoint balance
+
+[33mcommit 5022af81009e76203242290e567088d94fe77cf9[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 19 22:21:47 2025 +0100
+
+    refactor(save_operation) : methode statique dans le model
+
+[33mcommit e7afecdd050ee68edeadfd7b59006e53eb4c8a6d[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 19 14:11:05 2025 +0100
+
+    feat(delete_tricount) : endpoint complet
+
+[33mcommit 3299d54e8cee01f440959bddfb87592259052ef9[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 18 13:56:44 2025 +0100
+
+    feat(save_tricount): affichage json dans le bon ordre
+
+[33mcommit 170b14a9dfbeda68c779c8bcff50186076efebda[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 18 13:42:33 2025 +0100
+
+    feat(save_tricount): implementation du save tricount avec create et update
+
+[33mcommit daed3637f0649f0721289328649c7aba17188ccc[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 18 12:09:05 2025 +0100
+
+    feat(delete_operation): verification si user connecté et s'il n'est pas admin il doit etre participant
+
+[33mcommit b1d83872a64216fa8005e90e42b4627e46951209[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 18 11:55:05 2025 +0100
+
+    fix: suppression des repartitions en cascade lors de delete_operation
+
+[33mcommit 39cdec8b4040e306678d61442551e82459cfefe3[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 18 11:39:45 2025 +0100
+
+    feat(delete_operation):implementation de delete operation
+
+[33mcommit c423e505a9d0446cfb4a3f3e9ba3996f694aec72[m
+Merge: 70f0b9e 3b52640
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 18 11:19:49 2025 +0100
+
+    Merge branch 'feat_get_my_tricounts' into develop
+
+[33mcommit 3b52640d1349898c37f6685fc25ef7b0f7aecb19[m[33m ([m[1;32mfeat_get_my_tricounts[m[33m)[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Nov 18 11:17:01 2025 +0100
+
+    fix: modification de claims
+
+[33mcommit 70f0b9e47b61b78ad2068aa5306581ef51983ebd[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Tue Nov 18 10:56:54 2025 +0100
+
+    feat(TricountController): une correction des 2 endpoints check ajout du parametre userid
+
+[33mcommit b266b1c6ab8dd5b8172b24a1158d0b601368e048[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Tue Nov 18 10:51:51 2025 +0100
+
+    feat(TricountController): les 2 endpoints check: email, fullname.
+
+[33mcommit 3313abafa7c8d6e9496236c7d443770d922c8305[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Tue Nov 18 01:47:20 2025 +0100
+
+    fix(tokenhelper) : claim name et pas email
+
+[33mcommit cec1260a9d1fa314f76a15cfa0bebd391323e9e7[m[33m ([m[1;31morigin/feat_get_my_tricounts[m[33m)[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Mon Nov 17 22:25:38 2025 +0100
+
+    feat(get_my_tricounts): implementation de l'endpoint get_my_tricounts
+
+[33mcommit e8511ec71cb9650dd4882c6bf263c82f260aaa85[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sat Nov 15 22:56:52 2025 +0100
+
+    feat(endpoint) : correction save operation
+
+[33mcommit dcae96c781e3685a8926f6efe6d924a42720671f[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sat Nov 15 17:38:33 2025 +0100
+
+    feat(validator): meilleur validations pour operations
+
+[33mcommit 4a191d0fc6d37032f133751bc6c0cde13efa35b8[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Sat Nov 15 15:56:17 2025 +0100
+
+    feat(endpoint): ajout de validator dans save_tricount
+
+[33mcommit e63ec89473d64f9d55706aae5fa89a8b412b6154[m
+Merge: 62ede9c 52d0302
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Sat Nov 15 15:45:02 2025 +0100
+
+    fix merge
+
+[33mcommit 62ede9cefc7211e85312a7b829ec4d0adae88c7a[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Sat Nov 15 15:40:58 2025 +0100
+
+    feat(Enpoint): save_tricount un amelioration et correction
+
+[33mcommit 52d03029982f622cffabd920f96c297aab7b9c71[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 12 19:03:23 2025 +0100
+
+    feat(endpoint) : delete_operation sans regle d'accès
+
+[33mcommit 1feeaa958a42c0ed8aa546b689e6bb7f460b7456[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 12 18:01:27 2025 +0100
+
+    feat(operation validation) : repartition not empty
+
+[33mcommit 5ee2177db175fcf0f4e6df8de75acb14a401e60e[m
+Merge: 4fb7e5b 80e5824
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 12 16:27:25 2025 +0100
+
+    Merge branch 'develop' of https://bitbucket.org/benoit_penelle/prid-2526-a06 into develop
+
+[33mcommit 4fb7e5b8dab6334c87a410f9ac78852dbef10d48[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 12 16:26:20 2025 +0100
+
+    feat(endpoint) : save_operation
+
+[33mcommit 80e5824b1a86fd5d0dba497f9a020e20a3bc6e02[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Mon Nov 10 17:45:32 2025 +0100
+
+    feat(Controller): convert ids to users
+
+[33mcommit 6d536229be70c853ad98fa2cf5177e8e0d02d70a[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sun Nov 9 23:21:40 2025 +0100
+
+    feat(mapping) : mapping des operations et repartitions
+
+[33mcommit c5e5a3c4b27dc9940d00fd08acb3c72c2b5a2074[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sat Nov 8 17:08:50 2025 +0100
+
+    feat(endpoint): get_user_data
+
+[33mcommit 6d94dd9cefff236f8188806b27b8547b406e1316[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sat Nov 8 16:24:25 2025 +0100
+
+    refactor du login + hashage des mdp des seed data
+
+[33mcommit 3fb44c96dfcca4ee7a6005607473b1ca6ce195c3[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Thu Nov 6 10:59:08 2025 +0100
+
+    feat(Login): implementation de l'endpoint Login et du Token JWT
+
+[33mcommit b7d816f30f5273ae894a6c8be0a0177ff1189287[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 5 16:52:46 2025 +0100
+
+    refactor des dto avec les bons noms JSON
+
+[33mcommit 9b7bc1970b5627d7394a6c89dcf32038299ef25f[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 5 01:47:48 2025 +0100
+
+    feat(endpoint) : get_all_users mais allowanonymgit add .
+
+[33mcommit 616744820f1072ea8e88956326ac83ab97bb0c98[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Nov 5 01:27:26 2025 +0100
+
+    feat(manytomanyUserTricount) : solution de la FAQ
+
+[33mcommit 4476c7fe7a3e65f1279c18c82876ddee71323bb6[m
+Merge: 1de927a bd7688f
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Mon Nov 3 17:13:14 2025 +0100
+
+    Merge branch 'develop' of https://bitbucket.org/benoit_penelle/prid-2526-a06 into develop
+
+[33mcommit 1de927a5eafae007a532bc6499e98301c7a9f47d[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Mon Nov 3 17:12:43 2025 +0100
+
+    feat(validator) : repartiton validator
+
+[33mcommit bd7688f913f110253caf5f96b035b7f1f713b92b[m
+Merge: 7023ec5 14ea1b0
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Mon Nov 3 16:41:27 2025 +0100
+
+    Merge branch 'develop' of https://bitbucket.org/benoit_penelle/prid-2526-a06 into develop
+
+[33mcommit 7023ec52559f8b696c540c66206e339ce8630ace[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Mon Nov 3 16:40:56 2025 +0100
+
+    feat(Mapping): operation, repartition
+
+[33mcommit 14ea1b0973942342e58ad36267662b15601ecb58[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Mon Nov 3 16:39:40 2025 +0100
+
+    operation validator
+
+[33mcommit ebb2a4e05fb14dc19baf87b6b41b2168d0d5d015[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Mon Nov 3 16:13:22 2025 +0100
+
+    feat(DTO): rajout des DTO operation et repartition
+
+[33mcommit 959621ba6fe2551aa68563545a16592e986d7174[m
+Merge: 25b3bef d199e90
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Sun Nov 2 10:10:15 2025 +0100
+
+    fix: resolution des conflit
+
+[33mcommit d199e90591aab66b1af2d4d5e543649cd44f94d9[m
+Merge: 39bfb0f 3fd096d
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Sat Nov 1 22:08:18 2025 +0100
+
+    fix : resolution de conflits
+
+[33mcommit 3fd096d29eb62c47a05b907ef370e45784ac9445[m[33m ([m[1;31morigin/feat_operation[m[33m, [m[1;32mfeat_operation[m[33m)[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Sat Nov 1 22:05:25 2025 +0100
+
+    feat(operation): creation du model Repartitions et de la configuration pour EF
+
+[33mcommit 7e26e3b9a7f8319ac8a3a22a1d66b13e220ceedc[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Sat Nov 1 21:41:29 2025 +0100
+
+    feat(operation): creation du model operation et de la configuration du model de données pour EF
+
+[33mcommit 25b3befc95139b3b5a8bfa52e1bda14035cbb0cd[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Sat Nov 1 16:53:43 2025 +0100
+
+    feat(User): rajout de l'attribut token dans user
+
+[33mcommit 89fdf003ae0af22c6adcb5184d452920f133186a[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Thu Oct 30 19:43:46 2025 +0100
+
+    feat(TricountController): une premiere vresion du endpoint save tricount qq probleme a corriger
+
+[33mcommit 39bfb0f298528f28f228318330d27802d2d8e36f[m
+Merge: 5d863ef f32472d
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Wed Oct 29 15:17:50 2025 +0100
+
+    fix(merge_conflit)
+
+[33mcommit 5d863ef46abd5d512eaf581077506c21fde5b003[m
+Author: Aly Samir <2208alsamirmahmoudib@student.epfc.eu>
+Date:   Wed Oct 29 14:03:45 2025 +0100
+
+    feaet(TricountDTOs): une premiere attribution des attributs des DTO
+
+[33mcommit f32472d62e307d8f11eb32722d760b15a1c50972[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Oct 29 01:32:40 2025 +0100
+
+    dto mapping pour tricount avec la liste des participants
+
+[33mcommit f6d4c14a896a9b2a51aabf8bfbbd9a331320e272[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Oct 29 00:55:16 2025 +0100
+
+    participation validator
+
+[33mcommit 6cec1bb741e61df8dd66425c6d470341686503c1[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Oct 29 00:30:11 2025 +0100
+
+    participation config EF
+
+[33mcommit e7b969706ad4e7714d45d416016c9a1f0c83a2ca[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Wed Oct 29 00:01:18 2025 +0100
+
+    model participation
+
+[33mcommit c2ee4adefc016ae45be30b2018148dee56415953[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Oct 28 19:28:45 2025 +0100
+
+    feat(signup): mapping du dto pour envoyer que les données necessaires pour le signup
+
+[33mcommit 094bb01cedbc94c7315bbdf62f4eb0b95e72a1c3[m
+Merge: 8ae9c24 b571f3e
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Oct 28 17:26:38 2025 +0100
+
+    Merge branch 'signup_validators' into develop
+
+[33mcommit b571f3e4c065cd319ca8960e77bb01c42f8cc766[m[33m ([m[1;31morigin/signup_validators[m[33m, [m[1;32msignup_validators[m[33m)[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Oct 28 17:25:16 2025 +0100
+
+    feat(signup): hachage du mot de passe avec la methode utilitaire dans TokenHelper
+
+[33mcommit 8ae9c24f331ba37cbc29a689de174c02fa1dab08[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Tue Oct 28 02:10:04 2025 +0100
+
+    model tricount, config,validators, et creation files dto
+
+[33mcommit 2f8c20af042ab742b3c59b959d24c85570ee1d66[m
+Merge: b1aa512 0483466
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Mon Oct 27 19:11:36 2025 +0100
+
+    Merge branch 'signup_validators' into develop
+
+[33mcommit 0483466d402518aa7419cff601d756abd12e4f41[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Mon Oct 27 18:55:04 2025 +0100
+
+    feat(signup): implementation de l'endpoint POST signup et des validateurs
+
+[33mcommit b1aa5127af00d534351cf64b7e64669239227605[m
+Merge: 2706e8b 1ec252c
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Mon Oct 27 00:12:16 2025 +0100
+
+    Merge branch 'develop' of https://bitbucket.org/benoit_penelle/prid-2526-a06 into develop
+
+[33mcommit 2706e8b9618bbe96994ee17a81b13d4b0c562810[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Mon Oct 27 00:11:39 2025 +0100
+
+    feat(develop): refactorisation et implementation de l'enpoint sans validateurs
+
+[33mcommit 1ec252cf985276049725c5e9989c2c5422859397[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sun Oct 26 22:13:40 2025 +0100
+
+    diagramme de classe !
+
+[33mcommit beca8c54ba855c56d1dd7af4e6ea584c8dedff1a[m
+Merge: a94e592 d1790a3
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sun Oct 26 21:54:01 2025 +0100
+
+    Merge branch 'develop' of https://bitbucket.org/benoit_penelle/prid-2526-a06 into develop
+
+[33mcommit a94e5921bea5881f5ef65332ce2bfeb5f2695006[m
+Author: Hamza Stitou <hamzastitou11s@hotmail.com>
+Date:   Sun Oct 26 21:53:11 2025 +0100
+
+    diagramme de classe
+
+[33mcommit d1790a3877cebe7130b0f354ed27f312cea4ba84[m
+Merge: 056cef5 0a2598f
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Sun Oct 26 21:31:24 2025 +0100
+
+    Merge branch 'feat_user_backend' into develop
+
+[33mcommit 0a2598f2132f86c8330dafb6e7c2b14a4d8f750e[m[33m ([m[1;31morigin/feat_user_backend[m[33m, [m[1;32mfeat_user_backend[m[33m)[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Sun Oct 26 21:29:18 2025 +0100
+
+    feat(feat_user_backend): Ajout des contraintes dans le model de données avec EF
+
+[33mcommit 056cef5e308556494bd41de32ad8269d15b8b7bf[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Sun Oct 26 20:29:09 2025 +0100
+
+    feat: factorisation du code dans Validators
+
+[33mcommit 1a9c1317f8d6a87b58b10a4ddcdbf52e952ed347[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Sat Oct 25 19:21:59 2025 +0200
+
+    fix: correction dansTricountContext en ajoutant des id négatifs pour pas avoir de problemes lorsque EF va les generer automatiquement
+
+[33mcommit 195686526814f425d0224cd4c8a885e66ef22f35[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Oct 21 02:09:03 2025 +0200
+
+    feat: correction de la liaison entre User et Administrator et fluentAPI
+
+[33mcommit 04a20065110aa75066d23b3fba6dc69a8d05beae[m
+Author: Mohamed El Hajioui <mohamedelhajioui3@gmail.com>
+Date:   Tue Oct 21 01:34:39 2025 +0200
+
+    feat(user_backend): implementation de l'entité user avec admin
+
+[33mcommit ad24556c45b903947d7439d0ee66c0fda42a510c[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Benoît Penelle <benoit@penelle.net>
+Date:   Mon Oct 20 12:57:28 2025 +0200
+
+    feat: version initiale

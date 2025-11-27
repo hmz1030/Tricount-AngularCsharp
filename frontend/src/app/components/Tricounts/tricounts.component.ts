@@ -75,9 +75,14 @@ export class TricountsComponent implements OnInit {
         console.log("TODO: ouvrir écran de add tricount")
     }
 
+    home(): void {
+        this.closeSidePanel();
+        this.router.navigate(['/tricounts']);
+    }
+
     logout(): void {
         this.authService.logout();
         this.closeSidePanel();
-        this.router.navigate(['/login'])
+        this.router.navigate(['/login']);
     }
 }

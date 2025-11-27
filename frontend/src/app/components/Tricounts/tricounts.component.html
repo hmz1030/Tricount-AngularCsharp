@@ -1,27 +1,23 @@
-<!-- HEADER BLEU -->
 <header class="tc-header">
-  <!-- Icône menu à gauche -->
+  <!--Icone menu a gauche-->
   <button class="tc-icon-btn" (click)="toggleSidePanel()">
     <mat-icon>menu</mat-icon>
-  </button>
+  </button> 
 
-  <span class="tc-header-title">Your tricounts</span>
-
+  <span class="tc-header-title">Your Tricounts</span>
   <span class="tc-header-spacer"></span>
 
-  <!-- Icône refresh à droite -->
+  <!--Icone refresh-->
   <button class="tc-icon-btn" (click)="loadTricounts()">
-    <!-- Chemin à adapter selon où tu mets tes SVG -->
-    <img src="assets/icons/refresh.svg" alt="Refresh" class="tc-icon-img" />
+    <img src="assets/icons/refresh.svg" alt="Refresh" class="tc-icon-img">
   </button>
-
-  <!-- Icône add à droite -->
+  <!--icon add-->
   <button class="tc-icon-btn" (click)="onAddTricount()">
-    <img src="assets/icons/add.svg" alt="Add" class="tc-icon-img" />
+    <img src="assets/icons/add.svg" alt="Add" class="tc-icon-img">
   </button>
 </header>
 
-<!-- PANNEAU LATERAL (40% largeur) -->
+<!--Menu glissant a gauche-->
 <div class="tc-sidepanel" [class.open]="isSidePanelOpen">
   <div class="tc-sidepanel-header">
     <span>Menu</span>
@@ -32,7 +28,7 @@
 
   <ul class="tc-sidepanel-list">
     <li>
-      <a [routerLink]="['/tricounts']" (click)="closeSidePanel()">Home</a>
+      <a (click)="home()">Home</a>
     </li>
     <li>
       <button class="tc-link-btn" (click)="logout()">Logout</button>
@@ -40,10 +36,9 @@
   </ul>
 </div>
 
-<!-- OVERLAY sombre quand le panneau est ouvert -->
 <div class="tc-overlay" *ngIf="isSidePanelOpen" (click)="closeSidePanel()"></div>
 
-<!-- CONTENU DE LA PAGE -->
+<!--LEs tricounts-->
 <div class="tc-content">
   <div class="tricounts-container">
     @for (t of tricounts; track t.id) {
@@ -51,21 +46,18 @@
         <div class="tricount-row">
           <div class="tricount-left">
             <div class="tricount-title">
-              {{ t.title }}
+              {{t.title}}
             </div>
-
             <div class="tricount-subtitle">
-              {{ t.description || 'No description' }}
+              {{t.description || 'No description'}}
             </div>
-
             <div class="tricount-meta">
-              by Boris
+              By Boris
             </div>
           </div>
 
           <div class="tricount-right">
             you're alone
-            <!-- plus tard: "with 3 friends" etc -->
           </div>
         </div>
       </mat-card>

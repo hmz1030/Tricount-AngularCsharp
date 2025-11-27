@@ -24,4 +24,6 @@ export class User {
     public get isAdmin(): boolean {
         return this.role === Role.Admin;
     }
+
+    
 }
