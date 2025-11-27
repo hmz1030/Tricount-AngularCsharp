@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl, AsyncValidatorFn, ValidationErrors, AbstractControl, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, AsyncValidatorFn, ValidationErrors, AbstractControl, ReactiveFormsModule, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -44,9 +44,9 @@ export class SignupComponent {
         this.ctlPassword = this.fb.control('',
             [Validators.required,
             Validators.minLength(8),
-            Validators.pattern(/^(?=.*[!@#$%^&*])/),
-            Validators.pattern(/^(?=.*[A-Z])/),
-            Validators.pattern(/^(?=.*[0-9])/)
+            this.hasUpperCase(),
+            this.hasNumber(),
+            this.hasSpecialChar()
             ]);
         this.ctlPasswordConfirm = this.fb.control('', [Validators.required]);
         this.ctlIban = this.fb.control('');
@@ -58,6 +58,7 @@ export class SignupComponent {
             iban: this.ctlIban
         }, { validators: this.crossValidations });
     }
+
     emailUsed(): AsyncValidatorFn {
         let timeout: NodeJS.Timeout;
         return (ctl: AbstractControl) => {
@@ -76,7 +77,26 @@ export class SignupComponent {
             });
         };
     }
+    hasUpperCase(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            const hasUpper = /[A-Z]/.test(control.value);
+            return hasUpper ? null : { noUpperCase: true };
+        };
+    }
 
+    hasNumber(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            const hasNum = /[0-9]/.test(control.value);
+            return hasNum ? null : { noNumber: true };
+        };
+    }
+
+    hasSpecialChar(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            const hasSpecial = /[!@#$%^&*]/.test(control.value);
+            return hasSpecial ? null : { noSpecialChar: true };
+        };
+    }
     // validator, Grâce au setTimeout et clearTimeout, on ne déclenche le service que 
     // s'il n'y a pas eu de frappe depuis 300 ms.
     fullNameUsed(): AsyncValidatorFn {
