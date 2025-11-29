@@ -1,1 +1,38 @@
-<b>hello</b>
+<header class="tricount-header" *ngIf="tricount">
+  <!-- Back button -->
+  <button class="header-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+  <!-- Title -->
+  <h1 class="header-title">{{ tricount.title }}</h1>
+
+  <!-- Action buttons on the right -->
+  <button class="header-btn" (click)="refresh()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+
+  <button class="header-btn" (click)="edit()">
+    <mat-icon>edit</mat-icon>
+  </button>
+
+  <button class="header-btn" (click)="delete()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</header>
+<div class="operations-container" *ngIf="tricount">
+  <div class="operation-card" *ngFor="let op of tricount.operations">
+    <div class="operation-left">
+      <div class="operation-title">{{ op.title }}</div>
+      <div class="operation-subtitle">Paid by {{ op.initiatorName }}</div>
+    </div>
+    <div class="operation-right">
+      <div class="operation-amount">{{ op.amount }} €</div>
+      <div class="operation-date">{{ op.operation_date | date:'dd/MM/yyyy' }}</div>
+    </div>
+  </div>
+
+  <div *ngIf="!tricount.operations || tricount.operations.length === 0" class="empty-state">
+    No operations yet
+  </div>
+</div>
