@@ -85,4 +85,8 @@ export class TricountsComponent implements OnInit {
         this.closeSidePanel();
         this.router.navigate(['/login']);
     }
+
+    viewTricount(id : number): void {
+        this.router.navigate(['/tricount',id]);
+    }
 }
