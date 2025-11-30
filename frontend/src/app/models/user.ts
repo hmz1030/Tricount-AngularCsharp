@@ -9,7 +9,7 @@ export class User {
     id?: number;
     email?: string;
     password?: string;
-    fullName?: string;
+    full_name?: string;
     iban?: string;
     role:Role = Role.User;
     token?: string;
@@ -18,7 +18,7 @@ export class User {
         return Role[this.role];
     }
     public get display(): string {
-        return `${this.fullName || 'Unknown'} (${this.email})`;
+        return `${this.full_name || 'Unknown'} (${this.email})`;
     }
 
     public get isAdmin(): boolean {

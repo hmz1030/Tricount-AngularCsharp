@@ -9,6 +9,10 @@ import { Tricount } from '../../models/Tricount';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ResetDataBaseService } from 'src/app/services/resetdatabase.service';
+import { User } from 'src/app/models/user';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
+
 
 @Component({
   selector: 'app-tricounts',
@@ -22,6 +26,7 @@ import { ResetDataBaseService } from 'src/app/services/resetdatabase.service';
     MatButtonModule,
     MatDividerModule,
     MatCardModule,
+    MatDialogModule
   ],
   templateUrl: './tricounts.component.html',
   styleUrls: ['./tricounts.component.css']
@@ -29,8 +34,11 @@ import { ResetDataBaseService } from 'src/app/services/resetdatabase.service';
 
 export class TricountsComponent implements OnInit {
     tricounts: Tricount[] = [];
+    user?: User;
     loading = false;
     error: string | null = null;
+    userName?: string;
+    userEmail?: string;
 
     //état du panneau lateral
     isSidePanelOpen = false;
@@ -40,11 +48,13 @@ export class TricountsComponent implements OnInit {
         private tricountService: TricountService, 
         private authService : AuthenticationService,
         private resetDb : ResetDataBaseService,
-        private router: Router
+        private router: Router,
+        private dialog: MatDialog
     ) {}
 
     ngOnInit(): void {
         this.loadTricounts();
+        this.getUserData();
     }
 
     
@@ -73,6 +83,20 @@ export class TricountsComponent implements OnInit {
         });
     }
 
+    getUserData(): void {
+        this.authService.getUserData().subscribe({
+            next: u => {
+                this.user = u;
+                this.userName = u.full_name;
+                this.userEmail = u.email;
+            },
+            error: err => {
+                console.error(err);
+                this.error = 'User non connecté';
+            }
+        })
+    }
+
     onAddTricount(): void {
         console.log("TODO: ouvrir écran de add tricount")
     }
@@ -92,8 +116,16 @@ export class TricountsComponent implements OnInit {
         this.router.navigate(['/tricount',id]);
     }
 
-    resetDataBase(): void {
-        this.resetDb.resetDataBase();
-        this.logout();
+    openResetPopup(): void {
+        const dialogRef = this.dialog.open(ConfirmResetDialogComponent, {
+            width: '400px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result === true) {
+                this.resetDb.resetDataBase();
+                this.logout();
+            }
+        });
     }
 }

@@ -19,8 +19,11 @@
 
 <!--Menu glissant a gauche-->
 <div class="tc-sidepanel" [class.open]="isSidePanelOpen">
-  <div class="tc-sidepanel-header">
-    <span>Menu</span>
+ <div class="tc-sidepanel-header">
+    <div class="tc-user-info">
+      <strong>{{ userName }}</strong>
+      <small>{{ userEmail }}</small>
+    </div>
     <button class="tc-icon-btn" (click)="closeSidePanel()">
       <mat-icon>close</mat-icon>
     </button>
@@ -28,13 +31,22 @@
 
   <ul class="tc-sidepanel-list">
     <li>
-      <button class="tc-link-btn" (click)="home()">Home</button>
+      <button class="tc-link-btn" (click)="home()">
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
+      </button>
     </li>
     <li>
-      <button class="tc-link-btn" (click)="resetDataBase()">Reset DataBase</button>
+      <button class="tc-link-btn" (click)="openResetPopup()">
+        <mat-icon>restore</mat-icon>
+        <span>Reset DataBase</span>
+      </button>
     </li>
     <li>
-      <button class="tc-link-btn" (click)="logout()">Logout</button>
+      <button class="tc-link-btn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
     </li>
   </ul>
 </div>

@@ -45,6 +45,14 @@ export class AuthenticationService {
             .pipe(switchMap(res=>this.login(email,password)));
     }
 
+    getUserData(): Observable<User> {
+        return this.http.get<User>(`${this.baseUrl}rpc/get_user_data`)
+            .pipe(map(res => plainToInstance(User, res, {
+                enableImplicitConversion: true
+            }))
+        );
+    }
+
     logout() {
         sessionStorage.removeItem('currentUser');
         sessionStorage.removeItem('authToken');

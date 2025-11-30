@@ -1,0 +1,30 @@
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 10px;
+}
+
+.cancel-btn {
+  color: #555;
+  background: #e8e8e8;
+  padding: 6px 16px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #d5d5d5;
+}
+
+.confirm-btn {
+  background: #1976d2; /* Bleu Material */
+  color: white;
+  padding: 6px 16px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.confirm-btn:hover {
+  background: #115293;
+}
