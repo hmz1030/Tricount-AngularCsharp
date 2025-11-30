@@ -349,12 +349,12 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
 
         return NoContent();
     }
-
+    [AllowAnonymous]
     [HttpPost("check_email_available")]
     public async Task<bool> check_email_available(UserMailCheckDTO dto) {
         return !await context.Users.AnyAsync(e => e.Email == dto.Email && e.Id != dto.Id);//true veut dire available
     }
-
+    [AllowAnonymous]
     [HttpPost("check_full_name_available")]
     public async Task<bool> check_full_name_available(UserNameCheckDTO dto) {
         return !await context.Users.AnyAsync(e => e.Name == dto.FullName && e.Id != dto.Id);//true veut dire available

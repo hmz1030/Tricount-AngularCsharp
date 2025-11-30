@@ -55,6 +55,6 @@ export class AuthenticationService {
     }
 
     isFullNameAvailable(fullName: string): Observable<boolean> {
-        return this.http.post<boolean>(`${this.baseUrl}rpc/check_full_name_available`, { fullName });
+        return this.http.post<boolean>(`${this.baseUrl}rpc/check_full_name_available`, { full_name: fullName });
     }
 }
