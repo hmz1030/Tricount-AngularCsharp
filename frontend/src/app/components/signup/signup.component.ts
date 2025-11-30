@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, AsyncValidatorFn, ValidationErrors, AbstractControl, ReactiveFormsModule, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,6 +16,7 @@ import { AuthenticationService } from '../../services/authentication.service';
     imports: [
         CommonModule,
         ReactiveFormsModule,
+        RouterModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
@@ -49,7 +50,7 @@ export class SignupComponent {
             this.hasSpecialChar()
             ]);
         this.ctlPasswordConfirm = this.fb.control('', [Validators.required]);
-        this.ctlIban = this.fb.control('');
+        this.ctlIban = this.fb.control('', [this.isValidIban()]);
         this.frm = this.fb.group({
             email: this.ctlEmail,
             fullName: this.ctlFullName,
@@ -93,8 +94,25 @@ export class SignupComponent {
 
     hasSpecialChar(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
-            const hasSpecial = /[!@#$%^&*]/.test(control.value);
+            const hasSpecial = /[!@#$%^&*,]/.test(control.value);
             return hasSpecial ? null : { noSpecialChar: true };
+        };
+    }
+
+    isValidIban(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            const iban = control.value;
+            if (!iban || iban.trim() === '') {
+                return null; // IBAN is optional
+            }
+            
+           
+            const cleanedIban = iban.replace(/\s/g, '').toUpperCase();
+            
+            
+            const ibanRegex = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{12,30}$/;
+            
+            return ibanRegex.test(cleanedIban) ? null : { invalidIban: true };
         };
     }
     // validator, Grâce au setTimeout et clearTimeout, on ne déclenche le service que 
