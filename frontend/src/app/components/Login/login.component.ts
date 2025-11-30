@@ -29,8 +29,18 @@ export class LoginComponent implements OnInit{
             this.router.navigate(['tricounts']);
             return;
         }
-        this.email = new FormControl('',Validators.required);
-        this.password = new FormControl('',Validators.required)
+        this.email = new FormControl('',
+            [Validators.required,
+            Validators.email]
+        );
+        this.password = new FormControl('', [
+            Validators.required,
+            this.hasLowerCase.bind(this),
+            this.hasUpperCase.bind(this),
+            this.hasNumber.bind(this),
+            this.hasSpecialChar.bind(this),
+            Validators.minLength(8)
+        ]);
         this.loginForm = new FormGroup({
             email: this.email,
             password : this.password
@@ -79,5 +89,26 @@ export class LoginComponent implements OnInit{
                     console.error("Login failed:", error);
                 }
             });
+    }
+
+    // Password validators
+    hasLowerCase(control: FormControl): { [key: string]: boolean } | null {
+        if (!control.value) return null;
+        return /[a-z]/.test(control.value) ? null : { hasLowerCase: true };
+    }
+
+    hasUpperCase(control: FormControl): { [key: string]: boolean } | null {
+        if (!control.value) return null;
+        return /[A-Z]/.test(control.value) ? null : { hasUpperCase: true };
+    }
+
+    hasNumber(control: FormControl): { [key: string]: boolean } | null {
+        if (!control.value) return null;
+        return /[0-9]/.test(control.value) ? null : { hasNumber: true };
+    }
+
+    hasSpecialChar(control: FormControl): { [key: string]: boolean } | null {
+        if (!control.value) return null;
+        return /[!@#$%^&*(),.?":{}|<>_]/.test(control.value) ? null : { hasSpecialChar: true };
     }
 }
