@@ -45,7 +45,7 @@
 <div class="tc-content">
   <div class="tricounts-container">
     @for (t of tricounts; track t.id) {
-      <mat-card class="tricount-card">
+      <mat-card class="tricount-card" (click)="viewTricount(t.id)" style ="cursor: pointer;">
         <div class="tricount-row">
           <div class="tricount-left">
             <div class="tricount-title">

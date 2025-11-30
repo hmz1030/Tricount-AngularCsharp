@@ -1,4 +1,5 @@
 import { Type } from 'class-transformer';
+import { Operation } from './Operation';
 
 export class Tricount {
   id!: number;
@@ -9,8 +10,8 @@ export class Tricount {
 /*
   @Type(() => Participant)
   participants!: Participant[];
-
+*/
   @Type(() => Operation)
   operations!: Operation[];
-*/
+
 }

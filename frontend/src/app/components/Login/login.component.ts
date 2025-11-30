@@ -1,4 +1,4 @@
-import { NgClass } from '@angular/common';
+import { NgClass, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormControl, FormGroup, FormGroupDirective, Validators} from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms';
@@ -11,13 +11,13 @@ import { AuthenticationService } from '../../services/authentication.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true, 
-  imports: [RouterLink, RouterLinkActive, NgClass, ReactiveFormsModule]
-
+    imports: [CommonModule, RouterLink, RouterLinkActive, NgClass, ReactiveFormsModule]
 })
 export class LoginComponent implements OnInit{
     email!: FormControl;
     password! : FormControl;
     loginForm!: FormGroup;
+    loginError: string = '';
 
     constructor(
         private authService: AuthenticationService,
@@ -25,6 +25,10 @@ export class LoginComponent implements OnInit{
     ){}
 
     ngOnInit() {
+        if( this.authService.currentUser){
+            this.router.navigate(['tricounts']);
+            return;
+        }
         this.email = new FormControl('',Validators.required);
         this.password = new FormControl('',Validators.required)
         this.loginForm = new FormGroup({
@@ -33,26 +37,27 @@ export class LoginComponent implements OnInit{
         });
     }
 
-    onSubmit(){
-        if( this.loginForm.invalid) {
-            console.log("Form is invalid")
-            return;
-        }
-
-        
-        this.authService.login(this.email.value, this.password.value)
-        .subscribe({
-            next: (response) => {
-                console.log("Login Succesful!",response);
-                console.log("Token",response.token);
-                this.router.navigate(['tricounts']);
-            },
-            error: (error) => {
-                console.error("Login failed:", error);
-            }
-            
-        });
+    onSubmit() {
+    if (this.loginForm.invalid) {
+        this.email.markAsTouched();
+        this.password.markAsTouched();
+        return;
     }
+
+    this.loginError = '';  
+    
+    this.authService.login(this.email.value, this.password.value)
+    .subscribe({
+        next: (response) => {
+            console.log("Login Successful!", response);
+            this.router.navigate(['tricounts']);
+        },
+        error: (error) => {
+            console.error("Login failed:", error);
+            this.loginError = error.error?.message || 'Invalid email or password';
+        }
+    });
+}
     testUsers = [
         { email: 'boverhaegen@epfc.eu', name: 'B. Overhaegen' },
         { email: 'bepenelle@epfc.eu', name: 'B. Epenelle' },
@@ -67,6 +72,8 @@ export class LoginComponent implements OnInit{
             .subscribe({
                 next: (response) => {
                     console.log("Logged in as:", email);
+                    this.router.navigate(['tricounts']);
+
                 },
                 error: (error) => {
                     console.error("Login failed:", error);

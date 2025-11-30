@@ -1,33 +1,49 @@
-<head>
-    <link href="/login.component.css" rel="stylesheet" type="text/css">
-</head>
 <div class="login-container">
   <div class="login-card">
     <h2>Login</h2>
+
+    
     
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()"> 
-      <!-- Email Field -->
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input [formControl]="email" type="email" id="email" placeholder="Enter your email" />
-      </div>
-
-      <!-- Password Field -->
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input [formControl]="password" type="password" id="password" placeholder="Enter your password" />
-      </div>
-
-      <!-- Submit Button -->
-      <button type="submit">Login</button>
-      <div class="user-list">
-    <h3>Debug - Quick Login</h3>
-    <ul>
-        <li *ngFor="let user of testUsers" (click)="quickLogin(user.email)">
-            {{ user.name }} ({{ user.email }})
-        </li>
-    </ul>
-</div>
-    </form>
+  <!-- Email Field -->
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input [formControl]="email" type="email" id="email" placeholder="Enter your email" />
+    
+    <!-- Error messages for email -->
+    <div class="error-message" *ngIf="email.invalid && email.touched">
+      <span *ngIf="email.hasError('required')">Email is required</span>
+      <span *ngIf="email.hasError('server')">{{ email.errors?.['server'] }}</span>
+    </div>
   </div>
+
+  <!-- Password Field -->
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input [formControl]="password" type="password" id="password" placeholder="Enter your password" />
+    
+    <!-- Error messages for password -->
+    <div class="error-message" *ngIf="password.invalid && password.touched">
+      <span *ngIf="password.hasError('required')">Password is required</span>
+      <span *ngIf="password.hasError('server')">{{ password.errors?.['server'] }}</span>
+    </div>
+  </div>
+
+  <div class="error-message general-error" *ngIf="loginError">
+    {{ loginError }}
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit">Login</button>
+</form>
+    <div class="user-list">
+        <h3>Debug - Quick Login</h3>
+        <ul>
+            <li *ngFor="let user of testUsers" (click)="quickLogin(user.email)" style="cursor: pointer;">
+                {{ user.name }} ({{ user.email }})
+            </li>
+        </ul>
+    </div>
+  </div>
+  
 </div>

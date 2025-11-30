@@ -88,6 +88,10 @@ export class TricountsComponent implements OnInit {
         this.router.navigate(['/login']);
     }
 
+    viewTricount(id : number): void {
+        this.router.navigate(['/tricount',id]);
+    }
+
     resetDataBase(): void {
         this.resetDb.resetDataBase();
         this.logout();
