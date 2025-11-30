@@ -16,6 +16,8 @@ import { CommonModule } from "@angular/common";
 
 export class TricountComponent implements OnInit{
     tricount?: Tricount;
+    total: number = 0;
+    mytotal: number = 0;
     constructor(
         private tricountService : TricountService,
         private authService : AuthenticationService,
@@ -30,6 +32,7 @@ export class TricountComponent implements OnInit{
         this.tricountService.getMyTricounts().subscribe({
             next: (tricounts) => {
                 this.tricount = tricounts.find(t => t.id == id);
+                this.calculate();
                 console.log("Found Tricound : ",this.tricount)
             },
             error: (err) => {
@@ -41,12 +44,32 @@ export class TricountComponent implements OnInit{
     goBack(): void{
         this.router.navigate(['/tricounts']);
     }
+    calculate(){
+
+        if(this.tricount){
+            for(let op of this.tricount?.operations){
+                this.total += op.amount || 0
+                if (op.initiator_id == this.authService.currentUser?.id){
+                    this.mytotal += op.amount || 0
+                }
+            }
+
+        }
+    }
+
 
     refresh(): void{
     }
     edit(): void{
     }
     delete(): void{
+    }
+    viewBalance(): void {
+    console.log('View balance clicked');
+    }
+
+    addOperation(): void {
+        console.log('Add operation clicked');
     }
     
 }

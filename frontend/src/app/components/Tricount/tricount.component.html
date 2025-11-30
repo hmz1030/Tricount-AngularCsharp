@@ -20,6 +20,9 @@
     <mat-icon>delete</mat-icon>
   </button>
 </header>
+<button class="view-balance-btn" (click)="viewBalance()">
+    📊 View Balance
+</button>
 <div class="operations-container" *ngIf="tricount">
   <div class="operation-card" *ngFor="let op of tricount.operations">
     <div class="operation-left">
@@ -36,3 +39,18 @@
     No operations yet
   </div>
 </div>
+<footer class="tricount-footer">
+    <div class="footer-left">
+        <div class="footer-label">MY TOTAL</div>
+        <div class="footer-amount"> in progress </div>
+    </div>
+
+    <button class="add-btn" (click)="addOperation()">
+        <mat-icon>add</mat-icon>
+    </button>
+
+    <div class="footer-right">
+        <div class="footer-label">TOTAL EXPENSES</div>
+        <div class="footer-amount">{{ total }}</div>
+    </div>
+</footer>
