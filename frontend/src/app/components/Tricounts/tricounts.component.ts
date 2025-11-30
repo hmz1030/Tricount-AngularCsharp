@@ -8,6 +8,7 @@ import { TricountService } from '../../services/tricount.service';
 import { Tricount } from '../../models/Tricount';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { ResetDataBaseService } from 'src/app/services/resetdatabase.service';
 
 @Component({
   selector: 'app-tricounts',
@@ -38,6 +39,7 @@ export class TricountsComponent implements OnInit {
     constructor(
         private tricountService: TricountService, 
         private authService : AuthenticationService,
+        private resetDb : ResetDataBaseService,
         private router: Router
     ) {}
 
@@ -88,5 +90,10 @@ export class TricountsComponent implements OnInit {
 
     viewTricount(id : number): void {
         this.router.navigate(['/tricount',id]);
+    }
+
+    resetDataBase(): void {
+        this.resetDb.resetDataBase();
+        this.logout();
     }
 }
