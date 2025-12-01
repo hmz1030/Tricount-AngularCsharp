@@ -67,10 +67,10 @@
       <input matInput [type]="hidePasswordConfirm ? 'password' : 'text'" [formControl]="ctlPasswordConfirm"
         [errorStateMatcher]="matcher">
 
-      @if (ctlPasswordConfirm.invalid && (ctlPasswordConfirm.dirty || ctlPasswordConfirm.touched)) {
+      @if ((ctlPasswordConfirm.invalid || frm.hasError('passwordNotConfirmed')) && (ctlPasswordConfirm.dirty || ctlPasswordConfirm.touched)) {
       <mat-error>
         @if (ctlPasswordConfirm.hasError('required')) { Confirmation required }
-        @else if (ctlPasswordConfirm.hasError('passwordNotConfirmed')) { Passwords do not match }
+        @else if (frm.hasError('passwordNotConfirmed')) { Passwords do not match }
       </mat-error>
       }
     </mat-form-field>

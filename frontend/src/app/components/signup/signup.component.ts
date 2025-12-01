@@ -151,22 +151,10 @@ export class SignupComponent {
         };
     }
     crossValidations(group: AbstractControl): ValidationErrors | null {
-        const password = group.get('password');
-        const passwordConfirm = group.get('passwordConfirm');
-
-        const mismatch = password && passwordConfirm && password.value !== passwordConfirm.value;
-
-        // Ajouter l'erreur sur le champ passwordConfirm pour que Material l'affiche
-        if (mismatch && passwordConfirm) {
-            passwordConfirm.setErrors({ ...passwordConfirm.errors, passwordNotConfirmed: true });
-        } else if (passwordConfirm && passwordConfirm.hasError('passwordNotConfirmed')) {
-            // Enlever l'erreur si les mots de passe correspondent maintenant
-            const errors = { ...passwordConfirm.errors };
-            delete errors['passwordNotConfirmed'];
-            passwordConfirm.setErrors(Object.keys(errors).length > 0 ? errors : null);
-        }
-
-        return mismatch ? { passwordNotConfirmed: true } : null;
+        const password = group.get('password')?.value;
+        const passwordConfirm = group.get('passwordConfirm')?.value;
+        // renvoie l'erreur au groupe si c'est pas ==
+        return password === passwordConfirm ? null : { passwordNotConfirmed: true };
     }
     signup() {
         if (this.frm.invalid) {
