@@ -70,10 +70,10 @@ export class LoginComponent implements OnInit{
 }
     testUsers = [
         { email: 'boverhaegen@epfc.eu', name: 'B. Overhaegen' },
-        { email: 'bepenelle@epfc.eu', name: 'B. Epenelle' },
-        { email: 'xapigeolet@epfc.eu', name: 'X. Apigeolet' },
-        { email: 'mamichel@epfc.eu', name: 'M. Amichel' },
-        { email: 'gedielman@epfc.eu', name: 'G. Edielman' },
+        { email: 'bepenelle@epfc.eu', name: 'B. penelle' },
+        { email: 'xapigeolet@epfc.eu', name: 'X. Pigeolet' },
+        { email: 'mamichel@epfc.eu', name: 'M. Michel' },
+        { email: 'gedielman@epfc.eu', name: 'G. Dielman' },
         { email: 'admin@epfc.eu', name: 'Admin' }
     ];
 

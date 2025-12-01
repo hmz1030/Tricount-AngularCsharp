@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl, AsyncValidatorFn, ValidationErrors, AbstractControl, ReactiveFormsModule, ValidatorFn } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, AsyncValidatorFn, ValidationErrors, AbstractControl, ReactiveFormsModule, ValidatorFn, FormGroupDirective, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthenticationService } from '../../services/authentication.service';
+import { SetFocusDirective } from '../../directives/setfocus.directive';
+import { ImmediateErrorStateMatcher } from '../../matchers/imediate-error-state.matcher';
 
 
 @Component({
@@ -21,7 +23,8 @@ import { AuthenticationService } from '../../services/authentication.service';
         MatInputModule,
         MatButtonModule,
         MatCardModule,
-        MatIconModule
+        MatIconModule,
+        SetFocusDirective
     ],
     templateUrl: './signup.component.html',
     styleUrls: ['./signup.component.css']
@@ -35,12 +38,13 @@ export class SignupComponent {
     public ctlIban!: FormControl;
     public hidePassword = true;
     public hidePasswordConfirm = true;
+    matcher = new ImmediateErrorStateMatcher();
     constructor(
         private fb: FormBuilder,
         private router: Router,
         public authService: AuthenticationService
     ) {
-        this.ctlEmail = this.fb.control('', [Validators.required, Validators.email], [this.emailUsed()]);
+        this.ctlEmail = this.fb.control('', [Validators.required, this.strictEmail()], [this.emailUsed()]);
         this.ctlFullName = this.fb.control('', [Validators.required, Validators.minLength(3)], [this.fullNameUsed()]);
         this.ctlPassword = this.fb.control('',
             [Validators.required,
@@ -99,19 +103,30 @@ export class SignupComponent {
         };
     }
 
+    strictEmail(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            if (!control.value) {
+                return null; // Ne pas valider si vide (c'est le rôle de 'required')
+            }
+            // Regex stricte : name@epfc.eu 
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return emailRegex.test(control.value) ? null : { email: true };
+        };
+    }
+
     isValidIban(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
             const iban = control.value;
             if (!iban || iban.trim() === '') {
                 return null; // IBAN is optional
             }
-            
-           
+
+
             const cleanedIban = iban.replace(/\s/g, '').toUpperCase();
-            
-            
+
+
             const ibanRegex = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{12,30}$/;
-            
+
             return ibanRegex.test(cleanedIban) ? null : { invalidIban: true };
         };
     }
@@ -138,9 +153,20 @@ export class SignupComponent {
     crossValidations(group: AbstractControl): ValidationErrors | null {
         const password = group.get('password');
         const passwordConfirm = group.get('passwordConfirm');
-        return password && passwordConfirm && password.value === passwordConfirm.value
-            ? null
-            : { passwordNotConfirmed: true };
+
+        const mismatch = password && passwordConfirm && password.value !== passwordConfirm.value;
+
+        // Ajouter l'erreur sur le champ passwordConfirm pour que Material l'affiche
+        if (mismatch && passwordConfirm) {
+            passwordConfirm.setErrors({ ...passwordConfirm.errors, passwordNotConfirmed: true });
+        } else if (passwordConfirm && passwordConfirm.hasError('passwordNotConfirmed')) {
+            // Enlever l'erreur si les mots de passe correspondent maintenant
+            const errors = { ...passwordConfirm.errors };
+            delete errors['passwordNotConfirmed'];
+            passwordConfirm.setErrors(Object.keys(errors).length > 0 ? errors : null);
+        }
+
+        return mismatch ? { passwordNotConfirmed: true } : null;
     }
     signup() {
         if (this.frm.invalid) {
