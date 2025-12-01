@@ -27,6 +27,9 @@ export class TricountComponent implements OnInit{
 
 
     ngOnInit(): void {
+        if(this.authService.currentUser == null){
+            
+        }
         const id = Number(this.route.snapshot.paramMap.get('id'));
 
         this.tricountService.getMyTricounts().subscribe({

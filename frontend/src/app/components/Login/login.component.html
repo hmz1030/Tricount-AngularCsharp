@@ -11,11 +11,13 @@
     <input [formControl]="email" type="email" id="email" placeholder="Enter your email" />
     
     <!-- Error messages for email -->
-    <!-- Error messages for email -->
+     
     <div class="error-message" *ngIf="email.invalid && (email.dirty || email.touched)">
-      <span *ngIf="email.hasError('required')">Email is required</span>
-      <span *ngIf="email.hasError('email')">Please enter a valid email address</span>
-      <span *ngIf="email.hasError('server')">{{ email.errors?.['server'] }}</span>
+      <mat-error>
+        @if (email.hasError('required')) {Email is required}
+        @if (email.hasError('email')) {Please enter a valid email address}
+        @if (email.hasError('server')) {{{ email.errors?.['server'] }}}
+     </mat-error>
     </div>
   </div>
 
@@ -26,23 +28,15 @@
     
     <!-- Error messages for password -->
     <div class="error-message" *ngIf="password.invalid && (password.dirty || password.touched)">
-      <span *ngIf="password.hasError('required')">Password is required</span>
-      <span *ngIf="!password.hasError('required') && password.hasError('hasLowerCase')">
-        Password must contain at least one lowercase letter
-      </span>
-      <span *ngIf="!password.hasError('required') && !password.hasError('hasLowerCase') && password.hasError('hasUpperCase')">
-        Password must contain at least one uppercase letter
-      </span>
-      <span *ngIf="!password.hasError('required') && !password.hasError('hasLowerCase') && !password.hasError('hasUpperCase') && password.hasError('hasNumber')">
-        Password must contain at least one number
-      </span>
-      <span *ngIf="!password.hasError('required') && !password.hasError('hasLowerCase') && !password.hasError('hasUpperCase') && !password.hasError('hasNumber') && password.hasError('hasSpecialChar')">
-        Password must contain at least one special character (!@#$%^&*...)
-      </span>
-      <span *ngIf="!password.hasError('required') && !password.hasError('hasLowerCase') && !password.hasError('hasUpperCase') && !password.hasError('hasNumber') && !password.hasError('hasSpecialChar') && password.hasError('minlength')">
-        Password must be at least 8 characters
-      </span>
-      <span *ngIf="password.hasError('server')">{{ password.errors?.['server'] }}</span>
+      <mat-error>
+        @if (password.hasError('required')) {Password is required}
+        @if (!password.hasError('required') && password.hasError('hasLowerCase')) { Password must contain at least one lowercase letter}
+        @if (!password.hasError('required') && !password.hasError('hasLowerCase') && password.hasError('hasUpperCase')) { Password must contain at least one uppercase letter}
+        @if (!password.hasError('required') && !password.hasError('hasLowerCase') && !password.hasError('hasUpperCase') && password.hasError('hasNumber')) {Password must contain at least one number}
+        @if (!password.hasError('required') && !password.hasError('hasLowerCase') && !password.hasError('hasUpperCase') && !password.hasError('hasNumber') && password.hasError('hasSpecialChar')) {Password must contain at least one special character (!@#$%^&*...)}
+        @if (!password.hasError('required') && !password.hasError('hasLowerCase') && !password.hasError('hasUpperCase') && !password.hasError('hasNumber') && !password.hasError('hasSpecialChar') && password.hasError('minlength')) {Password must be at least 8 characters}
+        @if (password.hasError('server')) {{{ password.errors?.['server'] }}}
+      </mat-error>
     </div>
   </div>
 

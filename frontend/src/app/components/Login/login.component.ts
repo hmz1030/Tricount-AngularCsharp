@@ -1,6 +1,7 @@
 import { NgClass, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormControl, FormGroup, FormGroupDirective, Validators} from '@angular/forms'
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
@@ -11,7 +12,7 @@ import { AuthenticationService } from '../../services/authentication.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true, 
-    imports: [CommonModule, RouterLink, RouterLinkActive, NgClass, ReactiveFormsModule]
+    imports: [CommonModule, RouterLink, RouterLinkActive, NgClass, ReactiveFormsModule,MatFormFieldModule]
 })
 export class LoginComponent implements OnInit{
     email!: FormControl;

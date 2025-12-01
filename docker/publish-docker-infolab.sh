@@ -4,7 +4,7 @@ if [ -z "$INFOLAB_VM" ]; then
     echo "Erreur: la variable d'environnement INFOLAB_VM n'est pas définie."
     exit 1
 else
-    SSH_PORT=52518
+    SSH_PORT=52${INFOLAB_VM}
 fi
 
 cd ../publish
