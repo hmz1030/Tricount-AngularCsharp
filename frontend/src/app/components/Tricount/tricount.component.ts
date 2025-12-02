@@ -32,7 +32,9 @@ export class TricountComponent implements OnInit{
 
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
-        this.getUserData();
+        // charger le user stocke dans authService session storage
+        this.userid = this.authService.currentUser?.id;
+        
         this.tricountService.getMyTricounts().subscribe({
             next: (tricounts) => {
                 this.tricount = tricounts.find(t => t.id == id);
@@ -65,24 +67,13 @@ export class TricountComponent implements OnInit{
     goBack(): void{
         this.router.navigate(['/tricounts']);
     }
+    
     calculateTotal(){
         if(this.tricount){
             for(let op of this.tricount?.operations){
                 this.total += op.amount || 0
             }
         }
-    }
-
-    getUserData(): void {
-        this.authService.getUserData().subscribe({
-            next: u => {
-                this.userid = u.id;
-            },
-            error: err => {
-                console.error(err);
-                this.error = 'User non connecté';
-            }
-        })
     }
 
 

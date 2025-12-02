@@ -34,15 +34,13 @@ import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dial
 
 export class TricountsComponent implements OnInit {
     tricounts: Tricount[] = [];
-    user?: User;
     loading = false;
     error: string | null = null;
-    userName?: string;
-    userEmail?: string;
-
-    //état du panneau lateral
     isSidePanelOpen = false;
    
+    get currentUser() {
+        return this.authService.currentUser;
+    }
 
     constructor(
         private tricountService: TricountService, 
@@ -54,7 +52,6 @@ export class TricountsComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadTricounts();
-        this.getUserData();
     }
 
     
@@ -81,20 +78,6 @@ export class TricountsComponent implements OnInit {
                 this.loading = false;
             }
         });
-    }
-
-    getUserData(): void {
-        this.authService.getUserData().subscribe({
-            next: u => {
-                this.user = u;
-                this.userName = u.full_name;
-                this.userEmail = u.email;
-            },
-            error: err => {
-                console.error(err);
-                this.error = 'User non connecté';
-            }
-        })
     }
 
     onAddTricount(): void {
