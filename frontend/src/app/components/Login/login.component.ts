@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit{
     ){}
 
     ngOnInit() {
-        if( this.authService.currentUser){
+        if(sessionStorage.getItem('authToken')){
             this.router.navigate(['tricounts']);
             return;
         }

@@ -20,13 +20,13 @@
     <mat-icon>delete</mat-icon>
   </button>
 </header>
-<!-- <button 
+<button 
     class="view-balance-btn" 
-    [class.disabled]="!tricount?.operations || tricount?.operations.length === 0"
-    [disabled]="!tricount.operations || tricount.operations.length === 0"
+    [class.disabled]="!tricount?.operations || tricount?.operations?.length === 0"
+    [disabled]="!tricount?.operations || tricount?.operations?.length === 0"
     (click)="viewBalance()">
     📊 View Balance
-</button> -->
+</button>
 <div class="operations-container" *ngIf="tricount">
   <div class="operation-card" *ngFor="let op of tricount.operations">
     <div class="operation-left">
@@ -50,7 +50,7 @@
 <footer class="tricount-footer">
     <div class="footer-left">
         <div class="footer-label">MY TOTAL</div>
-        <div class="footer-amount"> in progress </div>
+        <div class="footer-amount"> {{userBalance?.balance}} </div>
     </div>
 
     <button class="add-btn" (click)="addOperation()">

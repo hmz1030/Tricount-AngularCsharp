@@ -165,7 +165,7 @@ export class SignupComponent {
 
         this.authService.signup(email, password, fullName, iban || undefined).subscribe({
             next: () => {
-                if (this.authService.currentUser) {
+                if (sessionStorage.getItem('authToken')) {
                     this.router.navigate(['/tricounts']);
                 }
             },

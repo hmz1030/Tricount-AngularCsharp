@@ -14,7 +14,6 @@ interface LoginResponse {
     providedIn: 'root' 
 })
 export class AuthenticationService {
-    public currentUser?: User;
 
     constructor(
         private http: HttpClient, 
@@ -23,7 +22,6 @@ export class AuthenticationService {
         // Check if user is already logged in
         const data = sessionStorage.getItem('currentUser');
         if (data) {
-            this.currentUser = plainToInstance(User, JSON.parse(data));
         }
     }
 
@@ -32,9 +30,7 @@ export class AuthenticationService {
         .pipe(map(response => {
             if (response && response.token) {
                 sessionStorage.setItem('authToken', response.token);
-                const user = plainToInstance(User, response);
-                sessionStorage.setItem('currentUser', JSON.stringify(user));
-                this.currentUser = user;
+
             }
             return response;
         }));
@@ -56,7 +52,6 @@ export class AuthenticationService {
     logout() {
         sessionStorage.removeItem('currentUser');
         sessionStorage.removeItem('authToken');
-        this.currentUser = undefined;
     }
     isEmailAvailable(email: string): Observable<boolean> {
         return this.http.post<boolean>(`${this.baseUrl}rpc/check_email_available`, { email });
