@@ -36,11 +36,21 @@ export class TricountComponent implements OnInit{
         this.tricountService.getMyTricounts().subscribe({
             next: (tricounts) => {
                 this.tricount = tricounts.find(t => t.id == id);
+
+                
+                // Vérifier si le tricount existe et si l'utilisateur y a accès
+                if (!this.tricount) {
+                    console.warn('Tricount not found or access denied');
+                    this.router.navigate(['/restricted']);
+                    return;
+                }
+                
                 this.calculateTotal();
-                console.log("Found Tricound : ",this.tricount)
+                console.log("Found Tricount : ", this.tricount)
             },
             error: (err) => {
                 console.error('Error loading tricount:', err);
+                this.router.navigate(['/restricted']);
             }
         })
 
