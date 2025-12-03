@@ -21,8 +21,8 @@
 <div class="tc-sidepanel" [class.open]="isSidePanelOpen">
  <div class="tc-sidepanel-header">
     <div class="tc-user-info">
-      <strong>{{ userName }}</strong>
-      <small>{{ userEmail }}</small>
+      <strong>{{ currentUser?.full_name }}</strong>
+      <small>{{ currentUser?.email }}</small>
     </div>
     <button class="tc-icon-btn" (click)="closeSidePanel()">
       <mat-icon>close</mat-icon>

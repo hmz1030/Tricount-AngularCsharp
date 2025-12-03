@@ -1,6 +1,7 @@
 import { NgClass, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormControl, FormGroup, FormGroupDirective, Validators} from '@angular/forms'
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
@@ -11,7 +12,7 @@ import { AuthenticationService } from '../../services/authentication.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true, 
-    imports: [CommonModule, RouterLink, RouterLinkActive, NgClass, ReactiveFormsModule]
+    imports: [CommonModule, RouterLink, RouterLinkActive, NgClass, ReactiveFormsModule,MatFormFieldModule]
 })
 export class LoginComponent implements OnInit{
     email!: FormControl;
@@ -25,7 +26,7 @@ export class LoginComponent implements OnInit{
     ){}
 
     ngOnInit() {
-        if( this.authService.currentUser){
+        if(sessionStorage.getItem('authToken')){
             this.router.navigate(['tricounts']);
             return;
         }
@@ -70,10 +71,10 @@ export class LoginComponent implements OnInit{
 }
     testUsers = [
         { email: 'boverhaegen@epfc.eu', name: 'B. Overhaegen' },
-        { email: 'bepenelle@epfc.eu', name: 'B. Epenelle' },
-        { email: 'xapigeolet@epfc.eu', name: 'X. Apigeolet' },
-        { email: 'mamichel@epfc.eu', name: 'M. Amichel' },
-        { email: 'gedielman@epfc.eu', name: 'G. Edielman' },
+        { email: 'bepenelle@epfc.eu', name: 'B. penelle' },
+        { email: 'xapigeolet@epfc.eu', name: 'X. Pigeolet' },
+        { email: 'mamichel@epfc.eu', name: 'M. Michel' },
+        { email: 'gedielman@epfc.eu', name: 'G. Dielman' },
         { email: 'admin@epfc.eu', name: 'Admin' }
     ];
 

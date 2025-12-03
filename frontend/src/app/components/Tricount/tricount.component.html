@@ -20,7 +20,11 @@
     <mat-icon>delete</mat-icon>
   </button>
 </header>
-<button class="view-balance-btn" (click)="viewBalance()">
+<button 
+    class="view-balance-btn" 
+    [class.disabled]="!tricount?.operations || tricount?.operations?.length === 0"
+    [disabled]="!tricount?.operations || tricount?.operations?.length === 0"
+    (click)="viewBalance()">
     📊 View Balance
 </button>
 <div class="operations-container" *ngIf="tricount">
@@ -35,14 +39,18 @@
     </div>
   </div>
 
-  <div *ngIf="!tricount.operations || tricount.operations.length === 0" class="empty-state">
-    No operations yet
+  <div *ngIf="!tricount?.operations || tricount.operations?.length === 0" class="empty-state">
+      <h2 class="empty-title">Your tricount is empty!</h2>
+      <p class="empty-subtitle">Click below to add your first expense!</p>
+      <button class="add-expense-btn" (click)="addOperation()">
+        Add an expense
+      </button>
   </div>
 </div>
 <footer class="tricount-footer">
     <div class="footer-left">
         <div class="footer-label">MY TOTAL</div>
-        <div class="footer-amount"> in progress </div>
+        <div class="footer-amount"> {{userBalance?.balance}} </div>
     </div>
 
     <button class="add-btn" (click)="addOperation()">
@@ -51,6 +59,6 @@
 
     <div class="footer-right">
         <div class="footer-label">TOTAL EXPENSES</div>
-        <div class="footer-amount">{{ total }}</div>
+        <div class="footer-amount">{{ total }}€</div>
     </div>
 </footer>

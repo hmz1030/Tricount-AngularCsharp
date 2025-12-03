@@ -4,6 +4,7 @@ import { Tricount } from "../models/Tricount";
 import { plainToInstance } from "class-transformer";
 import { Inject, Injectable } from "@angular/core";
 import { BASE_URL } from "src/main";
+import { UserBalance } from "../models/UserBalance";
 
 @Injectable({
     providedIn: 'root'
@@ -22,4 +23,13 @@ export class TricountService{
             }))
         );
     }
+
+    getTricountBalance(id: number): Observable<UserBalance[]>{
+        return this.http.get<any[]>(`${this.baseUrl}rpc/get_tricount_balance?tricount_id=${id}`).pipe(
+            map(json => plainToInstance(UserBalance, json, {
+                enableImplicitConversion: true
+            }))
+        );
+    }
+
 }
