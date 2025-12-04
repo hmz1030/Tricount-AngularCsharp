@@ -7,4 +7,4 @@ import { Component } from "@angular/core";
     styleUrls: ['./addtricount.component.css']
 })
 export class AddTricountComponent {
-    
+}
