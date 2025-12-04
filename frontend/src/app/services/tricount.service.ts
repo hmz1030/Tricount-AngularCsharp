@@ -31,5 +31,12 @@ export class TricountService{
             }))
         );
     }
+    saveTricount(tricount: Tricount): Observable<Tricount> {
+        return this.http.post<any>(`${this.baseUrl}rpc/save_tricount`, tricount).pipe(
+            map(json => plainToInstance(Tricount, json, {
+                enableImplicitConversion: true
+            }))
+        );
+    }
 
 }
