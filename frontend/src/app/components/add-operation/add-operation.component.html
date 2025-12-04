@@ -1,0 +1,34 @@
+<header class="tc-header">
+    <button class="header-btn" (click)="back()">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <span class="tc-header-title">Add Operation</span>
+    <span class="tc-header-spacer"></span>
+
+    <button class="header-btn" (click)="save()">
+        <mat-icon>save</mat-icon>
+    </button>
+</header>
+<div class="op-container">
+    <form [formGroup]="frm" (ngSubmit)="save()" class="AddOperation-form" novalidate>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title(*)</mat-label>
+            <input matInput type="text" formControlName="titleCtl" [errorStateMatcher]="matcher" required appSetFocus>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Amount(*)</mat-label>
+            <input matInput type="number" formControlName="amountCtl" [errorStateMatcher]="matcher" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Operation Date(*)</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="dateCtl" required>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+    </form>
+</div>

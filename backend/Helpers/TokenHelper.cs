@@ -37,7 +37,7 @@ public class TokenHelper
         var tokenDescriptor = new SecurityTokenDescriptor {
             Subject = new ClaimsIdentity(claims),
             IssuedAt = DateTime.UtcNow,
-            Expires = DateTime.UtcNow.AddMinutes(10),
+            Expires = DateTime.UtcNow.AddMinutes(300),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -70,20 +70,20 @@ public class TokenHelper
 
         return principal;
     }
-/*
-    public async Task<string?> GetRefreshTokenAsync(string pseudo) {
-        var member = await _context.Users.FindAsync(pseudo);
-        return member?.RefreshToken;
-    }
-
-    public async Task SaveRefreshTokenAsync(string pseudo, string token) {
-        var member = await _context.Users.FindAsync(pseudo);
-        if (member != null) {
-            member.RefreshToken = token;
-            await _context.SaveChangesAsync();
+    /*
+        public async Task<string?> GetRefreshTokenAsync(string pseudo) {
+            var member = await _context.Users.FindAsync(pseudo);
+            return member?.RefreshToken;
         }
-    }
-*/
+
+        public async Task SaveRefreshTokenAsync(string pseudo, string token) {
+            var member = await _context.Users.FindAsync(pseudo);
+            if (member != null) {
+                member.RefreshToken = token;
+                await _context.SaveChangesAsync();
+            }
+        }
+    */
 
     public static string GetPasswordHash(string password) {
         string salt = "Peodks;zsOK30S,s";

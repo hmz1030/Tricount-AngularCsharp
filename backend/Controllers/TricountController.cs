@@ -66,7 +66,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     [Authorize]
     [HttpPost("save_tricount")]
     public async Task<ActionResult<TricountDetailsDTO>> SaveTricount([FromBody] TricountSaveDTO dto) {
-        
+
         //Recuperer l'user connecté
         var user = await GetConnectedUser();
         if (user == null) {
@@ -79,21 +79,20 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             return BadRequest(Error("one or more participants not found"));
         }
 
-        if(dto.Id == 0)
+        if (dto.Id == 0)
             return await CreateTricount(dto, user, participants);
-        
+
         return await UpdateTricount(dto, user, participants);
     }
 
     private async Task<ActionResult<TricountDetailsDTO>> CreateTricount(
         TricountSaveDTO dto,
         User user,
-        ICollection<User> participants) 
-    {
+        ICollection<User> participants) {
         // Le createur doit être participant
-        if(!participants.Any(p => p.Id == user.Id))
+        if (!participants.Any(p => p.Id == user.Id))
             participants.Add(user);
-        
+
         var tricount = new TricountEntity {
             Title = dto.Title,
             Description = dto.Description,
@@ -115,8 +114,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     private async Task<ActionResult<TricountDetailsDTO>> UpdateTricount(
         TricountSaveDTO dto,
         User user,
-        ICollection<User> newParticipants)
-    {
+        ICollection<User> newParticipants) {
         var tricount = await context.Tricounts
             .Include(t => t.Participants)
             .Include(t => t.Operations)
@@ -126,7 +124,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         if (tricount == null)
             return BadRequest(Error("tricount not found"));
 
-       
+
         bool isAdmin = user.Role == Role.Admin;
         bool isParticipant = tricount.Participants.Any(p => p.Id == user.Id);
 
@@ -162,8 +160,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         return await CreateTricountResponse(tricount.Id);
     }
 
-    private async Task<ActionResult<TricountDetailsDTO>> CreateTricountResponse(int id)
-    {
+    private async Task<ActionResult<TricountDetailsDTO>> CreateTricountResponse(int id) {
         var result = await context.Tricounts
             .AsNoTracking()
             .Include(t => t.Participants)
@@ -290,7 +287,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
           .AsNoTracking()
           //.Include(o => o.Repartitions) ne pas inclure les repartitions pour respecter l'ordre!!
           .FirstAsync(o => o.Id == newOperation.Id);
-          result.Repartitions = dto.Repartitions.Select(r=> new Repartition { OperationId = result.Id, UserId = r.UserId, Weight = r.Weight }).ToList();
+            result.Repartitions = dto.Repartitions.Select(r => new Repartition { OperationId = result.Id, UserId = r.UserId, Weight = r.Weight }).ToList();
             return mapper.Map<OperationDTO>(result);
         } else {
             var operation = await Operation.GetByIdWithRepartitions(context, dto.Id);
@@ -375,7 +372,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         IQueryable<TricountEntity> query = context.Tricounts
             .Include(t => t.Participants)
             .Include(t => t.Operations)
-                .ThenInclude(o=>o.Repartitions.OrderBy(r=>r.UserId)); // tri par id pcq ya warning dans les test;
+                .ThenInclude(o => o.Repartitions.OrderBy(r => r.UserId)); // tri par id pcq ya warning dans les test;
 
         if (user.Role != Role.Admin) {
             var userId = user.Id;
@@ -391,6 +388,7 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         var dto = mapper.Map<IEnumerable<TricountDetailsDTO>>(tricounts);
         return Ok(dto);
     }
+
     [Authorize]
     [HttpGet("get_tricount_balance")]
     public async Task<ActionResult<IEnumerable<TricountBalanceDTO>>> GetTricountBalance([FromQuery] int tricount_id) {

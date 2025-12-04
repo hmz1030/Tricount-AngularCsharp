@@ -8,6 +8,7 @@ import { AppComponent } from './app/components/app/app.component';
 import { environment } from './environments/environment';
 import { appRoutes } from './app/routing/app.routing';
 import { AuthInterceptor } from './app/core/auth.interceptor';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 export const BASE_URL = new InjectionToken<string>('BASE_URL');
 
@@ -19,6 +20,7 @@ const providers = [
     provideHttpClient(withInterceptorsFromDi()),
     provideRouter(appRoutes),
     provideAnimationsAsync(),
+    provideNativeDateAdapter(),
     { provide: APP_ID, useValue: 'prid-tuto' },
     { provide: BASE_URL, useFactory: getBaseUrl, deps: [] },
     {

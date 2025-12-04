@@ -15,21 +15,21 @@ import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dial
 
 
 @Component({
-  selector: 'app-tricounts',
-  standalone: true,
-  imports: [
-    CommonModule,
-    NgClass,
-    RouterLink,
-    RouterLinkActive,
-    MatIconModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatCardModule,
-    MatDialogModule
-  ],
-  templateUrl: './tricounts.component.html',
-  styleUrls: ['./tricounts.component.css']
+    selector: 'app-tricounts',
+    standalone: true,
+    imports: [
+        CommonModule,
+        NgClass,
+        RouterLink,
+        RouterLinkActive,
+        MatIconModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatCardModule,
+        MatDialogModule
+    ],
+    templateUrl: './tricounts.component.html',
+    styleUrls: ['./tricounts.component.css']
 })
 
 export class TricountsComponent implements OnInit {
@@ -37,29 +37,29 @@ export class TricountsComponent implements OnInit {
     loading = false;
     error: string | null = null;
     isSidePanelOpen = false;
-   
+
     get currentUser() {
         return this.authService.currentUser;
     }
 
     constructor(
-        private tricountService: TricountService, 
-        private authService : AuthenticationService,
-        private resetDb : ResetDataBaseService,
+        private tricountService: TricountService,
+        private authService: AuthenticationService,
+        private resetDb: ResetDataBaseService,
         private router: Router,
         private dialog: MatDialog
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.loadTricounts();
     }
 
-    
+
     toggleSidePanel(): void {
         this.isSidePanelOpen = !this.isSidePanelOpen;
     }
 
-    closeSidePanel(): void{
+    closeSidePanel(): void {
         this.isSidePanelOpen = false;
     }
 
@@ -95,8 +95,8 @@ export class TricountsComponent implements OnInit {
         this.router.navigate(['/login']);
     }
 
-    viewTricount(id : number): void {
-        this.router.navigate(['/tricount',id]);
+    viewTricount(id: number): void {
+        this.router.navigate(['/tricount', id]);
     }
 
     openResetPopup(): void {
@@ -105,7 +105,7 @@ export class TricountsComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result === true) {
+            if (result === true) {
                 this.resetDb.resetDataBase();
                 this.logout();
             }

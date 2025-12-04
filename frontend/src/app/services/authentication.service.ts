@@ -70,4 +70,13 @@ export class AuthenticationService {
     isFullNameAvailable(fullName: string): Observable<boolean> {
         return this.http.post<boolean>(`${this.baseUrl}rpc/check_full_name_available`, { full_name: fullName });
     }
+
+    getAllUsers(): Observable<User[]> {
+        return this.http.get<any[]>(`${this.baseUrl}rpc/get_all_users`)
+            .pipe(
+                map(users => plainToInstance(User, users, {
+                    enableImplicitConversion: true
+                }))
+            );
+    }
 }
