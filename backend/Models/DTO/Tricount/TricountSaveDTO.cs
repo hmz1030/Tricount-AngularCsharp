@@ -4,9 +4,7 @@ using Tricount.Models.Entities;
 
 namespace Tricount.Models.DTO.Tricount;
 
-/// <summary>
-/// DTO pour créer ou modifier un Tricount (save_tricount)
-/// </summary>
+
 public class TricountSaveDTO
 {
     // si zero = creation; si sup c'est une modif
