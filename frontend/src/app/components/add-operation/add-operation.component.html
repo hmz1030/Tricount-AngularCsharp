@@ -40,6 +40,50 @@
                 }
             </mat-select>
         </mat-form-field>
+        
+        <div class="participants-section">
+            <h1 class="section-title">From whom</h1>
+            @if(selectedParticipants.length === 0) {
+                <mat-error class="participants-error">
+                    At least one participant must be selected
+                </mat-error>
+            }
 
+            <div class="participants-list">
+                @for(user of users; track user.id) {
+                    <div class="participant-row">
+                        <mat-checkbox
+                            [checked]="isParticipantSelected(user.id!)"
+                            (change)="toggleParticipant(user.id!, $event.checked)"
+                            class="participant-checkbox">
+                            {{user.full_name}}
+                        </mat-checkbox>
+
+                        @if(isParticipantSelected(user.id!)) {
+                            <div class="participant-controls">
+                                <span class="weight-badge">{{getParticipantWeight(user.id!)}}x</span>
+                                <span class="share-amount">{{calculateShare(user.id!) | number:'1.2-2'}}€</span>
+
+                                <div class="weight-buttons">
+                                    <button type="button"
+                                            mat-icon-button
+                                            (click)="decrementWeight(user.id!)"
+                                            class="weight-btn">
+                                        <mat-icon>Remove</mat-icon>
+                                    </button>
+                                    <button type="button" 
+                                            mat-icon-button 
+                                            (click)="incrementWeight(user.id!)"
+                                            class="weight-btn">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+        </div>
     </form>
 </div>

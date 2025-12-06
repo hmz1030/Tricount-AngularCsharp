@@ -1,3 +1,6 @@
+import { Type } from "class-transformer";
+import { Repartition } from "./Repartition";
+
 export class Operation {
     id?: number;
     title?: string;
@@ -5,6 +8,9 @@ export class Operation {
     operation_date?: Date;
     initiator_id?: number;
     tricount_id?: number;
+    
+    @Type(() => Repartition)
+    repartitions?: Repartition[];
     
     initiatorName?: string;  
 }
