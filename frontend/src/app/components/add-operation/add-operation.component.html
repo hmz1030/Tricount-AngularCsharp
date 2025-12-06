@@ -30,5 +30,16 @@
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Paid by(*)</mat-label>
+            <mat-select formControlName="paidBy">
+                @for(u of users; track u.id) {
+                    <mat-option [value]="u.id"> 
+                        {{u.full_name}}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
     </form>
 </div>

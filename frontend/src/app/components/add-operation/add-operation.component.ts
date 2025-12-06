@@ -12,6 +12,9 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { SetFocusDirective } from '../../directives/setfocus.directive';
 import { ImmediateErrorStateMatcher } from '../../matchers/imediate-error-state.matcher';
 import { User } from 'src/app/models/user';
+import { MatSelectModule } from '@angular/material/select';
+import { ChangeDetectorRef } from '@angular/core';
+import { TricountService } from 'src/app/services/tricount.service';
 
 @Component({
     selector: 'add-operation',
@@ -24,6 +27,7 @@ import { User } from 'src/app/models/user';
         MatInputModule,
         MatButtonModule,
         MatCardModule,
+        MatSelectModule,
         MatDatepickerModule,
         MatIconModule,
         SetFocusDirective
@@ -35,9 +39,11 @@ import { User } from 'src/app/models/user';
 export class AddOperationComponent {
     users: User[] = [];
     error: string | null = null;
+    public UserConnected: User | undefined;
     tricountId!: number;
     public frm!: FormGroup;
     public titleCtl!: FormControl;
+    public paidBy!: FormControl;
     public amountCtl!: FormControl;
     public dateCtl!: FormControl;
     matcher = new ImmediateErrorStateMatcher();
@@ -46,38 +52,50 @@ export class AddOperationComponent {
         private router: Router,
         private route: ActivatedRoute,
         private fb: FormBuilder,
-        private auth: AuthenticationService
+        private auth: AuthenticationService,
+        private tricountService: TricountService,
+        private cdr: ChangeDetectorRef
     ) {
         this.frm = this.fb.group({
             titleCtl: ['', Validators.required],
             amountCtl: ['', Validators.required],
-            dateCtl: [new Date(), Validators.required]
+            dateCtl: [new Date(), Validators.required],
+            paidBy: ['', Validators.required]
         });
     }
 
     ngOnInit() {
         this.tricountId = Number(this.route.snapshot.paramMap.get('id'));
+        this.UserConnected = this.auth.currentUser;
+        this.getParticipants();
+        setTimeout(() => {
+            this.cdr.detectChanges();
+        })
     }
 
     back(): void {
-       this.router.navigate(['/tricount/' + this.tricountId]) 
+        this.router.navigate(['/tricount/' + this.tricountId]);
     }
 
     save(): void {
 
     }
 
-    getAllUsers(): void{
-        this.error = null;
-
-        this.auth.getAllUsers().subscribe({
-            next: u => {
-                this.users = u;
+    getParticipants(): void {
+        this.tricountService.getMyTricounts().subscribe({
+            next: tricounts => {
+                const tricount = tricounts.find(t => t.id == this.tricountId);
+                if(!tricount) {
+                    console.error("tricount not found");
+                    return;
+                }
+                this.users = tricount.participants;
             },
-            error: err => {
-                console.error(err);
-                this.error = 'Impossible de charger vos tricounts.';
-            }
-        })
+            error: err => console.error(err)
+        });
     }
+
+
+
+    
 }

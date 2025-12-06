@@ -92,6 +92,7 @@ export class TricountsComponent implements OnInit {
     logout(): void {
         this.authService.logout();
         this.closeSidePanel();
+        this.tricountService.clearCache();
         this.router.navigate(['/login']);
     }
 
