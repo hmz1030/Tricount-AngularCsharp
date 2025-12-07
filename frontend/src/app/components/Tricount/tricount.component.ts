@@ -82,11 +82,9 @@ export class TricountComponent implements OnInit {
     edit(): void {
     }
     delete(): void {
-        this.tricountService.deleteTricount(this.tricount!.id).subscribe{
-            next: ()=>{
-                
-            }
-        };
+        this.tricountService.deleteTricount(this.tricount!.id).subscribe();
+        this.tricountService.getMyTricounts(true).subscribe();
+        this.tricountService.clearCache();
         this.router.navigate(['/tricounts']);
     }
     viewBalance(): void {

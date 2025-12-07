@@ -28,6 +28,7 @@ export class TricountService{
     getMyTricounts(forceRefresh: boolean = false): Observable<Tricount[]> {
 
         if(!forceRefresh) {
+            console.log("In")
             const cached = this.getTricountsFromStorage();
             if(cached && cached.length > 0)
                 return of(cached);
