@@ -1,0 +1,65 @@
+::ng-deep .mat-mdc-dialog-container {
+    padding: 32px !important;
+    border-radius: 12px !important;
+}
+
+h2 {
+    font-size: 28px;
+    font-weight: 400;
+    color: #333;
+    margin: 0 0 32px 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+div[mat-dialog-content] {
+    padding: 0 0 48px 0;
+}
+
+div[mat-dialog-content] p {
+    font-size: 18px;
+    color: #555;
+    margin: 0;
+    line-height: 1.6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 0;
+    margin: 0;
+}
+
+.action-btn {
+    min-width: 100px;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 400;
+    text-transform: none;
+    cursor: pointer;
+    border: 2px solid;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.2s ease;
+}
+
+.yes-btn {
+    color: #5c6bc0;
+    background-color: #ffffff;
+    border-color: #5c6bc0;
+}
+
+.yes-btn:hover {
+    background-color: #f5f6fb;
+}
+
+.no-btn {
+    background-color: #e5e5e5;
+    color: #555;
+    border-color: #aaa;
+}
+
+.no-btn:hover {
+    background-color: #d5d5d5;
+}

@@ -13,17 +13,15 @@ import { DeleteTricountComponent } from "../delete-tricount/delete-tricount.comp
     selector: 'app-tricounts',
     standalone: true,
     imports: [CommonModule, MatIconModule],
-    templateUrl: './tricount.component.html',
-    styleUrls: ['./tricount.component.css']
+    templateUrl: './balance.component.html',
+    styleUrls: ['./balance.component.css']
 })
 
-export class TricountComponent implements OnInit {
+export class BalanceComponent implements OnInit {
     tricount?: Tricount;
-    userid?: number;
     error?: string;
-    userBalance?: UserBalance;
-    total: number = 0;
-    mytotal: number = 0;
+    balances?: UserBalance[];
+
     constructor(
         private tricountService: TricountService,
         private authService: AuthenticationService,
@@ -36,7 +34,6 @@ export class TricountComponent implements OnInit {
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
         // charger le user stocke dans authService session storage
-        this.userid = this.authService.currentUser?.id;
 
         this.tricountService.getMyTricounts().subscribe({
             next: (tricounts) => {
@@ -60,55 +57,14 @@ export class TricountComponent implements OnInit {
         });
 
         this.tricountService.getTricountBalance(id).subscribe({
-            next: (usersBalance) => {
-                this.userBalance = usersBalance.find(ub => ub.user == this.userid);
-                console.log("found balance:", this.userBalance);
+            next: (userBalance) => {
+                this.balances = userBalance;
             }
         })
     }
 
     goBack(): void {
-        this.router.navigate(['/tricounts']);
-    }
-
-    calculateTotal() {
-        if (this.tricount) {
-            for (let op of this.tricount?.operations) {
-                this.total += op.amount || 0
-            }
-        }
-    }
-
-
-    refresh(): void {
-    }
-    edit(): void {
-    }
-    delete(): void {
-        const dialogRef = this.dialog.open(DeleteTricountComponent,{width:'500px'})
-
-        dialogRef.afterClosed().subscribe(result => {
-            if(result == true) {
-                this.tricountService.deleteTricount(this.tricount!.id).subscribe({
-                    next : () =>{
-                        this.tricountService.getMyTricounts(true).subscribe();
-                        this.tricountService.clearCache();
-                        this.router.navigate(['/tricounts']);
-                    },
-                    error: (err) => {
-                        console.error('Erreur lors du delete tricount:', err)
-                    }
-                })
-            }
-        });
-        
-    }
-    viewBalance(): void {
-        console.log('View balance clicked');
-    }
-
-    addOperation(): void {
-        this.router.navigate(['tricount/' + this.tricount?.id + '/add-operation']);
+        this.router.navigate(['/tricount/']);
     }
 
 }
