@@ -78,6 +78,7 @@ export class TricountsComponent implements OnInit {
                 this.loading = false;
             }
         });
+
     }
 
     onAddTricount(): void {

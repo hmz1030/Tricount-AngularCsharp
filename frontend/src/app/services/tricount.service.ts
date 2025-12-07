@@ -77,4 +77,10 @@ export class TricountService{
             switchMap(realTricount => this.getMyTricounts().pipe(map(_=>realTricount)))
         );
     }
+
+    deleteTricount(id : number): Observable<any>{
+        return this.http.post<any>(`${this.baseUrl}rpc/delete_tricount`,{
+            tricount_id: id
+        })
+    }
 }
