@@ -67,7 +67,7 @@ export class TricountsComponent implements OnInit {
         this.loading = true;
         this.error = null;
 
-        this.tricountService.getMyTricounts().subscribe({
+        this.tricountService.getMyTricounts(true).subscribe({
             next: t => {
                 this.tricounts = t;
                 this.loading = false;
@@ -107,8 +107,15 @@ export class TricountsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result === true) {
-                this.resetDb.resetDataBase();
-                this.logout();
+                this.resetDb.resetDataBase().subscribe({
+                    next: () => {
+                        this.logout();
+                    },
+                    error: (err) => {
+                        console.error('Erreur lors du reset:', err);
+                        this.error = 'Erreur lors du reset de la base de données';
+                    }
+                });
             }
         });
     }
