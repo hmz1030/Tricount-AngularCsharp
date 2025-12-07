@@ -10,7 +10,7 @@ export class Tricount {
   creator!: number;
 
   @Type(() => User)
-  participants!: User[]; // on peut use directement model User, il a tout ce dont on a besoin
+  participants!: User[];
 
   @Type(() => Operation)
   operations!: Operation[];
