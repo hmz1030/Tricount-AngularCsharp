@@ -1,0 +1,93 @@
+.balance-header {
+    display: flex;
+    align-items: center;
+    background-color: #5c9cdb;
+    color: white;
+    padding: 14px 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.header-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.header-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.header-btn mat-icon {
+    font-size: 24px;
+}
+
+.header-title {
+    flex: 1;
+    margin: 0 16px;
+    font-size: 22px;
+    font-weight: 400;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.balance-container {
+    padding: 32px 24px;
+    background-color: #f0f0f0;
+    min-height: calc(100vh - 64px);
+}
+
+.balance-item {
+    margin-bottom: 16px;
+}
+
+.balance-content {
+    display: grid;
+    grid-template-columns: 150px 1fr 150px;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.user-name {
+    font-weight: 500;
+    font-size: 18px;
+    color: #333;
+    text-align: right;
+}
+
+.balance-bar-container {
+    position: relative;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.balance-bar {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.3s ease;
+}
+
+.balance-bar.negative {
+    background-color: #d9948c;
+    margin-right: auto;
+}
+
+.balance-bar.positive {
+    background-color: #90c99c;
+    margin-left: auto;
+}
+
+.balance-amount {
+    font-weight: 600;
+    font-size: 20px;
+    text-align: left;
+}

@@ -1,0 +1,27 @@
+<header class="balance-header">
+  <button class="header-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  
+  <h1 class="header-title">Balance</h1>
+  
+  <button class="header-btn" (click)="refresh()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</header>
+
+<div class="balance-item" *ngFor="let balance of balances">
+  <div class="balance-content">
+    <span class="user-name">{{ balance.name || 'User ' + balance.user }}</span>
+    <div class="balance-bar-container">
+      <div class="balance-bar" 
+           [ngClass]="{
+             'negative': (balance.balance || 0) < 0,
+             'positive': (balance.balance || 0) > 0
+           }"
+           [style.width.%]="getBarWidth(balance.balance || 0)">
+      </div>
+    </div>
+    <span class="balance-amount">{{ balance.balance }} €</span>
+  </div>
+</div>

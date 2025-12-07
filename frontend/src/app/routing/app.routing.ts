@@ -8,6 +8,7 @@ import { RestrictedComponent } from '../components/restricted/restricted.compone
 import { UnknownComponent } from '../components/unknown/unknown.component';
 import{AddOperationComponent} from '../components/add-operation/add-operation.component';
 import { AuthGuard } from '../services/auth.guard';
+import { BalanceComponent } from '../components/Balance/balance.component';
 
 export const appRoutes: Routes = [
     { path: '', component: LoginComponent, pathMatch: 'full' },
@@ -15,6 +16,7 @@ export const appRoutes: Routes = [
     { path: 'signup', component: SignupComponent },
     { path: 'tricounts', component: TricountsComponent, canActivate: [AuthGuard] },
     { path: 'tricount/:id', component: TricountComponent, canActivate: [AuthGuard] },
+    { path: 'balance/:id', component: BalanceComponent, canActivate: [AuthGuard] },
     { path: 'tricount/:id/add-operation', component: AddOperationComponent, canActivate: [AuthGuard]},
     { path: 'restricted', component: RestrictedComponent },
     { path: '**', component: UnknownComponent }

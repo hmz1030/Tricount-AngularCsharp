@@ -104,7 +104,7 @@ export class TricountComponent implements OnInit {
         
     }
     viewBalance(): void {
-        console.log('View balance clicked');
+        this.router.navigate(['/balance', this.tricount?.id]);
     }
 
     addOperation(): void {

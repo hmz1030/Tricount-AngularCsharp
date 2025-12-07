@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from "@angular/common";
 import { UserBalance } from "src/app/models/UserBalance";
 import { MatDialog } from "@angular/material/dialog";
-import { DeleteTricountComponent } from "../delete-tricount/delete-tricount.component";
+import { User } from "src/app/models/user";
 
 @Component({
     selector: 'app-tricounts',
@@ -18,9 +18,10 @@ import { DeleteTricountComponent } from "../delete-tricount/delete-tricount.comp
 })
 
 export class BalanceComponent implements OnInit {
-    tricount?: Tricount;
+    tricountid?: number;
+    users: User[] = [];
     error?: string;
-    balances?: UserBalance[];
+    balances?: UserBalance[] = [];
 
     constructor(
         private tricountService: TricountService,
@@ -32,39 +33,69 @@ export class BalanceComponent implements OnInit {
 
 
     ngOnInit(): void {
-        const id = Number(this.route.snapshot.paramMap.get('id'));
-        // charger le user stocke dans authService session storage
-
-        this.tricountService.getMyTricounts().subscribe({
-            next: (tricounts) => {
-                this.tricount = tricounts.find(t => t.id == id);
-
-
-                // Vérifier si le tricount existe et si l'utilisateur y a accès
-                if (!this.tricount) {
-                    console.warn('Tricount not found or access denied');
-                    this.router.navigate(['/restricted']);
-                    return;
+    this.tricountid = Number(this.route.snapshot.paramMap.get('id'));
+    
+    // Load balances first
+    this.tricountService.getTricountBalance(this.tricountid).subscribe({
+        next: (userBalance) => {
+            this.balances = userBalance;
+            
+            // Then load users
+            this.authService.getAllUsers().subscribe({
+                next: (userslist) => {
+                    this.users = userslist;
+                    
+                    // NOW match names - both are loaded!
+                    this.matchUserNames();
+                    
+                    console.log("Balances with names:", this.balances);
+                },
+                error: (err) => {
+                    console.error("Error loading users:", err);
                 }
+            });
+        },
+        error: (err) => {
+            console.error("Error loading balances:", err);
+        }
+    });
+}
 
-                this.calculateTotal();
-                console.log("Found Tricount : ", this.tricount)
-            },
-            error: (err) => {
-                console.error('Error loading tricount:', err);
-                this.router.navigate(['/restricted']);
+    matchUserNames(): void {
+    if (this.balances && this.users) {
+        this.balances.forEach(balance => {
+            const user = this.users.find(u => u.id === balance.user);
+            if (user) {
+                balance.name = user.full_name; 
             }
         });
-
-        this.tricountService.getTricountBalance(id).subscribe({
-            next: (userBalance) => {
-                this.balances = userBalance;
-            }
-        })
+        console.log("Balances with names:", this.balances);
     }
+}
 
     goBack(): void {
-        this.router.navigate(['/tricount/']);
+       this.router.navigate(['/tricount', this.tricountid]);
     }
+    refresh(): void {
+        if (this.tricountid) {
+            this.tricountService.getTricountBalance(this.tricountid).subscribe({
+                next: (userBalance) => {
+                    this.balances = userBalance;
+                    console.log("Balances refreshed:", this.balances);
+                },
+                error: (err) => {
+                    console.error('Error refreshing balances:', err);
+                }
+            });
+        }
+    }
+    getBarWidth(balance: number): number {
+    if (balance === 0) return 0;
+    
+    const maxBalance = Math.max(...(this.balances?.map(b => Math.abs(b.balance || 0)) || [0]));
+    
+    return (Math.abs(balance) / maxBalance) * 100;
+}
+
 
 }
