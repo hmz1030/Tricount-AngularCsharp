@@ -66,6 +66,7 @@ export class TricountService{
 
     clearCache(): void {
         localStorage.removeItem(this.STORAGE_KEY);
+        this._tricounts = [];
     }
 
     getTricountBalance(id: number): Observable<UserBalance[]>{
