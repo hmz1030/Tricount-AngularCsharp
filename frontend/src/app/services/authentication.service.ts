@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { BASE_URL } from 'src/main';
 import { User } from '../models/user';
 import { plainToInstance } from 'class-transformer';  
@@ -15,6 +15,12 @@ interface LoginResponse {
 })
 export class AuthenticationService {
     public currentUser?: User;
+    private allUsers :User[] = [];
+
+    get users(): User[] {
+        return this.allUsers;
+
+    }
     constructor(
         private http: HttpClient, 
         @Inject(BASE_URL) private baseUrl: string
@@ -41,6 +47,7 @@ export class AuthenticationService {
                     sessionStorage.setItem('currentUser', JSON.stringify(user));
                     this.currentUser = user;
                     return user;
+
                 })
             );
     }
@@ -76,7 +83,8 @@ export class AuthenticationService {
             .pipe(
                 map(users => plainToInstance(User, users, {
                     enableImplicitConversion: true
-                }))
+                })),
+                tap(users => this.allUsers = users)
             );
     }
 }
