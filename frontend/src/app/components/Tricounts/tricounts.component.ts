@@ -39,7 +39,7 @@ export class TricountsComponent implements OnInit {
     isSidePanelOpen = false;
 
     get currentUser() {
-        return this.authService.currentUser;
+        return this.authService._currentUser;
     }
 
     constructor(

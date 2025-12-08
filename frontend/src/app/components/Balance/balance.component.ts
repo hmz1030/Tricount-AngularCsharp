@@ -8,6 +8,7 @@ import { CommonModule } from "@angular/common";
 import { UserBalance } from "src/app/models/UserBalance";
 import { MatDialog } from "@angular/material/dialog";
 import { User } from "src/app/models/user";
+import { BalanceService } from "src/app/services/balance.service";
 
 @Component({
     selector: 'app-tricounts',
@@ -25,6 +26,7 @@ export class BalanceComponent implements OnInit {
 
     constructor(
         private tricountService: TricountService,
+        private balanceService: BalanceService,
         private authService: AuthenticationService,
         private router: Router,
         private route: ActivatedRoute,
@@ -36,29 +38,12 @@ export class BalanceComponent implements OnInit {
     this.tricountid = Number(this.route.snapshot.paramMap.get('id'));
     
     // Load balances first
-    this.tricountService.getTricountBalance(this.tricountid).subscribe({
-        next: (userBalance) => {
-            this.balances = userBalance;
-            
-            // Then load users
-            this.authService.getAllUsers().subscribe({
-                next: (userslist) => {
-                    this.users = userslist;
-                    
-                    // NOW match names - both are loaded!
-                    this.matchUserNames();
-                    
-                    console.log("Balances with names:", this.balances);
-                },
-                error: (err) => {
-                    console.error("Error loading users:", err);
-                }
-            });
-        },
-        error: (err) => {
-            console.error("Error loading balances:", err);
+    this.balanceService.getTricountBalance(this.tricountid).subscribe({
+        next: balances =>{
+            this.balances = balances
         }
-    });
+    })
+    console.log("balance", this.balances)
 }
 
     matchUserNames(): void {
@@ -78,15 +63,7 @@ export class BalanceComponent implements OnInit {
     }
     refresh(): void {
         if (this.tricountid) {
-            this.tricountService.getTricountBalance(this.tricountid).subscribe({
-                next: (userBalance) => {
-                    this.balances = userBalance;
-                    console.log("Balances refreshed:", this.balances);
-                },
-                error: (err) => {
-                    console.error('Error refreshing balances:', err);
-                }
-            });
+            this.balanceService.getTricountBalance(this.tricountid,true);
         }
     }
     getBarWidth(balance: number): number {

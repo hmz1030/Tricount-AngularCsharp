@@ -8,6 +8,7 @@ import { CommonModule } from "@angular/common";
 import { UserBalance } from "src/app/models/UserBalance";
 import { MatDialog } from "@angular/material/dialog";
 import { DeleteTricountComponent } from "../delete-tricount/delete-tricount.component";
+import { BalanceService } from "src/app/services/balance.service";
 
 @Component({
     selector: 'app-tricounts',
@@ -24,8 +25,10 @@ export class TricountComponent implements OnInit {
     userBalance?: UserBalance;
     total: number = 0;
     mytotal: number = 0;
+    canDelete: boolean = false;
     constructor(
         private tricountService: TricountService,
+        private balanceService: BalanceService,
         private authService: AuthenticationService,
         private router: Router,
         private route: ActivatedRoute,
@@ -36,7 +39,7 @@ export class TricountComponent implements OnInit {
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
         // charger le user stocke dans authService session storage
-        this.userid = this.authService.currentUser?.id;
+        this.userid = this.authService._currentUser?.id;
 
         this.tricountService.getMyTricounts().subscribe({
             next: (tricounts) => {
@@ -51,6 +54,7 @@ export class TricountComponent implements OnInit {
                 }
 
                 this.calculateTotal();
+                this.tricount?.creator != this.userid
                 console.log("Found Tricount : ", this.tricount)
             },
             error: (err) => {
@@ -59,12 +63,10 @@ export class TricountComponent implements OnInit {
             }
         });
 
-        this.tricountService.getTricountBalance(id).subscribe({
-            next: (usersBalance) => {
-                this.userBalance = usersBalance.find(ub => ub.user == this.userid);
-                console.log("found balance:", this.userBalance);
-            }
-        })
+        //recuperer les donner du balance du serveur si il sont pas deja la
+        this.balanceService.getTricountBalance(this.tricount?.id!).subscribe()
+        //recupere de la cash la balance du user
+        this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)
     }
 
     goBack(): void {
@@ -85,14 +87,17 @@ export class TricountComponent implements OnInit {
     edit(): void {
     }
     delete(): void {
+        if(this.tricount?.creator != this.userid){
+            return
+        }
         const dialogRef = this.dialog.open(DeleteTricountComponent,{width:'500px'})
 
         dialogRef.afterClosed().subscribe(result => {
             if(result == true) {
                 this.tricountService.deleteTricount(this.tricount!.id).subscribe({
                     next : () =>{
-                        this.tricountService.getMyTricounts(true).subscribe();
-                        this.tricountService.clearCache();
+                        this.tricountService.updateTricountsStorage(this.tricount!.id);
+                        
                         this.router.navigate(['/tricounts']);
                     },
                     error: (err) => {
@@ -104,7 +109,7 @@ export class TricountComponent implements OnInit {
         
     }
     viewBalance(): void {
-        this.router.navigate(['/balance', this.tricount?.id]);
+        this.router.navigate(['tricount/' + this.tricount?.id + '/balance']);
     }
 
     addOperation(): void {

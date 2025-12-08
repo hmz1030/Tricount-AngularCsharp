@@ -64,6 +64,19 @@ export class TricountService{
         return [];
     }
 
+    public updateTricountsStorage(id: number): void{
+        var tricounts: Tricount[] = []
+        //json tricounts
+        const data = localStorage.getItem(this.STORAGE_KEY);
+            if(data) {
+                const parsed = JSON.parse(data);
+                tricounts = plainToInstance(Tricount, parsed as any[]);
+                tricounts.filter(tricount => tricount.id != id);
+                localStorage.removeItem(this.STORAGE_KEY)
+                localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tricounts));
+            }
+    }
+
     clearCache(): void {
         localStorage.removeItem(this.STORAGE_KEY);
         this._tricounts = [];
@@ -91,7 +104,7 @@ export class TricountService{
             ...tricount,
             id: tempId,
             created_at: new Date().toISOString(),
-            creator: this.authService.currentUser!.id!,
+            creator: this.authService._currentUser!.id!,
             participants: [],
             operations: []
         };

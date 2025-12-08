@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { BASE_URL } from 'src/main';
 import { User } from '../models/user';
 import { plainToInstance } from 'class-transformer';  
@@ -14,7 +14,9 @@ interface LoginResponse {
     providedIn: 'root' 
 })
 export class AuthenticationService {
-    public currentUser?: User;
+    private currentUser?: User;
+    private allusers: User[] = [];
+
     constructor(
         private http: HttpClient, 
         @Inject(BASE_URL) private baseUrl: string
@@ -24,6 +26,10 @@ export class AuthenticationService {
         if (data) {
             this.currentUser = plainToInstance(User, JSON.parse(data));
         }
+    }
+
+    get _currentUser() :User | undefined{
+        return this.currentUser
     }
 
     login(email: string, password: string): Observable<User> {
@@ -71,12 +77,17 @@ export class AuthenticationService {
         return this.http.post<boolean>(`${this.baseUrl}rpc/check_full_name_available`, { full_name: fullName });
     }
 
-    getAllUsers(): Observable<User[]> {
+    getAllUsers(forceRefresh: boolean = false): Observable<User[]> {
+
+        if(!forceRefresh && this.allusers.length != 0){
+            return of(this.allusers)
+        }
         return this.http.get<any[]>(`${this.baseUrl}rpc/get_all_users`)
             .pipe(
                 map(users => plainToInstance(User, users, {
                     enableImplicitConversion: true
-                }))
+                })),
+                tap(users => this.allusers = users)
             );
     }
 }
