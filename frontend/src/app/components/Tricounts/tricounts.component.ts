@@ -34,6 +34,7 @@ import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dial
 
 export class TricountsComponent implements OnInit {
     tricounts: Tricount[] = [];
+    allUsers: User[] = [];
     loading = false;
     error: string | null = null;
     isSidePanelOpen = false;
@@ -52,6 +53,7 @@ export class TricountsComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadTricounts(false);
+        this.getAllUsers();
         console.log("Tricounts that are shown:",this.tricounts)
     }
 
@@ -81,8 +83,6 @@ export class TricountsComponent implements OnInit {
             }
         });
     }
-
-
 
     onAddTricount(): void {
         console.log("TODO: ouvrir écran de add tricount")
@@ -123,4 +123,20 @@ export class TricountsComponent implements OnInit {
             }
         });
     }
+
+    getAllUsers(): void {
+        this.authService.getAllUsers().subscribe({
+            next: u => {
+                this.allUsers = u;
+            },
+            error: (err) => {
+                console.log(err);
+            }
+        });
+    }
+
+    getCretorName(creatorId: number): string | undefined{
+        const creator = this.allUsers.find(u => u.id === creatorId);
+        return creator ? creator.full_name : "Unknown";
+    } 
 }

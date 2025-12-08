@@ -1,13 +1,7 @@
 ﻿using AutoMapper;
-using AutoMapper.Execution;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Xml;
 using Tricount.Helpers;
 using Tricount.Models;
 using Tricount.Models.DTO.Operation;
@@ -186,15 +180,6 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         hint = (string?)null,
         message = msg
     };
-
-
-
-
-
-
-
-
-
 
     private async Task<User?> GetConnectedUser() {
         var email = User.Identity?.Name;
