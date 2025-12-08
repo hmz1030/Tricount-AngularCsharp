@@ -18,7 +18,7 @@ export class TricountService{
     get tricounts(): Tricount[] {
         return this._tricounts;
     }
-    private readonly STORAGE_KEY = 'tricounts';
+
     constructor(
         private http: HttpClient,
         @Inject(BASE_URL) private baseUrl: string,
@@ -27,45 +27,21 @@ export class TricountService{
 
     getMyTricounts(forceRefresh: boolean = false): Observable<Tricount[]> {
 
-        if(!forceRefresh) {
-            console.log("In")
-            const cached = this.getTricountsFromStorage();
-            if(cached && cached.length > 0)
-                return of(cached);
+        if(!forceRefresh && this._tricounts.length > 0) {
+            console.log("Returning from cache")
+            return of(this._tricounts)
         }
         
+        console.log("returning from server")
         return this.http.get<any[]>(`${this.baseUrl}rpc/get_my_tricounts`).pipe(
             map(json => plainToInstance(Tricount, json, {
                 enableImplicitConversion: true
             })),
-            tap(tricounts => this.saveTricountToStorage(tricounts)),
             tap(tricounts => this._tricounts = tricounts)
         );
     }
 
-    private saveTricountToStorage(tricounts: Tricount[]): void {
-        try {
-            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tricounts));
-        } catch (error) {
-            console.error('Error saving triocunts to localstorage', error);
-        }
-    }
-
-    private getTricountsFromStorage(): Tricount[] {
-        try{
-            const data = localStorage.getItem(this.STORAGE_KEY);
-            if(data) {
-                const parsed = JSON.parse(data);
-                return plainToInstance(Tricount, parsed as any[]);
-            }
-        } catch (error) {
-            console.error('Error reading tricounts from localstorage:', error);
-        }
-        return [];
-    }
-
     clearCache(): void {
-        localStorage.removeItem(this.STORAGE_KEY);
         this._tricounts = [];
     }
 
