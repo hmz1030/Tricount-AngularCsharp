@@ -45,20 +45,28 @@ export class SaveTricountComponent implements OnInit {
         private authService: AuthenticationService,
         private route: ActivatedRoute,
         private router: Router,
-        private fb: FormBuilder)
-        {
-            this.currentUserId = this.authService.currentUser?.id;
+        private fb: FormBuilder) {
+        this.currentUserId = this.authService.currentUser?.id;
 
+
+    }
+    ngOnInit(): void {
+        this.currentUserId = this.authService.currentUser?.id;
+        this.tricountId = this.route.snapshot.paramMap.get('id') ?? 0;
+        this.authService.getAllUsers().subscribe(users => {
+            this.allUsers = users;
+        });
+        if (this.tricountId == 0) {
+            this.selectedParticipantIds = [this.currentUserId!];
+
+        }
+        else {
             
         }
-        ngOnInit(): void {
-            this.tricountId = Number(this.route.snapshot.paramMap.get('id')) || 0;
-            this.authService.getAllUsers().subscribe(users => {
-                this.allUsers = users;
-            });
-        }
 
 
 
 
-} 
+
+    }
+}
