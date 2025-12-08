@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+
 import { map, switchMap, tap } from 'rxjs/operators';
 import { BASE_URL } from 'src/main';
 import { User } from '../models/user';
@@ -16,6 +17,7 @@ interface LoginResponse {
 export class AuthenticationService {
     private currentUser?: User;
     private allusers: User[] = [];
+
 
     constructor(
         private http: HttpClient, 
@@ -47,6 +49,7 @@ export class AuthenticationService {
                     sessionStorage.setItem('currentUser', JSON.stringify(user));
                     this.currentUser = user;
                     return user;
+
                 })
             );
     }
@@ -88,6 +91,7 @@ export class AuthenticationService {
                     enableImplicitConversion: true
                 })),
                 tap(users => this.allusers = users)
+
             );
     }
 }

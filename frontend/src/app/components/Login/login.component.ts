@@ -1,10 +1,11 @@
 import { NgClass, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { FormControl, FormGroup, FormGroupDirective, Validators} from '@angular/forms'
+import { FormControl, FormGroup, Validators} from '@angular/forms'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
+import { User } from 'src/app/models/user';
 
 
 @Component({
@@ -22,7 +23,8 @@ export class LoginComponent implements OnInit{
 
     constructor(
         private authService: AuthenticationService,
-        private router: Router
+        private router: Router,
+        private userModel: User
     ){}
 
     ngOnInit() {
@@ -36,10 +38,10 @@ export class LoginComponent implements OnInit{
         );
         this.password = new FormControl('', [
             Validators.required,
-            this.hasLowerCase.bind(this),
-            this.hasUpperCase.bind(this),
-            this.hasNumber.bind(this),
-            this.hasSpecialChar.bind(this),
+            this.userModel.hasLowerCase.bind(this),
+            this.userModel.hasUpperCase.bind(this),
+            this.userModel.hasNumber.bind(this),
+            this.userModel.hasSpecialChar.bind(this),
             Validators.minLength(8)
         ]);
         this.loginForm = new FormGroup({
@@ -92,24 +94,5 @@ export class LoginComponent implements OnInit{
             });
     }
 
-    // Password validators
-    hasLowerCase(control: FormControl): { [key: string]: boolean } | null {
-        if (!control.value) return null;
-        return /[a-z]/.test(control.value) ? null : { hasLowerCase: true };
-    }
-
-    hasUpperCase(control: FormControl): { [key: string]: boolean } | null {
-        if (!control.value) return null;
-        return /[A-Z]/.test(control.value) ? null : { hasUpperCase: true };
-    }
-
-    hasNumber(control: FormControl): { [key: string]: boolean } | null {
-        if (!control.value) return null;
-        return /[0-9]/.test(control.value) ? null : { hasNumber: true };
-    }
-
-    hasSpecialChar(control: FormControl): { [key: string]: boolean } | null {
-        if (!control.value) return null;
-        return /[!@#$%^&*(),.?":{}|<>_]/.test(control.value) ? null : { hasSpecialChar: true };
-    }
+    
 }

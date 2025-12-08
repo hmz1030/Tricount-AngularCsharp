@@ -51,7 +51,7 @@ export class TricountsComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.loadTricounts();
+        this.loadTricounts(false);
         console.log("Tricounts that are shown:",this.tricounts)
     }
 
@@ -64,11 +64,12 @@ export class TricountsComponent implements OnInit {
         this.isSidePanelOpen = false;
     }
 
-    loadTricounts(): void {
+    loadTricounts(refresh: boolean = false): void {
         this.loading = true;
         this.error = null;
+        
 
-        this.tricountService.getMyTricounts(true).subscribe({
+        this.tricountService.getMyTricounts(refresh).subscribe({
             next: t => {
                 this.tricounts = t;
                 this.loading = false;
@@ -79,8 +80,9 @@ export class TricountsComponent implements OnInit {
                 this.loading = false;
             }
         });
-
     }
+
+
 
     onAddTricount(): void {
         console.log("TODO: ouvrir écran de add tricount")
