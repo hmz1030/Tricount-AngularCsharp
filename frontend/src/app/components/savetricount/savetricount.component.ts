@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -50,7 +50,7 @@ export class SaveTricountComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder) {
-        this.ctlTitle = this.fb.control('', [Validators.required, Validators.minLength(3)]);
+        this.ctlTitle = this.fb.control('', [Validators.required, Validators.minLength(3)], [this.titleUsed()]);
         this.ctlDescription = this.fb.control('', [Validators.minLength(3)]);
         this.frm = this.fb.group({
             title: this.ctlTitle,
@@ -101,7 +101,7 @@ export class SaveTricountComponent implements OnInit {
         }
 
     }
-    save(): void {
+    saveTricount(): void {
         const tricountToSave: Tricount = {
             id: this.tricountId,
             title: this.ctlTitle.value,
@@ -122,15 +122,30 @@ export class SaveTricountComponent implements OnInit {
                 }
 
 
-
-
-
             });
 
 
     }
     cancel(): void {
         this.router.navigate(['/tricounts']);
+    }
+    titleUsed(): AsyncValidatorFn {
+        let timeout: NodeJS.Timeout;
+        return (ctl: AbstractControl) => {
+            clearTimeout(timeout);
+            const title = ctl.value;
+            return new Promise(resolve => {
+                timeout = setTimeout(() => {
+                    if (title.length === 0) {
+                        resolve(null);
+                    } else {
+                        this!.tricountService.isTricountTitleAvailable(title).subscribe(available => {
+                            resolve(available ? null : { emailUsed: true });
+                        });
+                    }
+                }, 300);
+            });
+        };
     }
 
 }
