@@ -39,7 +39,7 @@ export class TricountComponent implements OnInit {
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
         // charger le user stocke dans authService session storage
-        this.userid = this.authService._currentUser?.id;
+        this.userid = this.authService.currentUser?.id;
 
         this.tricountService.getMyTricounts().subscribe({
             next: (tricounts) => {
@@ -96,7 +96,7 @@ export class TricountComponent implements OnInit {
             if(result == true) {
                 this.tricountService.deleteTricount(this.tricount!.id).subscribe({
                     next : () =>{
-                        this.tricountService.updateTricountsStorage(this.tricount!.id);
+                        //this.tricountService.updateTricountsStorage(this.tricount!.id);
                         
                         this.router.navigate(['/tricounts']);
                     },

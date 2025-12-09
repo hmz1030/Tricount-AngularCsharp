@@ -68,7 +68,7 @@ export class TricountService{
             ...tricount,
             id: tempId,
             created_at: new Date().toISOString(),
-            creator: this.authService._currentUser!.id!,
+            creator: this.authService.currentUser!.id!,
             participants: [],
             operations: []
         };

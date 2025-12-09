@@ -66,7 +66,7 @@ export class AddOperationComponent {
 
     ngOnInit() {
         this.tricountId = Number(this.route.snapshot.paramMap.get('id'));
-        this.UserConnected = this.auth._currentUser;
+        this.UserConnected = this.auth.currentUser;
         this.getParticipants();
         setTimeout(() => {
             this.cdr.detectChanges();

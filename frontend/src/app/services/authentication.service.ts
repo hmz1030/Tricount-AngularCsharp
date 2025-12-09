@@ -15,7 +15,7 @@ interface LoginResponse {
     providedIn: 'root' 
 })
 export class AuthenticationService {
-    private currentUser?: User;
+    private _currentUser?: User;
     private allusers: User[] = [];
 
 
@@ -26,12 +26,12 @@ export class AuthenticationService {
         // Check if user is already logged in
         const data = sessionStorage.getItem('currentUser');
         if (data) {
-            this.currentUser = plainToInstance(User, JSON.parse(data));
+            this._currentUser = plainToInstance(User, JSON.parse(data));
         }
     }
 
-    get _currentUser() :User | undefined{
-        return this.currentUser
+    get currentUser() :User | undefined{
+        return this._currentUser
     }
 
     login(email: string, password: string): Observable<User> {
@@ -47,7 +47,7 @@ export class AuthenticationService {
                 map(user => {
                     // Stocker les data du user dans session et dans dans currentuser
                     sessionStorage.setItem('currentUser', JSON.stringify(user));
-                    this.currentUser = user;
+                    this._currentUser = user;
                     return user;
 
                 })
@@ -70,7 +70,7 @@ export class AuthenticationService {
     logout() {
         sessionStorage.removeItem('currentUser');
         sessionStorage.removeItem('authToken');
-        this.currentUser = undefined;
+        this._currentUser = undefined;
     }
     isEmailAvailable(email: string): Observable<boolean> {
         return this.http.post<boolean>(`${this.baseUrl}rpc/check_email_available`, { email });

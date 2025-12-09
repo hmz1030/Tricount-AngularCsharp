@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -35,24 +35,32 @@ import { User } from "src/app/models/user";
 })
 export class SaveTricountComponent implements OnInit {
     tricountId: number = 0;
-    title: string = '';
-    description: string = '';
     selectedParticipantIds: number[] = [];
     allUsers: User[] = [];
     currentUserId: number | undefined;
+    error: string | null = null;
+    frm!: FormGroup;
+    ctlTitle!: FormControl;
+    ctlDescription!: FormControl;
+
     constructor(
         private tricountService: TricountService,
         private authService: AuthenticationService,
         private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder) {
-        this.currentUserId = this.authService.currentUser?.id;
+        this.ctlTitle = this.fb.control('', [Validators.required, Validators.minLength(3)]);
+        this.ctlDescription = this.fb.control('', [Validators.minLength(3)]);
+        this.frm = this.fb.group({
+            title: this.ctlTitle,
+            description: this.ctlDescription
+        });
 
 
     }
     ngOnInit(): void {
         this.currentUserId = this.authService.currentUser?.id;
-        this.tricountId = this.route.snapshot.paramMap.get('id') ?? 0;
+        this.tricountId = Number(this.route.snapshot.paramMap.get('id')) || 0;
         this.authService.getAllUsers().subscribe(users => {
             this.allUsers = users;
         });
@@ -61,12 +69,16 @@ export class SaveTricountComponent implements OnInit {
 
         }
         else {
-            
+            const tricount = this.tricountService.tricounts.find(t => t.id == this.tricountId);
+            if (tricount) {
+                this.ctlTitle.setValue(tricount.title);
+                this.ctlDescription.setValue(tricount.description || '');
+                this.selectedParticipantIds = tricount.participants.map(p => p.id!);
+
+
+            }
+
         }
-
-
-
-
-
     }
+    
 }
