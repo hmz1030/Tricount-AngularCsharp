@@ -14,6 +14,7 @@ import { SetFocusDirective } from "src/app/directives/setfocus.directive";
 import { AuthenticationService } from "src/app/services/authentication.service";
 import { TricountService } from "src/app/services/tricount.service";
 import { User } from "src/app/models/user";
+import { Tricount } from "src/app/models/Tricount";
 
 @Component({
     selector: 'app-save-tricount',
@@ -74,11 +75,62 @@ export class SaveTricountComponent implements OnInit {
                 this.ctlTitle.setValue(tricount.title);
                 this.ctlDescription.setValue(tricount.description || '');
                 this.selectedParticipantIds = tricount.participants.map(p => p.id!);
-
-
             }
 
         }
     }
-    
+    get availableUsers(): User[] {
+        return this.allUsers.filter(u => !this.selectedParticipantIds.includes(u.id!));
+    }
+    get selectedParticipants(): User[] {
+        return this.allUsers.filter(u => this.selectedParticipantIds.includes(u.id!));
+    }
+
+    addParticipant(userId: number): void {
+        if (!this.selectedParticipantIds.includes(userId)) {
+            this.selectedParticipantIds.push(userId);
+        }
+
+
+    }
+    removeParticipant(userId: number): void {
+        const index = this.selectedParticipantIds.indexOf(userId);
+        if (index > -1) {
+            // splice -> remove tous les elements a partir d'index
+            this.selectedParticipantIds.splice(index, 1)
+        }
+
+    }
+    save(): void {
+        const tricountToSave: Tricount = {
+            id: this.tricountId,
+            title: this.ctlTitle.value,
+            description: this.ctlDescription.value,
+            creator: this.currentUserId!,
+            created_at: new Date().toISOString(),
+            participants: [],
+            operations: []
+        };
+        this.tricountService.saveTricount(tricountToSave, this.selectedParticipantIds)
+            .subscribe({
+                next: () => {
+                    this.cancel();
+                },
+                error: (err) => {
+                    this.error = 'Erreur lors de la sauvegarde du tricount';
+                    console.error(err);
+                }
+
+
+
+
+
+            });
+
+
+    }
+    cancel(): void {
+        this.router.navigate(['/tricounts']);
+    }
+
 }
