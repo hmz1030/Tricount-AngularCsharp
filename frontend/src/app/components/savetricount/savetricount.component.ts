@@ -141,6 +141,7 @@ export class SaveTricountComponent implements OnInit {
                     } else {
                         this!.tricountService.isTricountTitleAvailable(title).subscribe(available => {
                             resolve(available ? null : { emailUsed: true });
+                            console.log("jss rentreyyy");
                         });
                     }
                 }, 300);

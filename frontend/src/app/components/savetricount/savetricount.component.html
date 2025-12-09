@@ -2,9 +2,27 @@
     <button class="tc-icon-btn" routerLink="/login">
         <mat-icon>arrow_back</mat-icon>
     </button>
-    <span class="tc-header-title">Signup</span>
+    <span class="tc-header-title">
+        {{tricountId=== 0 ? 'Add Tricount' : 'Edit Tricount'}}
+    </span>
+    <span class="tc-header-spacer"></span>
+
+    <button class="header-btn" (click)="saveTricount()">
+        <mat-icon>save</mat-icon>
+    </button>
 </header>
-<span class="tc-header-title">
-    {{tricountId=== 0 ? 'Add Tricount' : 'Edit Tricount'}}
-</span>
-<span class="tc-header-spacer"></span>
+<div class="savetricount-container">
+    <form [formGroup]="frm" (ngSubmit)="saveTricount()" class="SaveTricount-form" novalidate>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title(*)</mat-label>
+            <input matInput type="text" [formControl]="ctlTitle" required appSetFocus>
+            @if (ctlTitle.invalid && (ctlTitle.dirty || ctlTitle.touched)) {
+            <mat-error>
+                @if (ctlTitle.hasError('required')) { Title is required }
+                @else if (ctlTitle.hasError('minlength')) { Minimum 3 characters }
+                @else if (ctlTitle.hasError('titleUsed')) { This title is already exist }
+            </mat-error>
+            }
+        </mat-form-field>
+    </form>
+</div>

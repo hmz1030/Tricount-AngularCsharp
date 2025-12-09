@@ -85,7 +85,7 @@ export class TricountsComponent implements OnInit {
     }
 
     onAddTricount(): void {
-         this.router.navigate(['/add']);
+         this.router.navigate(['/add-tricount']);
     }
 
     home(): void {
