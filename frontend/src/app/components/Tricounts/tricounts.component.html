@@ -7,13 +7,13 @@
   <span class="tc-header-title">Your Tricounts</span>
   <span class="tc-header-spacer"></span>
 
-  <!--Icone refresh-->
   <button class="tc-icon-btn" (click)="loadTricounts(true)">
-    <mat-icon>Refresh/<mat-icon>
+    <mat-icon>refresh</mat-icon>
   </button>
-  <!--icon add-->
+
+  
   <button class="tc-icon-btn" (click)="onAddTricount()">
-    <mat-icon>Add/<mat-icon>
+    <mat-icon>add</mat-icon>
   </button>
 </header>
 
@@ -67,7 +67,7 @@
             {{t.description || 'No description'}}
           </div>
           <div class="tricount-meta">
-            {{getCreatorName(t.creator_id)}}
+            {{getCreatorName(t.creator)}}
           </div>
         </div>
 

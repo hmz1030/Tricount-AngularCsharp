@@ -85,7 +85,7 @@ export class TricountsComponent implements OnInit {
     }
 
     onAddTricount(): void {
-        console.log("TODO: ouvrir écran de add tricount")
+         this.router.navigate(['/add']);
     }
 
     home(): void {
@@ -135,7 +135,7 @@ export class TricountsComponent implements OnInit {
         });
     }
 
-    getCretorName(creatorId: number): string | undefined{
+    getCreatorName(creatorId: number): string | undefined{
         const creator = this.allUsers.find(u => u.id === creatorId);
         return creator ? creator.full_name : "Unknown";
     } 

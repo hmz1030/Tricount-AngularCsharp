@@ -40,11 +40,12 @@ export class SignupComponent {
     public hidePassword = true;
     public hidePasswordConfirm = true;
     matcher = new ImmediateErrorStateMatcher();
+     userModel: User = new User();
     constructor(
         private fb: FormBuilder,
         private router: Router,
         public authService: AuthenticationService,
-        public userModel: User
+        
     ) {
         this.ctlEmail = this.fb.control('', [Validators.required, this.userModel.strictEmail()], [this.emailUsed()]);
         this.ctlFullName = this.fb.control('', [Validators.required, Validators.minLength(3)], [this.fullNameUsed()]);

@@ -20,11 +20,11 @@ export class LoginComponent implements OnInit{
     password! : FormControl;
     loginForm!: FormGroup;
     loginError: string = '';
-
+     userModel: User = new User();
     constructor(
         private authService: AuthenticationService,
         private router: Router,
-        private userModel: User
+        
     ){}
 
     ngOnInit() {
