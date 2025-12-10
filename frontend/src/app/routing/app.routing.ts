@@ -20,7 +20,7 @@ export const appRoutes: Routes = [
     { path: 'tricount/:id/balance', component: BalanceComponent, canActivate: [AuthGuard] },
     { path: 'tricount/:id/add-operation', component: AddOperationComponent, canActivate: [AuthGuard]},
     { path: 'add-tricount', component: SaveTricountComponent, canActivate: [AuthGuard]},
-    {path: 'edit-tricount', component: SaveTricountComponent, canActivate:[AuthGuard]},
+    { path: 'edit-tricount/:id', component: SaveTricountComponent, canActivate:[AuthGuard]},
     { path: 'restricted', component: RestrictedComponent },
     { path: '**', component: UnknownComponent }
 ];

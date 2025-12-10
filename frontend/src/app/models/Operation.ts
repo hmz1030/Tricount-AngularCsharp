@@ -6,7 +6,7 @@ export class Operation {
     title?: string;
     amount?: number;
     operation_date?: Date;
-    initiator_id?: number;
+    initiator?: number;  
     tricount_id?: number;
     
     @Type(() => Repartition)

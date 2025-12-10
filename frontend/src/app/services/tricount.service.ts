@@ -113,7 +113,11 @@ export class TricountService{
             tricount_id: id
         })
     }
-     isTricountTitleAvailable(title: string): Observable<boolean> {
-        return this.http.post<boolean>(`${this.baseUrl}rpc/check_tricount_title_available`, { title });
+    
+    isTricountTitleAvailable(title: string, tricountId: number = 0): Observable<boolean> {
+        return this.http.post<boolean>(`${this.baseUrl}rpc/check_tricount_title_available`, { 
+            title,
+            tricount_id: tricountId 
+        });
     }
 }

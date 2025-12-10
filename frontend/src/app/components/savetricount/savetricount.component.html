@@ -7,37 +7,76 @@
     </span>
     <span class="tc-header-spacer"></span>
 
-    <button class="header-btn" (click)="saveTricount()">
-        <mat-icon>save</mat-icon>
-    </button>
+    <button class="header-btn" (click)="saveTricount()" [disabled]="frm.invalid">
+    <mat-icon>save</mat-icon>
+</button>
 </header>
 
 <div class="savetricount-container">
     <form [formGroup]="frm" (ngSubmit)="saveTricount()" class="SaveTricount-form" novalidate>
-        
+
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Title(*)</mat-label>
             <input matInput type="text" [formControl]="ctlTitle" [errorStateMatcher]="matcher" required appSetFocus>
-            
+
             @if (ctlTitle.invalid && (ctlTitle.dirty || ctlTitle.touched)) {
-                <mat-error>
-                    @if (ctlTitle.hasError('required')) { Title is required }
-                    @else if (ctlTitle.hasError('minlength')) { Minimum 3 characters }
-                    @else if (ctlTitle.hasError('titleUsed')) { This title already exists }
-                </mat-error>
+            <mat-error>
+                @if (ctlTitle.hasError('required')) { Title is required }
+                @else if (ctlTitle.hasError('minlength')) { Minimum 3 characters }
+                @else if (ctlTitle.hasError('titleUsed')) { This title already exists }
+            </mat-error>
             }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Description</mat-label>
-            <input matInput type="text" [formControl]="ctlDescription"  [errorStateMatcher]="matcher">
-            
+            <input matInput type="text" [formControl]="ctlDescription" [errorStateMatcher]="matcher">
+
             @if (ctlDescription.invalid && (ctlDescription.dirty || ctlDescription.touched)) {
-                <mat-error>
-                    @if (ctlDescription.hasError('minlength')) { Minimum 3 characters }
-                </mat-error>
+            <mat-error>
+                @if (ctlDescription.hasError('minlength')) { Minimum 3 characters }
+            </mat-error>
             }
         </mat-form-field>
+        <div class="participants-section">
+            <h3>Participants</h3>
+
+            <div class="participant-list">
+                @for (participant of selectedParticipants; track participant.id) {
+                <div class="participant-item">
+                   
+                    <div class="participant-info">
+                        <mat-icon>person</mat-icon>
+                        <span>{{ participant.full_name }}</span>
+
+                        
+                        @if (participant.id === creatorId) {
+                        <span class="creator-badge">(creator)</span>
+                        }
+                    </div>
+                   
+                    <button class="remove-participant-btn" [disabled]="!canRemoveParticipant(participant.id!)"
+                        (click)="removeParticipant(participant.id!)">
+                        <mat-icon class="person-remove-icon" [class.disabled]="!canRemoveParticipant(participant.id!)">
+                            person_remove
+                        </mat-icon>
+                    </button>
+                </div>
+                }
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Add participant</mat-label>
+                <!-- $event.source.value = null sert a reset la barre de select user en "add participant après chaque choix" -->
+                <mat-select (selectionChange)="addParticipant($event.value); $event.source.value = null">
+                    @for (user of availableUsers; track user.id) {
+                    <mat-option [value]="user.id">
+                        {{ user.full_name }}
+                    </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
 
     </form>
 </div>

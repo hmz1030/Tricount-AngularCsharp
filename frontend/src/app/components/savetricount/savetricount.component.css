@@ -94,3 +94,12 @@ mat-error {
   color: #b00020;
   margin-left: 4px;
 }
+
+.header-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.header-btn:disabled mat-icon {
+    color: #bdbdbd;
+}

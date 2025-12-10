@@ -84,8 +84,11 @@ export class TricountComponent implements OnInit {
 
     refresh(): void {
     }
+    
     edit(): void {
+        this.router.navigate(['/edit-tricount', this.tricount?.id]);
     }
+    
     delete(): void {
         if(this.tricount?.creator != this.userid){
             return

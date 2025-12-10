@@ -64,21 +64,33 @@ export class SaveTricountComponent implements OnInit {
     ngOnInit(): void {
         this.currentUserId = this.authService.currentUser?.id;
         this.tricountId = Number(this.route.snapshot.paramMap.get('id')) || 0;
+        
         this.authService.getAllUsers().subscribe(users => {
             this.allUsers = users;
         });
+        
         if (this.tricountId == 0) {
+            // Mode création
             this.selectedParticipantIds = [this.currentUserId!];
-
-        }
-        else {
-            const tricount = this.tricountService.tricounts.find(t => t.id == this.tricountId);
-            if (tricount) {
-                this.ctlTitle.setValue(tricount.title);
-                this.ctlDescription.setValue(tricount.description || '');
-                this.selectedParticipantIds = tricount.participants.map(p => p.id!);
-            }
-
+        } else {
+           
+            this.tricountService.getMyTricounts(true).subscribe({
+                next: () => {
+                    const tricount = this.tricountService.tricounts.find(t => t.id == this.tricountId);
+                    if (tricount) {
+                        this.ctlTitle.setValue(tricount.title);
+                        this.ctlDescription.setValue(tricount.description || '');
+                        this.selectedParticipantIds = tricount.participants.map(p => p.id!);
+                    } else {
+                        this.error = 'Tricount not found';
+                        this.router.navigate(['/tricounts']);
+                    }
+                },
+                error: (err) => {
+                    console.error('Error loading tricounts:', err);
+                    this.error = 'Unable to load tricount data';
+                }
+            });
         }
     }
     get availableUsers(): User[] {
@@ -107,7 +119,8 @@ export class SaveTricountComponent implements OnInit {
         const tricountToSave: Tricount = {
             id: this.tricountId,
             title: this.ctlTitle.value,
-            description: this.ctlDescription.value,
+            // Envoie null si la description est vide, sinon envoie la valeur
+            description: this.ctlDescription.value?.trim() || null,
             creator: this.currentUserId!,
             created_at: new Date().toISOString(),
             participants: [],
@@ -131,6 +144,7 @@ export class SaveTricountComponent implements OnInit {
     cancel(): void {
         this.router.navigate(['/tricounts']);
     }
+
     titleUsed(): AsyncValidatorFn {
         let timeout: NodeJS.Timeout;
         return (ctl: AbstractControl) => {
@@ -141,14 +155,44 @@ export class SaveTricountComponent implements OnInit {
                     if (title.length === 0) {
                         resolve(null);
                     } else {
-                        this!.tricountService.isTricountTitleAvailable(title).subscribe(available => {
+                        // Passe le tricountId pour exclure le tricount actuel en mode édition
+                        this.tricountService.isTricountTitleAvailable(title, this.tricountId).subscribe(available => {
+                            console.log("Title:", title, "Available:", available);
                             resolve(available ? null : { titleUsed: true });
-                            console.log("jss rentreyyy");
                         });
                     }
                 }, 300);
             });
         };
     }
+    canRemoveParticipant(userId: number): boolean {
+        const tricount = this.tricountService.tricounts.find(t => t.id === this.tricountId);
+        if (userId === this.currentUserId) {
+            return false;
+        }
+        
+        if (userId == tricount?.creator) {
+            return false;
+        }
+        
+        // Un seul parcours avec .some()
+        const isInvolved = tricount?.operations.some(op =>
+            op.initiator === userId ||
+            op.repartitions?.some(r => r.user_id === userId)
+        );
+
+        if (isInvolved) {
+            return false;
+        }
+        
+        return true;
+    }
+    get creatorId(): number | undefined {
+    if (this.tricountId === 0) {
+        return this.currentUserId;
+    }
+    
+    return this.tricountService.tricounts.find(t => t.id === this.tricountId)?.creator;
+}
 
 }
