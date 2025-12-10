@@ -1,0 +1,96 @@
+:host {
+  display: block;
+  height: 100vh;
+  background-color: #f0f2f5; /* Fond gris clair comme Signup */
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* --- HEADER (Identique au Signup) --- */
+.tc-header {
+  height: 56px;
+  background-color: #2196f3;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  position: sticky; top: 0; z-index: 10;
+}
+
+.tc-header-title {
+  font-size: 20px;
+  margin-left: 16px;
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+.tc-icon-btn, .header-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- FORMULAIRE --- */
+.savetricount-container {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.SaveTricount-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+mat-form-field { width: 100%; }
+.full-width { width: 100%; }
+
+
+::ng-deep .mdc-text-field--outlined {
+  background-color: white !important;
+}
+
+/* Bordure grise par défaut */
+::ng-deep .mdc-text-field--outlined .mdc-notched-outline__leading,
+::ng-deep .mdc-text-field--outlined .mdc-notched-outline__notch,
+::ng-deep .mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: #bdbdbd !important;
+}
+
+/*  Focus BLEU (Quand on clique dedans) */
+::ng-deep .mdc-text-field--focused .mdc-notched-outline__leading,
+::ng-deep .mdc-text-field--focused .mdc-notched-outline__notch,
+::ng-deep .mdc-text-field--focused .mdc-notched-outline__trailing {
+  border-color: #2196f3 !important;
+  border-width: 2px !important;
+}
+::ng-deep .mdc-text-field--focused .mat-mdc-floating-label {
+  color: #2196f3 !important;
+}
+
+
+/* C'est ce bloc qui met la bordure en rouge */
+::ng-deep .mat-form-field-invalid .mdc-notched-outline__leading,
+::ng-deep .mat-form-field-invalid .mdc-notched-outline__notch,
+::ng-deep .mat-form-field-invalid .mdc-notched-outline__trailing {
+  border-color: #b00020 !important;
+}
+/* C'est ce bloc qui met le Label en rouge */
+::ng-deep .mat-form-field-invalid .mat-mdc-floating-label {
+  color: #b00020 !important;
+}
+
+/* Le petit texte d'erreur en bas */
+mat-error {
+  font-size: 12px;
+  color: #b00020;
+  margin-left: 4px;
+}

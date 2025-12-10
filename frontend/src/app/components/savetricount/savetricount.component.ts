@@ -15,6 +15,7 @@ import { AuthenticationService } from "src/app/services/authentication.service";
 import { TricountService } from "src/app/services/tricount.service";
 import { User } from "src/app/models/user";
 import { Tricount } from "src/app/models/Tricount";
+import { ImmediateErrorStateMatcher } from '../../matchers/imediate-error-state.matcher';
 
 @Component({
     selector: 'app-save-tricount',
@@ -43,6 +44,7 @@ export class SaveTricountComponent implements OnInit {
     frm!: FormGroup;
     ctlTitle!: FormControl;
     ctlDescription!: FormControl;
+    matcher = new ImmediateErrorStateMatcher();
 
     constructor(
         private tricountService: TricountService,
@@ -140,7 +142,7 @@ export class SaveTricountComponent implements OnInit {
                         resolve(null);
                     } else {
                         this!.tricountService.isTricountTitleAvailable(title).subscribe(available => {
-                            resolve(available ? null : { emailUsed: true });
+                            resolve(available ? null : { titleUsed: true });
                             console.log("jss rentreyyy");
                         });
                     }
