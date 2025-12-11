@@ -17,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ChangeDetectorRef } from '@angular/core';
 import { TricountService } from 'src/app/services/tricount.service';
 import { Repartition } from 'src/app/models/Repartition';
+import { Operation } from 'src/app/models/Operation';
 
 @Component({
     selector: 'add-operation',
@@ -35,11 +36,11 @@ import { Repartition } from 'src/app/models/Repartition';
         MatIconModule,
         SetFocusDirective
     ],
-    templateUrl: './add-operation.component.html',
-    styleUrls: ['./add-operation.component.css']
+    templateUrl: './save-operation.component.html',
+    styleUrls: ['./save-operation.component.css']
 })
 
-export class AddOperationComponent {
+export class SaveOperationComponent {
     users: User[] = [];
     error: string | null = null;
     public UserConnected: User | undefined;
@@ -57,9 +58,17 @@ export class AddOperationComponent {
         private cdr: ChangeDetectorRef
     ) {
         this.frm = this.fb.group({
-            titleCtl: ['', Validators.required],
-            amountCtl: ['', Validators.required],
-            dateCtl: [new Date(), Validators.required],
+            titleCtl: ['', [
+                Validators.required,
+                Validators.minLength(3)
+            ]],
+            amountCtl: ['', [
+                Validators.required,
+                Operation.minAMount(0.01)
+            ]],
+            dateCtl: [new Date(), [
+                Validators.required
+            ]],
             paidBy: ['', Validators.required]
         });
     }
@@ -68,9 +77,17 @@ export class AddOperationComponent {
         this.tricountId = Number(this.route.snapshot.paramMap.get('id'));
         this.UserConnected = this.auth.currentUser;
         this.getParticipants();
-        setTimeout(() => {
+
+        this.frm.get('amountCtl')?.valueChanges.subscribe(() => {
             this.cdr.detectChanges();
-        })
+        });
+
+        setTimeout(() => {
+            Object.keys(this.frm.controls).forEach(key => {
+                this.frm.get(key)?.markAsTouched();
+            });
+            this.cdr.detectChanges();
+        }, 100);
     }
 
     back(): void {
@@ -164,6 +181,53 @@ export class AddOperationComponent {
         return this.repartitions
             .filter(r => r.weight > 0)
             .map(r => r.user_id);
+    }
+
+    getTitleError(): string {
+        const control = this.frm.get('titleCtl');
+        if (control?.hasError('required')) {
+            return 'Title is required';
+        }
+        if (control?.hasError('minlength')) {
+            return 'Title must be at least 3 characters';
+        }
+        return '';
+    }
+
+    getAmountError(): string {
+        const control = this.frm.get('amountCtl');
+        if (control?.hasError('required')) {
+            return 'Amount is required';
+        }
+        if (control?.hasError('minAmount')) {
+            return 'Amount must be at least €0.01';
+        }
+        if (control?.hasError('invalidNumber')) {
+            return 'Amount must be a valid number';
+        }
+        return '';
+    }
+
+    getDateError(): string {
+        const control = this.frm.get('dateCtl');
+        if (control?.hasError('required')) {
+            return 'Date is required';
+        }
+        if (control?.hasError('dateBeforeTricount')) {
+            return 'Date cannot be before tricount creation';
+        }
+        if (control?.hasError('dateFuture')) {
+            return 'Date cannot be in the future';
+        }
+        return '';
+    }
+
+    getPaidByError(): string {
+        const control = this.frm.get('paidBy');
+        if (control?.hasError('required')) {
+            return 'Payer is required';
+        }
+        return '';
     }
 
 

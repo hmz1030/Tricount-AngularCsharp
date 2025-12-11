@@ -6,7 +6,7 @@ import { SignupComponent } from '../components/signup/signup.component';
 import { TricountComponent } from '../components/Tricount/tricount.component';
 import { RestrictedComponent } from '../components/restricted/restricted.component';
 import { UnknownComponent } from '../components/unknown/unknown.component';
-import{AddOperationComponent} from '../components/add-operation/add-operation.component';
+import{SaveOperationComponent} from '../components/add-operation/save-operation.component';
 import { AuthGuard } from '../services/auth.guard';
 import { BalanceComponent } from '../components/Balance/balance.component';
 import { SaveTricountComponent } from '../components/savetricount/savetricount.component';      
@@ -18,7 +18,7 @@ export const appRoutes: Routes = [
     { path: 'tricounts', component: TricountsComponent, canActivate: [AuthGuard] },
     { path: 'tricount/:id', component: TricountComponent, canActivate: [AuthGuard] },
     { path: 'tricount/:id/balance', component: BalanceComponent, canActivate: [AuthGuard] },
-    { path: 'tricount/:id/add-operation', component: AddOperationComponent, canActivate: [AuthGuard]},
+    { path: 'tricount/:id/add-operation', component: SaveOperationComponent, canActivate: [AuthGuard]},
     { path: 'add-tricount', component: SaveTricountComponent, canActivate: [AuthGuard]},
     { path: 'edit-tricount/:id', component: SaveTricountComponent, canActivate:[AuthGuard]},
     { path: 'restricted', component: RestrictedComponent },

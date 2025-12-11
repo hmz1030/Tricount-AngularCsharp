@@ -6,32 +6,65 @@
     <span class="tc-header-title">Add Operation</span>
     <span class="tc-header-spacer"></span>
 
-    <button class="header-btn" (click)="save()">
+    <button class="header-btn" (click)="save()" [disabled]="frm.invalid || selectedParticipants.length === 0">
         <mat-icon>save</mat-icon>
     </button>
 </header>
+
 <div class="op-container">
+    <!-- Message d'erreur global -->
+    @if(error) {
+        <div class="error-banner">
+            <mat-icon>error</mat-icon>
+            <span>{{ error }}</span>
+        </div>
+    }
+
     <form [formGroup]="frm" (ngSubmit)="save()" class="AddOperation-form" novalidate>
 
         <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Title(*)</mat-label>
-            <input matInput type="text" formControlName="titleCtl" [errorStateMatcher]="matcher" required appSetFocus>
+            <mat-label>Title (*)</mat-label>
+            <input matInput 
+                   type="text" 
+                   formControlName="titleCtl" 
+                   [errorStateMatcher]="matcher" 
+                   required 
+                   appSetFocus>
+            @if(frm.get('titleCtl')?.invalid && frm.get('titleCtl')?.touched) {
+                <mat-error>{{ getTitleError() }}</mat-error>
+            }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Amount(*)</mat-label>
-            <input matInput type="number" formControlName="amountCtl" [errorStateMatcher]="matcher" required>
+            <mat-label>Amount (*)</mat-label>
+            <input matInput 
+                   type="number" 
+                   formControlName="amountCtl" 
+                   [errorStateMatcher]="matcher" 
+                   required
+                   min="0.01"
+                   step="0.01">
+            <span matTextPrefix>€&nbsp;</span>
+            @if(frm.get('amountCtl')?.invalid && frm.get('amountCtl')?.touched) {
+                <mat-error>{{ getAmountError() }}</mat-error>
+            }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Operation Date(*)</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="dateCtl" required>
+            <mat-label>Operation Date (*)</mat-label>
+            <input matInput 
+                   [matDatepicker]="picker" 
+                   formControlName="dateCtl" 
+                   required>
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
+            @if(frm.get('dateCtl')?.invalid && frm.get('dateCtl')?.touched) {
+                <mat-error>{{ getDateError() }}</mat-error>
+            }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Paid by(*)</mat-label>
+            <mat-label>Paid by (*)</mat-label>
             <mat-select formControlName="paidBy">
                 @for(u of users; track u.id) {
                     <mat-option [value]="u.id"> 
@@ -39,14 +72,18 @@
                     </mat-option>
                 }
             </mat-select>
+            @if(frm.get('paidBy')?.invalid && frm.get('paidBy')?.touched) {
+                <mat-error>{{ getPaidByError() }}</mat-error>
+            }
         </mat-form-field>
         
         <div class="participants-section">
-            <h1 class="section-title">From whom</h1>
+            <h3 class="section-title">For whom? (*)</h3>
+            
             @if(selectedParticipants.length === 0) {
-                <mat-error class="participants-error">
-                    At least one participant must be selected
-                </mat-error>
+                <div class="participants-error">
+                    ⚠️ At least one participant must be selected
+                </div>
             }
 
             <div class="participants-list">
@@ -62,14 +99,14 @@
                         @if(isParticipantSelected(user.id!)) {
                             <div class="participant-controls">
                                 <span class="weight-badge">{{getParticipantWeight(user.id!)}}x</span>
-                                <span class="share-amount">{{calculateShare(user.id!) | number:'1.2-2'}}€</span>
+                                <span class="share-amount">{{calculateShare(user.id!) | number:'1.2-2'}} €</span>
 
                                 <div class="weight-buttons">
                                     <button type="button"
                                             mat-icon-button
                                             (click)="decrementWeight(user.id!)"
                                             class="weight-btn">
-                                        <mat-icon>Remove</mat-icon>
+                                        <mat-icon>remove</mat-icon>
                                     </button>
                                     <button type="button" 
                                             mat-icon-button 
@@ -83,7 +120,6 @@
                     </div>
                 }
             </div>
-
         </div>
     </form>
 </div>

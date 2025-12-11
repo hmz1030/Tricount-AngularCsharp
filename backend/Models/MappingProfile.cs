@@ -73,7 +73,7 @@ public class MappingProfile : Profile
             .ForMember(d => d.Operations, o => o.MapFrom(
                 s => s.Operations.OrderByDescending(op => op.CreatedAt)
             ));
-
+        CreateMap<LoginResponseDTO, User>();
     
     }
 }
