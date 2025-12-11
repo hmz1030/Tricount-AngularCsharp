@@ -55,6 +55,7 @@ export class TricountComponent implements OnInit {
 
                 this.calculateTotal();
                 this.tricount?.creator != this.userid
+                this.balanceService.getTricountBalance(id).subscribe()
                 console.log("Found Tricount : ", this.tricount)
             },
             error: (err) => {
@@ -64,7 +65,7 @@ export class TricountComponent implements OnInit {
         });
 
         //recuperer les donner du balance du serveur si il sont pas deja la
-        this.balanceService.getTricountBalance(this.tricount?.id!).subscribe()
+        
         //recupere de la cash la balance du user
         this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)
     }
@@ -98,17 +99,16 @@ export class TricountComponent implements OnInit {
 
                     this.calculateTotal();
                     this.tricount?.creator != this.userid
+                    this.balanceService.getTricountBalance(this.tricount?.id!,true).subscribe()
+                    //recupere de la cash la balance du user
+                    this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)
                     console.log("Found Tricount : ", this.tricount)
                 },
             error: (err) => {
                 console.error('Error loading tricount:', err);
                 this.router.navigate(['/restricted']);
             }
-        });
-        //recuperer les donner du balance du serveur si il sont pas deja la
-        this.balanceService.getTricountBalance(this.tricount?.id!,true).subscribe()
-        //recupere de la cash la balance du user
-        this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)    
+        });            
     }
     
     edit(): void {

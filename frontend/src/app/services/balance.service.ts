@@ -28,7 +28,8 @@ export class BalanceService{
     
 
     getTricountBalance(id: number,forceRefresh: boolean = false): Observable<UserBalance[]>{
-        if(this.balances.has(id) || !forceRefresh){
+        console.log("bool: ",forceRefresh)
+        if(this.balances.has(id) && !forceRefresh){
             console.log("in",this.balances.get(id))
             return of( this.balances.get(id)!);
         }

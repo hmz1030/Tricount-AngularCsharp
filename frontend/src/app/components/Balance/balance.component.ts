@@ -62,8 +62,14 @@ export class BalanceComponent implements OnInit {
        this.router.navigate(['/tricount', this.tricountid]);
     }
     refresh(): void {
+        
         if (this.tricountid) {
-            this.balanceService.getTricountBalance(this.tricountid,true);
+            this.balanceService.getTricountBalance(this.tricountid,true).subscribe({
+                next: balances =>{
+                    this.balances = balances
+                    console.log("balancesm",this.balances)
+                }
+            });
         }
     }
     getBarWidth(balance: number): number {
