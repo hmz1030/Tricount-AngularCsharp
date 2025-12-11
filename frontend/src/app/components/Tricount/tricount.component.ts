@@ -83,6 +83,32 @@ export class TricountComponent implements OnInit {
 
 
     refresh(): void {
+        const id = Number(this.route.snapshot.paramMap.get('id'));
+        this.tricountService.getMyTricounts(true).subscribe({
+            next: (tricounts) => {
+                    this.tricount = tricounts.find(t => t.id == id);
+
+
+                    // Vérifier si le tricount existe et si l'utilisateur y a accès
+                    if (!this.tricount) {
+                        console.warn('Tricount not found or access denied');
+                        this.router.navigate(['/restricted']);
+                        return;
+                    }
+
+                    this.calculateTotal();
+                    this.tricount?.creator != this.userid
+                    console.log("Found Tricount : ", this.tricount)
+                },
+            error: (err) => {
+                console.error('Error loading tricount:', err);
+                this.router.navigate(['/restricted']);
+            }
+        });
+        //recuperer les donner du balance du serveur si il sont pas deja la
+        this.balanceService.getTricountBalance(this.tricount?.id!,true).subscribe()
+        //recupere de la cash la balance du user
+        this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)    
     }
     
     edit(): void {
