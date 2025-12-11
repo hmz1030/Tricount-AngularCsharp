@@ -54,7 +54,7 @@ export class TricountComponent implements OnInit {
                 }
 
                 this.calculateTotal();
-                this.tricount?.creator != this.userid
+                this.canDelete = this.tricount?.creator == this.userid
                 this.balanceService.getTricountBalance(id).subscribe()
                 console.log("Found Tricount : ", this.tricount)
             },
@@ -116,7 +116,7 @@ export class TricountComponent implements OnInit {
     }
     
     delete(): void {
-        if(this.tricount?.creator != this.userid){
+        if(this.canDelete){
             return
         }
         const dialogRef = this.dialog.open(DeleteTricountComponent,{width:'500px'})
