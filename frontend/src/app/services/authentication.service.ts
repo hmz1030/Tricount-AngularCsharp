@@ -56,7 +56,15 @@ export class AuthenticationService {
     
     signup(email: string, password: string, fullName: string, iban?: string): Observable<User> {
         return this.http.post<LoginResponse>(`${this.baseUrl}rpc/signup`, { email, password, full_name : fullName, iban })
-            .pipe(switchMap(res => this.login(email, password)));
+            .pipe(
+                switchMap(res => this.login(email, password)),
+                tap(user => {
+                    // Ajouter le nouveau user au cache après signup
+                    if (!this.allusers.find(u => u.id === user.id)) {
+                        this.allusers.push(user);
+                    }
+                })
+            );
     }
 
     getUserData(): Observable<User> {
