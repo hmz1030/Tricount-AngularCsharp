@@ -74,7 +74,7 @@ export class SaveTricountComponent implements OnInit {
             this.selectedParticipantIds = [this.currentUserId!];
         } else {
            
-            this.tricountService.getMyTricounts(true).subscribe({
+            this.tricountService.getMyTricounts().subscribe({
                 next: () => {
                     const tricount = this.tricountService.tricounts.find(t => t.id == this.tricountId);
                     if (tricount) {
@@ -142,7 +142,12 @@ export class SaveTricountComponent implements OnInit {
 
     }
     cancel(): void {
-        this.router.navigate(['/tricounts']);
+        if(this.tricountId == 0){
+             this.router.navigate(['/tricounts']);
+        }
+        else 
+            this.router.navigate(['/tricount/', this.tricountId])
+       
     }
 
     titleUsed(): AsyncValidatorFn {
