@@ -64,16 +64,16 @@ export class SaveTricountComponent implements OnInit {
     ngOnInit(): void {
         this.currentUserId = this.authService.currentUser?.id;
         this.tricountId = Number(this.route.snapshot.paramMap.get('id')) || 0;
-        
+
         this.authService.getAllUsers().subscribe(users => {
             this.allUsers = users;
         });
-        
+
         if (this.tricountId == 0) {
             // Mode création
             this.selectedParticipantIds = [this.currentUserId!];
         } else {
-           
+
             this.tricountService.getMyTricounts().subscribe({
                 next: () => {
                     const tricount = this.tricountService.tricounts.find(t => t.id == this.tricountId);
@@ -142,12 +142,12 @@ export class SaveTricountComponent implements OnInit {
 
     }
     cancel(): void {
-        if(this.tricountId == 0){
-             this.router.navigate(['/tricounts']);
+        if (this.tricountId == 0) {
+            this.router.navigate(['/tricounts']);
         }
-        else 
+        else
             this.router.navigate(['/tricount/', this.tricountId])
-       
+
     }
 
     titleUsed(): AsyncValidatorFn {
@@ -162,7 +162,6 @@ export class SaveTricountComponent implements OnInit {
                     } else {
                         // Passe le tricountId pour exclure le tricount actuel en mode édition
                         this.tricountService.isTricountTitleAvailable(title, this.tricountId).subscribe(available => {
-                            console.log("Title:", title, "Available:", available);
                             resolve(available ? null : { titleUsed: true });
                         });
                     }
@@ -171,33 +170,21 @@ export class SaveTricountComponent implements OnInit {
         };
     }
     canRemoveParticipant(userId: number): boolean {
-        const tricount = this.tricountService.tricounts.find(t => t.id === this.tricountId);
-        if (userId === this.currentUserId) {
-            return false;
-        }
-        
-        if (userId == tricount?.creator) {
-            return false;
-        }
-        
-        // Un seul parcours avec .some()
-        const isInvolved = tricount?.operations.some(op =>
+    if (this.tricountId === 0) return userId !== this.currentUserId;
+    
+    const tricount = this.tricountService.tricounts.find(t => t.id === this.tricountId);
+    
+    return userId !== this.currentUserId 
+        && userId !== tricount?.creator 
+        && !tricount?.operations.some(op =>
             op.initiator === userId ||
             op.repartitions?.some(r => r.user_id === userId)
         );
-
-        if (isInvolved) {
-            return false;
-        }
-        
-        return true;
-    }
-    get creatorId(): number | undefined {
-    if (this.tricountId === 0) {
-        return this.currentUserId;
-    }
-    
-    return this.tricountService.tricounts.find(t => t.id === this.tricountId)?.creator;
+}
+   get creatorId(): number | undefined {
+    return this.tricountId === 0 
+        ? this.currentUserId 
+        : this.tricountService.tricounts.find(t => t.id === this.tricountId)?.creator;
 }
 
 }
