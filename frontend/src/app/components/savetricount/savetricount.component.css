@@ -103,3 +103,105 @@ mat-error {
 .header-btn:disabled mat-icon {
     color: #bdbdbd;
 }
+/* --- LISTE DES PARTICIPANTS --- */
+.participant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espace entre chaque ligne de participant */
+  margin-bottom: 16px;
+}
+
+.participant-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pousse le nom à gauche et le bouton à droite */
+  height: 48px; /* Hauteur confortable pour le tactile */
+}
+
+/* Partie Gauche (Icone + Nom) */
+.participant-info {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Espace entre l'icone bonhomme et le nom */
+  color: #333;
+  font-size: 16px;
+}
+
+.participant-info mat-icon {
+    color: #757575; /* Gris foncé pour l'icone de gauche */
+}
+
+.creator-badge {
+  font-size: 14px;
+  color: #757575;
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+/* --- BOUTON DE SUPPRESSION (Le carré gris) --- */
+.remove-participant-btn {
+  /* Dimensions du carré */
+  width: 40px;
+  height: 40px;
+  
+  /* Style visuel */
+  background-color: #e0e0e0; /* Fond gris clair comme sur l'image ref */
+  border: 1px solid #bdbdbd; /* Bordure grise */
+  border-radius: 4px; /* Coins légèrement arrondis (ou 0px pour carré parfait) */
+  
+  /* Centrage de l'icone */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  
+  /* Transition douce au survol */
+  transition: background-color 0.2s;
+}
+
+.remove-participant-btn mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #616161; /* Couleur de l'icone 'person_remove' */
+}
+
+/* Effet au survol  */
+.remove-participant-btn:hover:not(:disabled) {
+    background-color: #d6d6d6;
+}
+
+/* Style quand le bouton est désactivé */
+.remove-participant-btn:disabled {
+    /* OU SI TU VEUX LE GARDER MAIS GRISÉ : */
+     opacity: 0.3; cursor: default; background: transparent; border: none; 
+    pointer-events: none;
+}
+/* Le conteneur qui aligne le Select et le Bouton */
+.add-participant-container {
+    display: flex;
+    align-items: center; /* Centre verticalement le bouton par rapport au champ */
+    gap: 8px; /* Espace entre le rectangle du select et le bouton + */
+    width: 100%;
+}
+
+/* On force le champ de formulaire à prendre toute la largeur disponible */
+.add-participant-container mat-form-field {
+    flex-grow: 1;
+}
+
+/* Optionnel : Ajustement pour que le bouton soit bien aligné visuellement */
+/* Parfois les mat-form-field ont une marge basse pour les erreurs, */
+/* on l'ajuste pour que le bouton ne paraisse pas "trop haut" */
+.add-btn-outside {
+    /* Si le bouton semble décalé vers le haut, faut un margin-top ici */
+    /* dans mon cas ici faut cetait un margin-bottom qu'il fallait faire*/
+     margin-bottom: 30px; 
+    
+    background-color: #e3f2fd; /* Un petit fond bleu clair pour le bouton ? */
+}
+/* Style quand le bouton est désactivé (pas d'user sélectionné) */
+.add-btn-outside:disabled {
+    background-color: transparent;
+}

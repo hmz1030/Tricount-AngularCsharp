@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -21,6 +21,7 @@ import { ImmediateErrorStateMatcher } from '../../matchers/imediate-error-state.
     selector: 'app-save-tricount',
     standalone: true,
     imports: [CommonModule,
+        FormsModule,
         ReactiveFormsModule,
         RouterModule,
         MatFormFieldModule,
@@ -45,6 +46,7 @@ export class SaveTricountComponent implements OnInit {
     ctlTitle!: FormControl;
     ctlDescription!: FormControl;
     matcher = new ImmediateErrorStateMatcher();
+    selectedUserToAdd: number | null = null;
 
     constructor(
         private tricountService: TricountService,
@@ -100,12 +102,10 @@ export class SaveTricountComponent implements OnInit {
         return this.allUsers.filter(u => this.selectedParticipantIds.includes(u.id!));
     }
 
-    addParticipant(userId: number): void {
+    private addParticipant(userId: number): void {
         if (!this.selectedParticipantIds.includes(userId)) {
             this.selectedParticipantIds.push(userId);
         }
-
-
     }
     removeParticipant(userId: number): void {
         const index = this.selectedParticipantIds.indexOf(userId);
@@ -115,6 +115,12 @@ export class SaveTricountComponent implements OnInit {
         }
 
     }
+    addSelectedParticipant(): void {
+    if (this.selectedUserToAdd) {
+        this.addParticipant(this.selectedUserToAdd);
+        this.selectedUserToAdd = null; // Reset après ajout
+    }
+}
     saveTricount(): void {
         const tricountToSave: Tricount = {
             id: this.tricountId,
