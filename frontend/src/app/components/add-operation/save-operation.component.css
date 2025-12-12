@@ -34,6 +34,17 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* ✅ Désactiver le bouton save */
+.header-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.header-btn:disabled:hover {
+  background-color: transparent;
+}
+
 .op-container {
   padding: 20px;
 }
@@ -43,9 +54,6 @@
   flex-direction: column;
   gap: 18px;
 }
-
-
-
 
 .section-title {
   margin: 0 0 16px 0;
@@ -60,7 +68,6 @@
   gap: 12px;
   margin-top: 12px;
 }
-
 
 .participant-row {
   display: flex;
@@ -77,14 +84,12 @@
   flex: 0 0 auto;
 }
 
-
 .participant-controls {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-left: auto;
 }
-
 
 .weight-badge {
   background-color: #2196f3;
@@ -97,7 +102,6 @@
   text-align: center;
 }
 
-
 .share-amount {
   font-size: 16px;
   font-weight: 600;
@@ -105,7 +109,6 @@
   min-width: 80px;
   text-align: right;
 }
-
 
 .weight-buttons {
   display: flex;
@@ -146,6 +149,84 @@
   border-radius: 4px;
 }
 
+/* Bannière d'erreur globale */
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border-left: 4px solid #c62828;
+}
+
+.error-banner mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+
+::ng-deep .mat-mdc-form-field.mat-form-field-invalid .mat-mdc-notch-piece {
+  border-color: #f44336 !important;
+}
+
+/* Label en rouge */
+::ng-deep .mat-mdc-form-field.mat-form-field-invalid .mat-mdc-floating-label {
+  color: #f44336 !important;
+}
+
+/* Message d'erreur en rouge et gras */
+::ng-deep .mat-mdc-form-field .mat-mdc-form-field-error {
+  color: #f44336 !important;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+
+::ng-deep .mat-datepicker-popup {
+  background-color: white !important;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+::ng-deep .mat-datepicker-content {
+  background-color: white !important;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+::ng-deep .mat-calendar {
+  background-color: white !important;
+}
+
+::ng-deep .mat-calendar-header {
+  background-color: white !important;
+}
+
+::ng-deep .mat-calendar-body {
+  background-color: white !important;
+}
+
+::ng-deep .mat-calendar-table {
+  background-color: white !important;
+}
+
+/* Boutons du calendrier */
+::ng-deep .mat-calendar-body-cell {
+  background-color: white !important;
+}
+
+::ng-deep .mat-calendar-body-cell:hover {
+  background-color: rgba(66, 165, 245, 0.1) !important;
+}
+
+::ng-deep .mat-calendar-body-selected {
+  background-color: #42a5f5 !important;
+  color: white !important;
+}
+
+/* Select panel */
 ::ng-deep .mat-mdc-select-panel {
   background-color: white !important;
   box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
@@ -169,33 +250,23 @@
   background-color: white;
 }
 
-/* ... votre CSS existant ... */
-
-/* Bannière d'erreur globale */
-.error-banner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background-color: #ffebee;
-  color: #c62828;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  border-left: 4px solid #c62828;
+/* Coins arrondis pour les inputs */
+::ng-deep .mat-mdc-form-field .mdc-notched-outline .mdc-notched-outline__leading {
+  border-radius: 12px 0 0 12px !important;
+  width: 12px !important;
 }
 
-.error-banner mat-icon {
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
+::ng-deep .mat-mdc-form-field .mdc-notched-outline .mdc-notched-outline__trailing {
+  border-radius: 0 12px 12px 0 !important;
 }
 
-/* Désactiver le bouton save quand le formulaire est invalide */
-.header-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+/* Marge pour le texte dans les inputs */
+::ng-deep .mat-mdc-form-field .mat-mdc-form-field-infix {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
 }
 
-.header-btn:disabled:hover {
-  background-color: transparent;
+::ng-deep .mat-mdc-form-field input.mat-mdc-input-element {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
 }

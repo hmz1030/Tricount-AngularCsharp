@@ -18,6 +18,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { TricountService } from 'src/app/services/tricount.service';
 import { Repartition } from 'src/app/models/Repartition';
 import { Operation } from 'src/app/models/Operation';
+import { OperationService } from 'src/app/services/operation.service';
 
 @Component({
     selector: 'add-operation',
@@ -55,7 +56,8 @@ export class SaveOperationComponent {
         private fb: FormBuilder,
         private auth: AuthenticationService,
         private tricountService: TricountService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private operationService: OperationService
     ) {
         this.frm = this.fb.group({
             titleCtl: ['', [
@@ -95,7 +97,47 @@ export class SaveOperationComponent {
     }
 
     save(): void {
+        Object.keys(this.frm.controls).forEach(key => {
+            this.frm.get(key)?.markAsTouched();
+        });
 
+        const activeRepartitions = this.repartitions.filter(r => r.weight > 0);
+        if (activeRepartitions.length === 0) {
+            this.error = 'At least one participant must be selected';
+            return;
+        }
+
+        if (this.frm.valid) {
+            const formValue = this.frm.value;
+
+            const operation = new Operation();
+            operation.id = 0;
+            operation.title = formValue.titleCtl;
+            operation.amount = formValue.amountCtl;
+            operation.operation_date = formValue.dateCtl;
+            operation.initiator = formValue.paidBy;
+            operation.tricount_id = this.tricountId;
+
+            console.log('Operation to save:', operation);
+            this.operationService.saveOperation(operation, activeRepartitions).subscribe({
+                next: result => {
+                    console.log('Operation saved successfully', result);
+                    this.tricountService.clearCache();
+                    this.back();
+                },
+                error: err => {
+                    console.error('Error saving operation', err);
+                    //erreurs du backend
+                    if(err.error?.message) {
+                        this.error = err.error.message;
+                    } else {
+                        this.error = 'Failed to save operations. Plese try again.';
+                    }
+                }
+            });
+        } else {
+            this.error = 'please fix the errors in the form';
+        }
     }
 
     getParticipants(): void {
@@ -107,6 +149,14 @@ export class SaveOperationComponent {
                     return;
                 }
                 this.users = tricount.participants;
+
+                this.frm.get('dateCtl')?.setValidators([
+                    Validators.required,
+                    Operation.operationDateRange(new Date(tricount.created_at))
+                ]);
+
+                this.frm.get('dateCtl')?.updateValueAndValidity();
+
                 //initialiser les répartitions avec poids de 1
                 this.repartitions = this.users.map(user =>
                     new Repartition(user.id!, 1)
@@ -118,6 +168,7 @@ export class SaveOperationComponent {
                         paidBy: this.UserConnected.id
                     });
                 }
+                this.frm.get('dateCtl')?.markAsTouched();
                 this.cdr.detectChanges();
             },
             error: err => console.error(err)
@@ -131,7 +182,7 @@ export class SaveOperationComponent {
 
     isParticipantSelected(userId: number): boolean {
         const rep = this.getRepartition(userId);
-        return rep !== undefined && rep.weight > 0;  
+        return rep !== undefined && rep.weight > 0;
     }
 
     toggleParticipant(userId: number, checked: boolean): void {
@@ -183,58 +234,25 @@ export class SaveOperationComponent {
             .map(r => r.user_id);
     }
 
-    getTitleError(): string {
-        const control = this.frm.get('titleCtl');
-        if (control?.hasError('required')) {
-            return 'Title is required';
-        }
-        if (control?.hasError('minlength')) {
-            return 'Title must be at least 3 characters';
-        }
-        return '';
-    }
+
 
     getAmountError(): string {
         const control = this.frm.get('amountCtl');
-        if (control?.hasError('required')) {
-            return 'Amount is required';
-        }
-        if (control?.hasError('minAmount')) {
-            return 'Amount must be at least €0.01';
-        }
-        if (control?.hasError('invalidNumber')) {
-            return 'Amount must be a valid number';
-        }
-        return '';
+        return Operation.getAmountError(control);
     }
 
     getDateError(): string {
         const control = this.frm.get('dateCtl');
-        if (control?.hasError('required')) {
-            return 'Date is required';
-        }
-        if (control?.hasError('dateBeforeTricount')) {
-            return 'Date cannot be before tricount creation';
-        }
-        if (control?.hasError('dateFuture')) {
-            return 'Date cannot be in the future';
-        }
-        return '';
+        return Operation.getDateError(control);
     }
 
     getPaidByError(): string {
         const control = this.frm.get('paidBy');
-        if (control?.hasError('required')) {
-            return 'Payer is required';
-        }
-        return '';
+        return Operation.getPaidByError(control);
     }
 
-
-
-
-
-
-
-
+    getTitleError(): string {
+        const control = this.frm.get('titleCtl');
+        return Operation.getTitleError(control)
+    }
 }
