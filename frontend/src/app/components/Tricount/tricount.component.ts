@@ -137,12 +137,17 @@ export class TricountComponent implements OnInit {
         });
         
     }
+
     viewBalance(): void {
         this.router.navigate(['tricount/' + this.tricount?.id + '/balance']);
     }
 
     addOperation(): void {
         this.router.navigate(['tricount/' + this.tricount?.id + '/add-operation']);
+    }
+
+    editOperation(operationId: number | undefined): void {
+        this.router.navigate(['tricount/' + this.tricount?.id + '/edit-operation/' + operationId]);
     }
 
 }

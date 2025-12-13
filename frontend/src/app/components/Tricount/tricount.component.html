@@ -1,5 +1,5 @@
 @if (tricount) {
-  <header class="tricount-header" >
+<header class="tricount-header">
   <!-- Back button -->
   <button class="header-btn" (click)="goBack()">
     <mat-icon>arrow_back</mat-icon>
@@ -19,21 +19,22 @@
 
   @if (canDelete) {
   <button class="header-btn" (click)="delete()">
-      <mat-icon>delete</mat-icon>
-    </button>
+    <mat-icon>delete</mat-icon>
+  </button>
   }
-  
+
 </header>
 }
-<button 
-    class="view-balance-btn" 
-    [class.disabled]="!tricount?.operations || tricount?.operations?.length === 0"
-    [disabled]="!tricount?.operations || tricount?.operations?.length === 0"
-    (click)="viewBalance()">
-    📊 View Balance
+
+<button class="view-balance-btn" [class.disabled]="!tricount?.operations || tricount?.operations?.length === 0"
+  [disabled]="!tricount?.operations || tricount?.operations?.length === 0" (click)="viewBalance()">
+  📊 View Balance
 </button>
-<div class="operations-container" *ngIf="tricount">
-  <div class="operation-card" *ngFor="let op of tricount.operations">
+
+@if (tricount) {
+<div class="operations-container">
+  @for (op of tricount.operations ?? []; track op.id) {
+  <div class="operation-card" (click)="editOperation(op.id)">
     <div class="operation-left">
       <div class="operation-title">{{ op.title }}</div>
       <div class="operation-subtitle">Paid by {{ op.initiatorName }}</div>
@@ -43,27 +44,32 @@
       <div class="operation-date">{{ op.operation_date | date:'dd/MM/yyyy' }}</div>
     </div>
   </div>
+  }
 
-  <div *ngIf="!tricount?.operations || tricount.operations?.length === 0" class="empty-state">
-      <h2 class="empty-title">Your tricount is empty!</h2>
-      <p class="empty-subtitle">Click below to add your first expense!</p>
-      <button class="add-expense-btn" (click)="addOperation()">
-        Add an expense
-      </button>
-  </div>
-</div>
-<footer class="tricount-footer">
-    <div class="footer-left">
-        <div class="footer-label">MY TOTAL</div>
-        <div class="footer-amount"> {{userBalance?.balance}} </div>
-    </div>
-
-    <button class="add-btn" (click)="addOperation()">
-        <mat-icon>add</mat-icon>
+  @if (!tricount?.operations || tricount.operations?.length === 0) {
+  <div class="empty-state">
+    <h2 class="empty-title">Your tricount is empty!</h2>
+    <p class="empty-subtitle">Click below to add your first expense!</p>
+    <button class="add-expense-btn" (click)="addOperation()">
+      Add an expense
     </button>
+  </div>
+  }
+</div>
+}
 
-    <div class="footer-right">
-        <div class="footer-label">TOTAL EXPENSES</div>
-        <div class="footer-amount">{{ total }}€</div>
-    </div>
+<footer class="tricount-footer">
+  <div class="footer-left">
+    <div class="footer-label">MY TOTAL</div>
+    <div class="footer-amount"> {{userBalance?.balance}} </div>
+  </div>
+
+  <button class="add-btn" (click)="addOperation()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <div class="footer-right">
+    <div class="footer-label">TOTAL EXPENSES</div>
+    <div class="footer-amount">{{ total }}€</div>
+  </div>
 </footer>
