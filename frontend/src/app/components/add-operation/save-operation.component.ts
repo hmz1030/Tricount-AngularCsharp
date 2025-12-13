@@ -19,6 +19,7 @@ import { TricountService } from 'src/app/services/tricount.service';
 import { Repartition } from 'src/app/models/Repartition';
 import { Operation } from 'src/app/models/Operation';
 import { OperationService } from 'src/app/services/operation.service';
+import { BalanceService } from 'src/app/services/balance.service';
 
 @Component({
     selector: 'add-operation',
@@ -56,6 +57,7 @@ export class SaveOperationComponent {
         private fb: FormBuilder,
         private auth: AuthenticationService,
         private tricountService: TricountService,
+        private balanceService: BalanceService,
         private cdr: ChangeDetectorRef,
         private operationService: OperationService
     ) {
@@ -123,6 +125,7 @@ export class SaveOperationComponent {
                 next: result => {
                     console.log('Operation saved successfully', result);
                     this.tricountService.clearCache();
+                    this.balanceService.getTricountBalance(this.tricountId,true).subscribe();
                     this.back();
                 },
                 error: err => {
