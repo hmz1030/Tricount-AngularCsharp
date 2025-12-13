@@ -3,11 +3,17 @@
         <mat-icon>arrow_back</mat-icon>
     </button>
 
-    <span class="tc-header-title">Add Operation</span>
+    <span class="tc-header-title">{{isEditMode ? 'Edit Operation' : 'Add Operation'}}</span>
     <span class="tc-header-spacer"></span>
 
     <button class="header-btn" (click)="save()" [disabled]="frm.invalid || selectedParticipants.length === 0">
         <mat-icon>save</mat-icon>
+    </button>
+
+    <button class="header-btn">
+         @if(isEditMode) {
+            <mat-icon>delete</mat-icon>
+        }
     </button>
 </header>
 

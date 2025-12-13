@@ -47,6 +47,8 @@ export class SaveOperationComponent {
     public UserConnected: User | undefined;
     repartitions: Repartition[] = [];
     tricountId!: number;
+    operationId?: number;
+    isEditMode: boolean = false;
     public frm!: FormGroup;
     matcher = new ImmediateErrorStateMatcher();
 
@@ -77,6 +79,18 @@ export class SaveOperationComponent {
 
     ngOnInit() {
         this.tricountId = Number(this.route.snapshot.paramMap.get('id'));
+
+        const operationId = this.route.snapshot.paramMap.get('operationId');
+
+        if (operationId) {
+            this.operationId = Number(operationId);
+            this.isEditMode = true;
+            console.log('Edit mode - Operation ID:', this.operationId);
+        } else {
+            this.isEditMode = false;
+            console.log('Create mode');
+        }
+
         this.UserConnected = this.auth.currentUser;
         this.getParticipants();
 
@@ -111,7 +125,7 @@ export class SaveOperationComponent {
             const formValue = this.frm.value;
 
             const operation = new Operation();
-            operation.id = 0;
+            operation.id = this.isEditMode ? this.operationId : 0;
             operation.title = formValue.titleCtl;
             operation.amount = formValue.amountCtl;
             operation.operation_date = formValue.dateCtl;
@@ -128,7 +142,7 @@ export class SaveOperationComponent {
                 error: err => {
                     console.error('Error saving operation', err);
                     //erreurs du backend
-                    if(err.error?.message) {
+                    if (err.error?.message) {
                         this.error = err.error.message;
                     } else {
                         this.error = 'Failed to save operations. Plese try again.';
@@ -146,6 +160,7 @@ export class SaveOperationComponent {
                 const tricount = tricounts.find(t => t.id == this.tricountId);
                 if (!tricount) {
                     console.error("tricount not found");
+                    this.error = "Tricount not found";
                     return;
                 }
                 this.users = tricount.participants;
@@ -157,22 +172,64 @@ export class SaveOperationComponent {
 
                 this.frm.get('dateCtl')?.updateValueAndValidity();
 
-                //initialiser les répartitions avec poids de 1
-                this.repartitions = this.users.map(user =>
-                    new Repartition(user.id!, 1)
-                );
-
-                //selectionner l'user connecté dans "Paid by"
-                if (this.UserConnected?.id) {
-                    this.frm.patchValue({
-                        paidBy: this.UserConnected.id
-                    });
+                if (this.isEditMode && this.operationId) {
+                    this.loadOperationData(tricount);
+                } else {
+                    this.initializeDefaultValues();
                 }
+
                 this.frm.get('dateCtl')?.markAsTouched();
                 this.cdr.detectChanges();
             },
             error: err => console.error(err)
         });
+    }
+
+    private initializeDefaultValues(): void {
+        this.repartitions = this.users.map(user =>
+            new Repartition(user.id!, 1)
+        );
+
+        if (this.UserConnected?.id) {
+            this.frm.patchValue({
+                paidBy: this.UserConnected.id
+            });
+        }
+    }
+
+    private loadOperationData(tricount: any): void {
+        console.log('Loading operation with ID:', this.operationId);
+        console.log('Available operations:', tricount.operations);
+        const operation = tricount.operations.find((op: any) => op.id === this.operationId);
+
+        if (!operation) {
+            console.error("Operation not found in tricount");
+            console.log("Searched ID:", this.operationId);
+            console.log("Available IDs:", tricount.operations.map((op: any) => op.id));
+            this.error = "Operation not found";
+            return;
+        }
+
+        console.log('Operation found:', operation);
+
+        this.frm.patchValue({
+            titleCtl: operation.title,
+            amountCtl: operation.amount,
+            dateCtl: new Date(operation.operation_date),
+            paidBy: operation.initiator
+        });
+
+        console.log('Form patched with values:', this.frm.value);
+
+        //initialiser les repartitions avec les données existantes
+        this.repartitions = this.users.map(user => {
+            const existingRep = operation.repartitions?.find((r: any) => r.user === user.id);
+            const weight = existingRep ? existingRep.weight : 0;
+            console.log(`User ${user.full_name} (${user.id}): weight = ${weight}`);
+            return new Repartition(user.id!, weight);
+        });
+
+        console.log('Repartitions initialized:', this.repartitions);
     }
 
     private getRepartition(userId: number): Repartition | undefined {

@@ -20,21 +20,14 @@ export class OperationService{
     ) {}
 
     saveOperation(operation: Operation, repartitions: Repartition[]): Observable<Operation> {
-        if(operation.id === 0 || !operation.id || operation.id < 0) {
-            return this.createOperation(operation, repartitions);
-        } else {
-            // TODO: update
-            throw new Error('Update not implemented yet');
-        }
-    }
-
-    private createOperation(operation: Operation, repartitions: Repartition[]): Observable<Operation> {
+        const isCreate = !operation.id || operation.id <= 0;
+        
         const operationDate = new Date(operation.operation_date!);
         // Format DateOnly pour le bon format attendu par le backend : "YYYY-MM-DD"
         const formattedDate = operationDate.toISOString().split('T')[0];
 
         return this.http.post<any>(`${this.baseUrl}rpc/save_operation`, {
-            id: 0,
+            id: isCreate ? 0 : operation.id!,
             title: operation.title,
             amount: operation.amount,
             operation_date: formattedDate,
@@ -48,9 +41,7 @@ export class OperationService{
             map(json => plainToInstance(Operation, json, {
                 enableImplicitConversion: true
             })),
-            tap(newOperation => {
-                console.log('Operation created: ', newOperation);
-            })
+            tap(op => console.log(isCreate ? 'Operation created:' : 'Operation edited:', op))
         );
     }
 }
