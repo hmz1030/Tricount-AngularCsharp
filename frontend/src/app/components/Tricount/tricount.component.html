@@ -33,27 +33,39 @@
 
 @if (tricount) {
 <div class="operations-container">
-  @for (op of tricount.operations ?? []; track op.id) {
-  <div class="operation-card" (click)="editOperation(op.id)">
-    <div class="operation-left">
-      <div class="operation-title">{{ op.title }}</div>
-      <div class="operation-subtitle">Paid by {{ op.initiatorName }}</div>
-    </div>
-    <div class="operation-right">
-      <div class="operation-amount">{{ op.amount }} €</div>
-      <div class="operation-date">{{ op.operation_date | date:'dd/MM/yyyy' }}</div>
-    </div>
-  </div>
-  }
-
-  @if (!tricount?.operations || tricount.operations?.length === 0) {
-  <div class="empty-state">
-    <h2 class="empty-title">Your tricount is empty!</h2>
-    <p class="empty-subtitle">Click below to add your first expense!</p>
-    <button class="add-expense-btn" (click)="addOperation()">
-      Add an expense
+  @if (tricount.participants && tricount.participants.length === 1) {
+  <div class="alone-state">
+    <h2 class="alone-title">You're alone!</h2>
+    <p class="alone-subtitle">Click below to add your friends!</p>
+    <button class="add-friends-btn" (click)="edit()">
+      Add friends
     </button>
   </div>
+  }
+  
+  @else {
+    @for (op of tricount.operations ?? []; track op.id) {
+    <div class="operation-card" (click)="editOperation(op.id)">
+      <div class="operation-left">
+        <div class="operation-title">{{ op.title }}</div>
+        <div class="operation-subtitle">Paid by {{ op.initiatorName }}</div>
+      </div>
+      <div class="operation-right">
+        <div class="operation-amount">{{ op.amount | number:'1.2-2' }} €</div>
+        <div class="operation-date">{{ op.operation_date | date:'dd/MM/yyyy' }}</div>
+      </div>
+    </div>
+    }
+
+    @if (!tricount?.operations || tricount.operations?.length === 0) {
+    <div class="empty-state">
+      <h2 class="empty-title">Your tricount is empty!</h2>
+      <p class="empty-subtitle">Click below to add your first expense!</p>
+      <button class="add-expense-btn" (click)="addOperation()">
+        Add an expense
+      </button>
+    </div>
+    }
   }
 </div>
 }
@@ -61,7 +73,7 @@
 <footer class="tricount-footer">
   <div class="footer-left">
     <div class="footer-label">MY TOTAL</div>
-    <div class="footer-amount"> {{userBalance?.balance}} </div>
+    <div class="footer-amount"> {{userBalance?.balance | number:'1.2-2'}} </div>
   </div>
 
   <button class="add-btn" (click)="addOperation()">
@@ -70,6 +82,6 @@
 
   <div class="footer-right">
     <div class="footer-label">TOTAL EXPENSES</div>
-    <div class="footer-amount">{{ total }}€</div>
+    <div class="footer-amount">{{ total | number:'1.2-2'}}€</div>
   </div>
 </footer>

@@ -14,6 +14,7 @@ import { AuthenticationService } from "./authentication.service";
 export class TricountService{
 
     private _tricounts : Tricount[] = [];
+    
 
     get tricounts(): Tricount[] {
         return this._tricounts;

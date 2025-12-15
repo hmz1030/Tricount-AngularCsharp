@@ -9,6 +9,8 @@ import { UserBalance } from "src/app/models/UserBalance";
 import { MatDialog } from "@angular/material/dialog";
 import { DeleteTricountComponent } from "../delete-tricount/delete-tricount.component";
 import { BalanceService } from "src/app/services/balance.service";
+import { Operation } from "src/app/models/Operation";
+import { User } from "src/app/models/user";
 
 @Component({
     selector: 'app-tricounts',
@@ -26,6 +28,8 @@ export class TricountComponent implements OnInit {
     total: number = 0;
     mytotal: number = 0;
     canDelete: boolean = false;
+    operations?: Operation[];
+    users?: User[];
     constructor(
         private tricountService: TricountService,
         private balanceService: BalanceService,
@@ -63,6 +67,13 @@ export class TricountComponent implements OnInit {
                         this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)
                     }
                 })
+
+                this.authService.getAllUsers().subscribe({
+                    next: (user) =>{
+                        this.users = user;
+                        this.initatorsName();
+                    }
+                })
                 console.log("Found Tricount : ", this.tricount)
                 
             },
@@ -76,6 +87,12 @@ export class TricountComponent implements OnInit {
         
         //recupere de la cash la balance du user
         
+    }
+
+    initatorsName(): void{
+        this.tricount?.operations.forEach(operation=>{
+            operation.initiatorName = this.users?.find(u => u.id == operation.initiator)?.full_name
+        })
     }
 
     goBack(): void {
