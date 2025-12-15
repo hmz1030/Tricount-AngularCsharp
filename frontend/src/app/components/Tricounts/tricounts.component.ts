@@ -53,6 +53,7 @@ export class TricountsComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadTricounts(false);
+        console.log("tricounts:",this.tricounts)
         this.getAllUsers();
         console.log("Tricounts that are shown:",this.tricounts)
     }

@@ -125,14 +125,16 @@ export class TricountComponent implements OnInit {
             if(result == true) {
                 this.tricountService.deleteTricount(this.tricount!.id).subscribe({
                     next : () =>{
-                        //this.tricountService.updateTricountsStorage(this.tricount!.id);
                         
+                        this.tricountService.clearCache();
                         this.router.navigate(['/tricounts']);
+                        
                     },
                     error: (err) => {
                         console.error('Erreur lors du delete tricount:', err)
                     }
                 })
+                
             }
         });
         
