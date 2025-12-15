@@ -40,7 +40,7 @@
       <div class="operation-subtitle">Paid by {{ op.initiatorName }}</div>
     </div>
     <div class="operation-right">
-      <div class="operation-amount">{{ op.amount }} €</div>
+      <div class="operation-amount">{{ op.amount | number:'1.2-2' }} €</div>
       <div class="operation-date">{{ op.operation_date | date:'dd/MM/yyyy' }}</div>
     </div>
   </div>
@@ -61,7 +61,7 @@
 <footer class="tricount-footer">
   <div class="footer-left">
     <div class="footer-label">MY TOTAL</div>
-    <div class="footer-amount"> {{userBalance?.balance}} </div>
+    <div class="footer-amount"> {{userBalance?.balance | number:'1.2-2'}} </div>
   </div>
 
   <button class="add-btn" (click)="addOperation()">
@@ -70,6 +70,6 @@
 
   <div class="footer-right">
     <div class="footer-label">TOTAL EXPENSES</div>
-    <div class="footer-amount">{{ total }}€</div>
+    <div class="footer-amount">{{ total | number:'1.2-2'}}€</div>
   </div>
 </footer>
