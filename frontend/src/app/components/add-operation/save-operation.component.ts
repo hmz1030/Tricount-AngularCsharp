@@ -20,6 +20,9 @@ import { Repartition } from 'src/app/models/Repartition';
 import { Operation } from 'src/app/models/Operation';
 import { OperationService } from 'src/app/services/operation.service';
 import { BalanceService } from 'src/app/services/balance.service';
+import { DeleteOperationComponent } from '../delete-operation/delete-operation.component';
+import { MatDialog } from '@angular/material/dialog';
+
 
 @Component({
     selector: 'add-operation',
@@ -52,6 +55,7 @@ export class SaveOperationComponent {
     isEditMode: boolean = false;
     public frm!: FormGroup;
     matcher = new ImmediateErrorStateMatcher();
+    //dialog: any;
 
     constructor(
         private router: Router,
@@ -61,7 +65,8 @@ export class SaveOperationComponent {
         private tricountService: TricountService,
         private balanceService: BalanceService,
         private cdr: ChangeDetectorRef,
-        private operationService: OperationService
+        private operationService: OperationService,
+        private dialog: MatDialog
     ) {
         this.frm = this.fb.group({
             titleCtl: ['', [
@@ -83,6 +88,7 @@ export class SaveOperationComponent {
         this.tricountId = Number(this.route.snapshot.paramMap.get('id'));
 
         const operationId = this.route.snapshot.paramMap.get('operationId');
+
 
         if (operationId) {
             this.operationId = Number(operationId);
@@ -314,5 +320,26 @@ export class SaveOperationComponent {
     getTitleError(): string {
         const control = this.frm.get('titleCtl');
         return Operation.getTitleError(control)
+    }
+
+    deleteOperation(): void {
+        const dialogRef = this.dialog.open(DeleteOperationComponent, {
+                    width: '400px'
+                });
+        
+                dialogRef.afterClosed().subscribe((result: boolean | undefined) => {
+                    if (result === true) {
+                        this.operationService.deleteOperation(this.operationId).subscribe({
+                            next: () => {
+                                this.tricountService.clearCache();
+                                this.router.navigate(['/tricount/' + this.tricountId]);
+                            },
+                            error: (err) => {
+                                console.error('Erreur lors du delete:', err);
+                                this.error = 'Erreur lors du delete operation';
+                            }
+                        });
+                    }
+                });
     }
 }

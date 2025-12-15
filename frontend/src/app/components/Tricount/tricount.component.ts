@@ -145,11 +145,17 @@ export class TricountComponent implements OnInit {
     }
 
     addOperation(): void {
-        this.router.navigate(['tricount/' + this.tricount?.id + '/add-operation']);
+        this.router.navigate(['/tricount', this.tricount?.id, 'operation', 'add']);
     }
 
+
+
     editOperation(operationId: number | undefined): void {
-        this.router.navigate(['tricount/' + this.tricount?.id + '/edit-operation/' + operationId]);
+        if (!operationId) {
+            console.error('Operation ID is undefined');
+            return;
+        }
+        this.router.navigate(['/tricount', this.tricount?.id, 'operation', operationId, 'edit']);
     }
 
 }

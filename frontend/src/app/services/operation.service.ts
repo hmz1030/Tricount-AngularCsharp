@@ -44,4 +44,10 @@ export class OperationService{
             tap(op => console.log(isCreate ? 'Operation created:' : 'Operation edited:', op))
         );
     }
+
+    deleteOperation(operationId :number | undefined): Observable<void> {
+        return this.http.post<void>(`${this.baseUrl}rpc/delete_operation`,{
+            id: operationId
+        });
+    }
 }

@@ -111,9 +111,7 @@ export class TricountService{
     deleteTricount(id : number): Observable<any>{
         return this.http.post<any>(`${this.baseUrl}rpc/delete_tricount`,{
             tricount_id: id
-        })
-        
-        //met a jour le cache 
+        });
     }
     
     isTricountTitleAvailable(title: string, tricountId: number = 0): Observable<boolean> {
