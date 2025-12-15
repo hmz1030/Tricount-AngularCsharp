@@ -236,3 +236,42 @@
 .view-balance-btn:disabled {
     opacity: 0.6;
 }
+
+.alone-state {
+    text-align: center;
+    padding: 80px 32px;
+    background-color: white;
+    margin: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.alone-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 12px 0;
+}
+
+.alone-subtitle {
+    font-size: 16px;
+    color: #666;
+    margin: 0 0 32px 0;
+}
+
+.add-friends-btn {
+    background-color: #5c9cdb;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.add-friends-btn:hover {
+    background-color: #4a8ac9;
+}
