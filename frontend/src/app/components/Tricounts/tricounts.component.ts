@@ -12,6 +12,7 @@ import { ResetDataBaseService } from 'src/app/services/resetdatabase.service';
 import { User } from 'src/app/models/user';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
+import { BalanceService } from 'src/app/services/balance.service';
 
 
 @Component({
@@ -47,6 +48,7 @@ export class TricountsComponent implements OnInit {
         private tricountService: TricountService,
         private authService: AuthenticationService,
         private resetDb: ResetDataBaseService,
+        private balanceService: BalanceService,
         private router: Router,
         private dialog: MatDialog
     ) { }
@@ -98,6 +100,7 @@ export class TricountsComponent implements OnInit {
         this.authService.logout();
         this.closeSidePanel();
         this.tricountService.clearCache();
+        this.balanceService.clearcash();
         this.router.navigate(['/login']);
     }
 

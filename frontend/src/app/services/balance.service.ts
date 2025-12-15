@@ -19,6 +19,10 @@ export class BalanceService{
         return this.balances;
     }
 
+    clearcash():void{
+        this.balances = new Map<Number,UserBalance[]>();
+    }
+
     constructor(
         private http: HttpClient,
         @Inject(BASE_URL) private baseUrl: string,
