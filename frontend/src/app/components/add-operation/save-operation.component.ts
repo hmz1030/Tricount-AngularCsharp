@@ -332,6 +332,7 @@ export class SaveOperationComponent {
                         this.operationService.deleteOperation(this.operationId).subscribe({
                             next: () => {
                                 this.tricountService.clearCache();
+                                this.balanceService.clearcash();
                                 this.router.navigate(['/tricount/' + this.tricountId]);
                             },
                             error: (err) => {

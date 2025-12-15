@@ -20,12 +20,12 @@
             {{t.description || 'No description'}}
           </div>
           <div class="tricount-meta">
-            {{getCreatorName(t.creator)}}
+            {{'by ' + getCreatorName(t.creator)}}
           </div>
         </div>
 
         <div class="tricount-right">
-          you're alone
+          {{friendsCount(t.id) == 0 ? 'you\'re alone' : 'with ' + friendsCount(t.id)  + ' friends'}}
         </div>
       </div>
     </mat-card>

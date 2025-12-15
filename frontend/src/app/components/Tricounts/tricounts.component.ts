@@ -134,4 +134,10 @@ export class TricountsComponent implements OnInit {
         const creator = this.allUsers.find(u => u.id === creatorId);
         return creator ? creator.full_name : "Unknown";
     } 
+
+
+    friendsCount(tricountId: number) : number| undefined {
+        const tricount = this.tricounts.find(t => t.id === tricountId);
+        return Number(tricount?.participants.length) - 1;
+    }
 }
