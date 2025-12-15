@@ -8,6 +8,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { DrawerService } from '../../services/drawer.service';
 import { AuthenticationService } from '../../services/authentication.service';
+import { TricountService } from '../../services/tricount.service';
+import { ResetDataBaseService } from '../../services/resetdatabase.service';
 import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
 
 @Component({
@@ -27,10 +29,13 @@ import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dial
 })
 export class AppComponent implements AfterViewInit {
     @ViewChild('drawer') drawer!: MatSidenav;
+     error: string | null = null;
 
     constructor(
         private drawerService: DrawerService,
         private authService: AuthenticationService,
+        private tricountService: TricountService,
+        private resetDb: ResetDataBaseService,
         private router: Router,
         private dialog: MatDialog
     ) {}
@@ -51,11 +56,27 @@ export class AppComponent implements AfterViewInit {
     logout(): void {
         this.drawer.close();
         this.authService.logout();
+        this.tricountService.clearCache();
         this.router.navigate(['/login']);
     }
 
     openResetPopup(): void {
-        this.drawer.close();
-        this.dialog.open(ConfirmResetDialogComponent);
+        const dialogRef = this.dialog.open(ConfirmResetDialogComponent, {
+            width: '400px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.resetDb.resetDataBase().subscribe({
+                    next: () => {
+                        this.logout();
+                    },
+                    error: (err) => {
+                        console.error('Erreur lors du reset:', err);
+                        this.error = 'Erreur lors du reset de la base de données';
+                    }
+                });
+            }
+        });
     }
 }
