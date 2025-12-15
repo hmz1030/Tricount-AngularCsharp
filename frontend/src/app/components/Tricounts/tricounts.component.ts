@@ -12,6 +12,9 @@ import { ResetDataBaseService } from 'src/app/services/resetdatabase.service';
 import { User } from 'src/app/models/user';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
+import { NavBarComponent } from '../nav-bar/nav-bar.component'; 
+import { BalanceService } from 'src/app/services/balance.service';
+
 
 
 @Component({
@@ -26,7 +29,8 @@ import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dial
         MatButtonModule,
         MatDividerModule,
         MatCardModule,
-        MatDialogModule
+        MatDialogModule,
+        NavBarComponent
     ],
     templateUrl: './tricounts.component.html',
     styleUrls: ['./tricounts.component.css']
@@ -37,7 +41,6 @@ export class TricountsComponent implements OnInit {
     allUsers: User[] = [];
     loading = false;
     error: string | null = null;
-    isSidePanelOpen = false;
 
     get currentUser() {
         return this.authService.currentUser;
@@ -47,6 +50,7 @@ export class TricountsComponent implements OnInit {
         private tricountService: TricountService,
         private authService: AuthenticationService,
         private resetDb: ResetDataBaseService,
+        private balanceService: BalanceService,
         private router: Router,
         private dialog: MatDialog
     ) { }
@@ -56,15 +60,6 @@ export class TricountsComponent implements OnInit {
         console.log("tricounts:",this.tricounts)
         this.getAllUsers();
         console.log("Tricounts that are shown:",this.tricounts)
-    }
-
-
-    toggleSidePanel(): void {
-        this.isSidePanelOpen = !this.isSidePanelOpen;
-    }
-
-    closeSidePanel(): void {
-        this.isSidePanelOpen = false;
     }
 
     loadTricounts(refresh: boolean = false): void {
@@ -90,14 +85,13 @@ export class TricountsComponent implements OnInit {
     }
 
     home(): void {
-        this.closeSidePanel();
         this.router.navigate(['/tricounts']);
     }
 
     logout(): void {
         this.authService.logout();
-        this.closeSidePanel();
         this.tricountService.clearCache();
+        this.balanceService.clearcash();
         this.router.navigate(['/login']);
     }
 

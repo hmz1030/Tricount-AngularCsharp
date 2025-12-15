@@ -145,7 +145,7 @@ export class SaveOperationComponent {
                 next: result => {
                     console.log('Operation saved successfully', result);
                     this.tricountService.clearCache();
-                    this.balanceService.getTricountBalance(this.tricountId,true).subscribe();
+                    this.balanceService.clearcash();
                     this.back();
                 },
                 error: err => {

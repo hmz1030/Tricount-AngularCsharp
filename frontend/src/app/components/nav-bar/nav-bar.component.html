@@ -1,0 +1,25 @@
+<mat-toolbar class="nav-bar">
+    <!-- Bouton Menu ou Retour -->
+    @if (!hideMenu) {
+        @if (backUrl) {
+            <button mat-icon-button (click)="goBack()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        } @else {
+            <button mat-icon-button (click)="openDrawer()">
+                <mat-icon>menu</mat-icon>
+            </button>
+        }
+    }
+
+    <!-- titre -->
+    <span class="nav-bar-title">{{ title }}</span>
+
+    
+    <span class="nav-bar-spacer"></span>
+
+    <!-- pour injecter les boutons personalisé que
+     je vais mettre dans app nav bar dans chaque
+     component.html -->
+    <ng-content></ng-content>
+</mat-toolbar>
