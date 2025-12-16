@@ -35,15 +35,21 @@ export class BalanceComponent implements OnInit {
 
 
     ngOnInit(): void {
-    this.tricountid = Number(this.route.snapshot.paramMap.get('id'));
-    
-    // Load balances first
-    this.balanceService.getTricountBalance(this.tricountid).subscribe({
-        next: balances =>{
-            this.balances = balances
-        }
-    })
-    console.log("balance", this.balances)
+        this.tricountid = Number(this.route.snapshot.paramMap.get('id'));
+        
+        // Load balances first
+        this.balanceService.getTricountBalance(this.tricountid).subscribe({
+            next: balances =>{
+                this.balances = balances
+            }
+        })
+        this.authService.getAllUsers().subscribe({
+            next: (user) => {
+                this.users = user;
+            }
+        })
+        this.matchUserNames();
+        console.log("balance", this.balances)
 }
 
     matchUserNames(): void {
@@ -62,12 +68,19 @@ export class BalanceComponent implements OnInit {
        this.router.navigate(['/tricount', this.tricountid]);
     }
     refresh(): void {
-        
+        this.balanceService.clearcash();
+        this.authService.clearcash();
         if (this.tricountid) {
             this.balanceService.getTricountBalance(this.tricountid,true).subscribe({
                 next: balances =>{
                     this.balances = balances
+                    this.matchUserNames();
                     console.log("balancesm",this.balances)
+                }
+            });
+            this.authService.getAllUsers().subscribe({
+                next: (user) => {
+                    this.users = user;
                 }
             });
         }
