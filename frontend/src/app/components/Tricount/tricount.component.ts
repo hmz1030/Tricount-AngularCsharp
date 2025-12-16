@@ -82,11 +82,6 @@ export class TricountComponent implements OnInit {
                 this.router.navigate(['/restricted']);
             }
         });
-
-        //recuperer les donner du balance du serveur si il sont pas deja la
-        
-        //recupere de la cash la balance du user
-        
     }
 
     initatorsName(): void{
@@ -112,10 +107,10 @@ export class TricountComponent implements OnInit {
 
     refresh(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
+        this.authService.clearcash();
         this.tricountService.getMyTricounts(true).subscribe({
             next: (tricounts) => {
                     this.tricount = tricounts.find(t => t.id == id);
-
 
                     // Vérifier si le tricount existe et si l'utilisateur y a accès
                     if (!this.tricount) {
@@ -128,7 +123,17 @@ export class TricountComponent implements OnInit {
                     this.tricount?.creator != this.userid
                     this.balanceService.getTricountBalance(this.tricount?.id!,true).subscribe()
                     //recupere de la cash la balance du user
-                    this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)
+                    this.balanceService.getTricountBalance(id).subscribe({
+                    next: ()=>{
+                        this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)
+                        }
+                    })
+                    this.authService.getAllUsers().subscribe({
+                    next: (user) =>{
+                        this.users = user;
+                        this.initatorsName();
+                    }
+                })
                     console.log("Found Tricount : ", this.tricount)
                 },
             error: (err) => {

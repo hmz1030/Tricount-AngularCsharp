@@ -102,4 +102,8 @@ export class AuthenticationService {
 
             );
     }
+
+    clearcash():void{
+        this.allusers = [];
+    }
 }
