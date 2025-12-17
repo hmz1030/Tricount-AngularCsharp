@@ -1,29 +1,19 @@
 @if (tricount) {
-<header class="tricount-header">
-  <!-- Back button -->
-  <button class="header-btn" (click)="goBack()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-
-  <!-- Title -->
-  <h1 class="header-title">{{ tricount.title }}</h1>
-
-  <!-- Action buttons on the right -->
-  <button class="header-btn" (click)="refresh()">
+<app-nav-bar title="{{ tricount.title }}" [backUrl]="backUrl">
+  <button mat-icon-button (click)="refresh()">
     <mat-icon>refresh</mat-icon>
   </button>
 
-  <button class="header-btn" (click)="edit()">
+  <button mat-icon-button (click)="edit()">
     <mat-icon>edit</mat-icon>
   </button>
 
   @if (canDelete) {
-  <button class="header-btn" (click)="delete()">
-    <mat-icon>delete</mat-icon>
-  </button>
+    <button mat-icon-button (click)="delete()">
+      <mat-icon>delete</mat-icon>
+    </button>
   }
-
-</header>
+</app-nav-bar>
 }
 
 <button class="view-balance-btn" [class.disabled]="!tricount?.operations || tricount?.operations?.length === 0"

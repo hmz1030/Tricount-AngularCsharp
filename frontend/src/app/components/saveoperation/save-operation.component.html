@@ -1,22 +1,17 @@
-<header class="tc-header">
-    <button class="header-btn" (click)="back()">
-        <mat-icon>arrow_back</mat-icon>
-    </button>
-
-    <span class="tc-header-title">{{isEditMode ? 'Edit Operation' : 'Add Operation'}}</span>
-    <span class="tc-header-spacer"></span>
-
-    <button class="header-btn" (click)="save()" [disabled]="frm.invalid || selectedParticipants.length === 0">
+<app-nav-bar
+    [title]="isEditMode ? 'Edit Operation' : 'Add Operation'"
+    [backUrl]="backUrl"
+>
+    <button mat-icon-button (click)="save()"
+            [disabled]="frm.invalid || selectedParticipants.length === 0">
         <mat-icon>save</mat-icon>
     </button>
-
     @if(isEditMode) {
-        <button class="header-btn" (click)="deleteOperation()">
+        <button mat-icon-button (click)="deleteOperation()">
             <mat-icon>delete</mat-icon>
         </button>
     }
-
-</header>
+</app-nav-bar>
 
 <div class="op-container">
     <!-- Message d'erreur global -->

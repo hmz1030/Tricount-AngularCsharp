@@ -1,30 +1,51 @@
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-top: 10px;
+/* Dialog container */
+::ng-deep .mat-mdc-dialog-container {
+    border-radius: 12px !important;
 }
 
+/* Title */
+h2[mat-dialog-title] {
+    color: #6200ea;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* Content */
+[mat-dialog-content] p {
+    color: #424242;
+    font-size: 16px;
+}
+
+/* Actions container */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+}
+
+/* Cancel button */
 .cancel-btn {
-  color: #555;
-  background: #e8e8e8;
-  padding: 6px 16px;
-  border-radius: 6px;
-  transition: 0.2s;
+    background-color: #e0e0e0 !important;
+    color: #424242 !important;
+    border-radius: 8px !important;
+    padding: 8px 24px !important;
+    font-weight: 500 !important;
 }
 
 .cancel-btn:hover {
-  background: #d5d5d5;
+    background-color: #bdbdbd !important;
 }
 
+/* Confirm button */
 .confirm-btn {
-  background: #1976d2; /* Bleu Material */
-  color: white;
-  padding: 6px 16px;
-  border-radius: 6px;
-  transition: 0.2s;
+    background-color: #6200ea !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 8px 24px !important;
+    font-weight: 500 !important;
 }
 
 .confirm-btn:hover {
-  background: #115293;
+    background-color: #6200ead0 !important;
 }
