@@ -7,6 +7,22 @@
      background-color:white;
 }
 
+/*
+.sidenav c'est pour la couleur de tout le truc
+.mat-icon c'est les icones
+.matListItemTitle c'est pour les titre a coter des icones
+*/
+:host-context(body.dark-theme) .sidenav{
+    background-color: black;
+}
+:host-context(body.dark-theme) .mat-icon{
+    color: white;
+}
+:host-context(body.dark-theme) [matListItemTitle] {
+    color: white;
+}
+
+
 .sidenav-header {
     display: flex;
     justify-content: space-between;

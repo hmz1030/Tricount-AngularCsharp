@@ -63,3 +63,14 @@ div[mat-dialog-content] p {
 .no-btn:hover {
     background-color: #d5d5d5;
 }
+
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-dialog-container{
+    background-color: black;
+}
+:host-context(body.dark-theme) h2 {
+    color: #e0e0e0;
+}
+
+:host-context(body.dark-theme) p {
+    color: #b0b0b0;
+}

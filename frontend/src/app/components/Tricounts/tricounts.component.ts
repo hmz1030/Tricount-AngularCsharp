@@ -14,6 +14,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
 import { NavBarComponent } from '../nav-bar/nav-bar.component'; 
 import { BalanceService } from 'src/app/services/balance.service';
+import { ThemeService } from 'src/app/services/theme.service';
 
 
 
@@ -52,7 +53,8 @@ export class TricountsComponent implements OnInit {
         private resetDb: ResetDataBaseService,
         private balanceService: BalanceService,
         private router: Router,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private themeService: ThemeService
     ) { }
 
     ngOnInit(): void {
@@ -61,6 +63,7 @@ export class TricountsComponent implements OnInit {
         this.getAllUsers();
         console.log("Tricounts that are shown:",this.tricounts)
     }
+    
 
     loadTricounts(refresh: boolean = false): void {
         this.loading = true;
@@ -139,5 +142,8 @@ export class TricountsComponent implements OnInit {
     friendsCount(tricountId: number) : number| undefined {
         const tricount = this.tricounts.find(t => t.id === tricountId);
         return Number(tricount?.participants.length) - 1;
+    }
+    toggleTheme():void{
+        this.themeService.toggleTheme();
     }
 }

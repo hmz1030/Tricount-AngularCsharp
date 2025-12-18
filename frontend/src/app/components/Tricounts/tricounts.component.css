@@ -171,6 +171,26 @@
   /* pas de marge, on utilise gap sur le container */
 }
 
+:host-context(body.dark-theme) .tricount-card {
+    background-color: rgb(48, 45, 45);
+}
+
+:host-context(body.dark-theme) {
+  background-color: black;
+}
+
+:host-context(body.dark-theme) .tricount-title{
+  color: white;
+}
+
+:host-context(body.dark-theme) .tricount-subtitle{
+  color: white;
+}
+
+:host-context(body.dark-theme) .tricount-meta{
+  color: white;
+}
+
 /* Layout interne de la carte */
 .tricount-row {
   display: flex;

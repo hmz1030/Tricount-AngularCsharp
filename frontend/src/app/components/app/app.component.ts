@@ -11,6 +11,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { TricountService } from '../../services/tricount.service';
 import { ResetDataBaseService } from '../../services/resetdatabase.service';
 import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
     selector: 'app-root',
@@ -37,7 +38,8 @@ export class AppComponent implements AfterViewInit {
         private tricountService: TricountService,
         private resetDb: ResetDataBaseService,
         private router: Router,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        public themeService: ThemeService
     ) {}
 
     ngAfterViewInit(): void {
@@ -78,5 +80,9 @@ export class AppComponent implements AfterViewInit {
                 });
             }
         });
+    }
+
+    toggleTheme(){
+        this.themeService.toggleTheme();
     }
 }

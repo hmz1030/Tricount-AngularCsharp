@@ -21,10 +21,15 @@
                 <mat-icon matListItemIcon>restore</mat-icon>
                 <span matListItemTitle>Reset Database</span>
             </a>
+            <a mat-list-item (click)="toggleTheme()">
+                <mat-icon matListItemIcon>{{ themeService.isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
+                <span matListItemTitle>{{ themeService.isDark ? 'Light Mode' : 'Dark Mode' }}</span>
+            </a>
             <a mat-list-item (click)="logout()">
                 <mat-icon matListItemIcon>logout</mat-icon>
                 <span matListItemTitle>Logout</span>
             </a>
+
         </mat-nav-list>
     </mat-sidenav>
 

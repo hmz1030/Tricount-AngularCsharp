@@ -151,7 +151,9 @@ export class TricountComponent implements OnInit {
         if(!this.canDelete){
             return
         }
-        const dialogRef = this.dialog.open(DeleteTricountComponent,{width:'500px'})
+        const dialogRef = this.dialog.open(DeleteTricountComponent,{
+            width:'500px'
+        })
 
         dialogRef.afterClosed().subscribe(result => {
             if(result == true) {

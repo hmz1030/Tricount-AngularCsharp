@@ -91,3 +91,11 @@
     font-size: 20px;
     text-align: left;
 }
+
+:host-context(body.dark-theme){
+    background-color: black;
+}
+:host-context(body.dark-theme) .user-name,
+:host-context(body.dark-theme) .balance-amount{
+    color: white;
+}

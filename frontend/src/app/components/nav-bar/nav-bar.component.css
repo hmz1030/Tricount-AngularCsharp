@@ -5,6 +5,9 @@
     top: 0;
     z-index: 100;
 }
+:host-context(body.dark-theme) .nav-bar{
+    background-color: rgb(21, 21, 21);
+}
 
 .nav-bar-title {
     margin-left: 8px;
