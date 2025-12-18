@@ -9,11 +9,13 @@ import { UserBalance } from "src/app/models/UserBalance";
 import { MatDialog } from "@angular/material/dialog";
 import { User } from "src/app/models/user";
 import { BalanceService } from "src/app/services/balance.service";
+import { NavBarComponent } from '../nav-bar/nav-bar.component';
+
 
 @Component({
     selector: 'app-tricounts',
     standalone: true,
-    imports: [CommonModule, MatIconModule],
+    imports: [CommonModule, MatIconModule, NavBarComponent],
     templateUrl: './balance.component.html',
     styleUrls: ['./balance.component.css']
 })
@@ -23,6 +25,7 @@ export class BalanceComponent implements OnInit {
     users: User[] = [];
     error?: string;
     balances?: UserBalance[] = [];
+    backUrl!: string;
 
     constructor(
         private tricountService: TricountService,
@@ -36,7 +39,7 @@ export class BalanceComponent implements OnInit {
 
     ngOnInit(): void {
         this.tricountid = Number(this.route.snapshot.paramMap.get('id'));
-        
+        this.backUrl = `/tricount/${this.tricountid}`;
         // Load balances first
         this.balanceService.getTricountBalance(this.tricountid).subscribe({
             next: balances =>{

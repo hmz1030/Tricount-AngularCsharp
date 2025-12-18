@@ -1,14 +1,8 @@
-<header class="balance-header">
-  <button class="header-btn" (click)="goBack()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  
-  <h1 class="header-title">Balance</h1>
-  
+<app-nav-bar title="Balance" [backUrl]="backUrl">
   <button class="header-btn" (click)="refresh()">
     <mat-icon>refresh</mat-icon>
   </button>
-</header>
+</app-nav-bar>
 
 <div class="balance-item" *ngFor="let balance of balances">
   <div class="balance-content">
