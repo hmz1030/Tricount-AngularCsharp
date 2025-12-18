@@ -19,6 +19,27 @@
     flex: 1;
 }
 
-.nav-bar button {
+.nav-bar button,
+::ng-deep .nav-bar button {
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-bar button:hover,
+::ng-deep .nav-bar button:hover {
+    background-color: #7c4dff;
+    border-radius: 50%;
+}
+
+.nav-bar button:disabled,
+::ng-deep .nav-bar button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.nav-bar button:disabled:hover,
+::ng-deep .nav-bar button:disabled:hover {
+    background-color: transparent;
 }

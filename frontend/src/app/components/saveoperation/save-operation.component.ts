@@ -22,6 +22,7 @@ import { OperationService } from 'src/app/services/operation.service';
 import { BalanceService } from 'src/app/services/balance.service';
 import { DeleteOperationComponent } from '../delete-operation/delete-operation.component';
 import { MatDialog } from '@angular/material/dialog';
+import { NavBarComponent } from '../nav-bar/nav-bar.component';
 
 
 @Component({
@@ -32,6 +33,7 @@ import { MatDialog } from '@angular/material/dialog';
         ReactiveFormsModule,
         RouterModule,
         MatFormFieldModule,
+        NavBarComponent,
         MatInputModule,
         MatButtonModule,
         MatCardModule,
@@ -55,6 +57,7 @@ export class SaveOperationComponent {
     isEditMode: boolean = false;
     public frm!: FormGroup;
     matcher = new ImmediateErrorStateMatcher();
+    backUrl!: string;
     //dialog: any;
 
     constructor(
@@ -86,9 +89,8 @@ export class SaveOperationComponent {
 
     ngOnInit() {
         this.tricountId = Number(this.route.snapshot.paramMap.get('id'));
-
         const operationId = this.route.snapshot.paramMap.get('operationId');
-
+        this.backUrl = `/tricount/${this.tricountId}`;
 
         if (operationId) {
             this.operationId = Number(operationId);
@@ -114,9 +116,6 @@ export class SaveOperationComponent {
         }, 100);
     }
 
-    back(): void {
-        this.router.navigate(['/tricount/' + this.tricountId]);
-    }
 
     save(): void {
         Object.keys(this.frm.controls).forEach(key => {
@@ -146,7 +145,7 @@ export class SaveOperationComponent {
                     console.log('Operation saved successfully', result);
                     this.tricountService.clearCache();
                     this.balanceService.clearcash();
-                    this.back();
+                    this.router.navigate([this.backUrl]);
                 },
                 error: err => {
                     console.error('Error saving operation', err);

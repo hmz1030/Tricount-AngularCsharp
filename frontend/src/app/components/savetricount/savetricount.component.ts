@@ -95,9 +95,11 @@ export class SaveTricountComponent implements OnInit {
             });
         }
     }
+    
     get availableUsers(): User[] {
         return this.allUsers.filter(u => !this.selectedParticipantIds.includes(u.id!));
     }
+
     get selectedParticipants(): User[] {
         return this.allUsers.filter(u => this.selectedParticipantIds.includes(u.id!));
     }
@@ -107,6 +109,7 @@ export class SaveTricountComponent implements OnInit {
             this.selectedParticipantIds.push(userId);
         }
     }
+
     removeParticipant(userId: number): void {
         const index = this.selectedParticipantIds.indexOf(userId);
         if (index > -1) {
@@ -115,12 +118,14 @@ export class SaveTricountComponent implements OnInit {
         }
 
     }
+
     addSelectedParticipant(): void {
-    if (this.selectedUserToAdd) {
-        this.addParticipant(this.selectedUserToAdd);
-        this.selectedUserToAdd = null; // Reset après ajout
+        if (this.selectedUserToAdd) {
+            this.addParticipant(this.selectedUserToAdd);
+            this.selectedUserToAdd = null; // Reset après ajout
+        }
     }
-}
+
     saveTricount(): void {
         const tricountToSave: Tricount = {
             id: this.tricountId,
@@ -134,26 +139,22 @@ export class SaveTricountComponent implements OnInit {
         };
         this.tricountService.saveTricount(tricountToSave, this.selectedParticipantIds)
             .subscribe({
-                next: () => {
-                    this.cancel();
+                next: (savedTricount) => {
+                    this.router.navigate(['/tricount/', savedTricount.id]);
                 },
                 error: (err) => {
                     this.error = 'Erreur lors de la sauvegarde du tricount';
                     console.error(err);
                 }
-
-
             });
-
-
     }
+
     cancel(): void {
         if (this.tricountId == 0) {
             this.router.navigate(['/tricounts']);
         }
         else
-            this.router.navigate(['/tricount/', this.tricountId])
-
+            this.router.navigate(['/tricount/', this.tricountId]);
     }
 
     titleUsed(): AsyncValidatorFn {
@@ -176,21 +177,21 @@ export class SaveTricountComponent implements OnInit {
         };
     }
     canRemoveParticipant(userId: number): boolean {
-    if (this.tricountId === 0) return userId !== this.currentUserId;
-    
-    const tricount = this.tricountService.tricounts.find(t => t.id === this.tricountId);
-    
-    return userId !== this.currentUserId 
-        && userId !== tricount?.creator 
-        && !tricount?.operations.some(op =>
-            op.initiator === userId ||
-            op.repartitions?.some(r => r.user_id === userId)
-        );
-}
-   get creatorId(): number | undefined {
-    return this.tricountId === 0 
-        ? this.currentUserId 
-        : this.tricountService.tricounts.find(t => t.id === this.tricountId)?.creator;
-}
+        if (this.tricountId === 0) return userId !== this.currentUserId;
 
+        const tricount = this.tricountService.tricounts.find(t => t.id === this.tricountId);
+
+        return userId !== this.currentUserId
+            && userId !== tricount?.creator
+            && !tricount?.operations.some(op =>
+                op.initiator === userId ||
+                op.repartitions?.some(r => r.user_id === userId)
+            );
+    }
+
+    get creatorId(): number | undefined {
+        return this.tricountId === 0
+            ? this.currentUserId
+            : this.tricountService.tricounts.find(t => t.id === this.tricountId)?.creator;
+    }
 }

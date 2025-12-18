@@ -6,7 +6,7 @@ import { SignupComponent } from '../components/signup/signup.component';
 import { TricountComponent } from '../components/Tricount/tricount.component';
 import { RestrictedComponent } from '../components/restricted/restricted.component';
 import { UnknownComponent } from '../components/unknown/unknown.component';
-import{SaveOperationComponent} from '../components/add-operation/save-operation.component';
+import{SaveOperationComponent} from '../components/saveoperation/save-operation.component';
 import { AuthGuard } from '../services/auth.guard';
 import { BalanceComponent } from '../components/Balance/balance.component';
 import { SaveTricountComponent } from '../components/savetricount/savetricount.component';      
