@@ -16,7 +16,7 @@ import { TricountService } from "src/app/services/tricount.service";
 import { User } from "src/app/models/user";
 import { Tricount } from "src/app/models/Tricount";
 import { ImmediateErrorStateMatcher } from '../../matchers/imediate-error-state.matcher';
-
+import { NavBarComponent } from "../nav-bar/nav-bar.component";
 @Component({
     selector: 'app-save-tricount',
     standalone: true,
@@ -32,7 +32,8 @@ import { ImmediateErrorStateMatcher } from '../../matchers/imediate-error-state.
         MatDatepickerModule,
         MatCheckboxModule,
         MatIconModule,
-        SetFocusDirective],
+        SetFocusDirective,
+        NavBarComponent],
     templateUrl: './savetricount.component.html',
     styleUrls: ['./savetricount.component.css']
 })
