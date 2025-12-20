@@ -1,98 +1,121 @@
 :host {
-      display: block;
-      height: 100vh;
-      background-color: #f0f2f5; /* Fond gris clair Tricount */
-      font-family: Roboto, "Helvetica Neue", sans-serif;
-    }
+  display: block;
+  height: 100vh;
+  background-color: #f0f2f5;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
-    /* --- HEADER --- */
-    .tc-header {
-      height: 56px;
-      background-color: #2196f3; /* Bleu Tricount */
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      padding: 0 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      position: sticky; top: 0; z-index: 10;
-    }
-    .tc-header-title {
-      font-size: 20px;
-      margin-left: 16px;
-      font-weight: 500;
-    }
-    .tc-icon-btn {
-      background: transparent;
-      border: none;
-      color: white;
-      cursor: pointer;
-      padding: 12px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+/* ========================================
+   HEADER (old style - kept for commented section)
+   ======================================== */
+.tc-header {
+  height: 56px;
+  background-color: #2196f3;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 
-    /* --- CONTAINER --- */
-    .signup-container {
-      padding: 16px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .signup-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+.tc-header-title {
+  font-size: 20px;
+  margin-left: 16px;
+  font-weight: 500;
+}
 
+.tc-icon-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    mat-form-field { width: 100%; }
+/* ========================================
+   CONTAINER & LAYOUT
+   ======================================== */
+.signup-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
 
-    /* Fond BLANC pour les inputs */
-    ::ng-deep .mdc-text-field--outlined {
-      background-color: white !important;
-    }
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
 
-    /* Bordure grise par défaut */
-    ::ng-deep .mdc-text-field--outlined .mdc-notched-outline__leading,
-    ::ng-deep .mdc-text-field--outlined .mdc-notched-outline__notch,
-    ::ng-deep .mdc-text-field--outlined .mdc-notched-outline__trailing {
-      border-color: #bdbdbd !important;
-    }
+/* ========================================
+   FORM FIELDS - Style rectangulaire arrondi
+   ======================================== */
+::ng-deep .mat-mdc-form-field {
+  background-color: white;
+}
 
-    /* Focus BLEU */
-    ::ng-deep .mdc-text-field--focused .mdc-notched-outline__leading,
-    ::ng-deep .mdc-text-field--focused .mdc-notched-outline__notch,
-    ::ng-deep .mdc-text-field--focused .mdc-notched-outline__trailing {
-      border-color: #2196f3 !important;
-      border-width: 2px !important;
-    }
-    ::ng-deep .mdc-text-field--focused .mat-mdc-floating-label {
-      color: #2196f3 !important;
-    }
+/* Coins arrondis pour les inputs */
+::ng-deep .mat-mdc-form-field .mdc-notched-outline .mdc-notched-outline__leading {
+  border-radius: 4px 0 0 4px !important;
+  width: 12px !important;
+}
 
-    /* Erreur ROUGE (Automatique grâce au Matcher) */
-    ::ng-deep .mat-form-field-invalid .mdc-notched-outline__leading,
-    ::ng-deep .mat-form-field-invalid .mdc-notched-outline__notch,
-    ::ng-deep .mat-form-field-invalid .mdc-notched-outline__trailing {
-      border-color: #b00020 !important;
-    }
-    ::ng-deep .mat-form-field-invalid .mat-mdc-floating-label {
-      color: #b00020 !important;
-    }
-    mat-error { font-size: 12px; color: #b00020; margin-left: 4px; }
+::ng-deep .mat-mdc-form-field .mdc-notched-outline .mdc-notched-outline__trailing {
+  border-radius: 0 4px 4px 0 !important;
+}
 
-    /* --- BOUTON SIGNUP --- */
-    .actions { display: flex; justify-content: center; margin-top: 24px; }
-    
-    button[mat-raised-button] {
-      padding: 0 48px;
-      border-radius: 24px;
-      height: 48px;
-      font-size: 16px;
-    }
-    
-    :host ::ng-deep .mat-mdc-raised-button:disabled {
-      background-color: #e0e0e0;
-      color: rgba(0,0,0,0.26);
-    }
+/* Padding interne pour le texte */
+::ng-deep .mat-mdc-form-field .mat-mdc-form-field-infix {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+::ng-deep .mat-mdc-form-field input.mat-mdc-input-element {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+
+/* ========================================
+   FORM FIELDS - Bordures invalides
+   ======================================== */
+::ng-deep .mat-mdc-form-field.mat-form-field-invalid .mat-mdc-notch-piece {
+  border-color: #f44336 !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-invalid .mat-mdc-floating-label {
+  color: #f44336 !important;
+}
+
+::ng-deep .mat-mdc-form-field .mat-mdc-form-field-error {
+  color: #f44336 !important;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* ========================================
+   BOUTON SIGNUP
+   ======================================== */
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+button[mat-raised-button] {
+  padding: 0 48px;
+  border-radius: 24px;
+  height: 48px;
+  font-size: 16px;
+}
+
+:host ::ng-deep .mat-mdc-raised-button:disabled {
+  background-color: #e0e0e0;
+  color: rgba(0, 0, 0, 0.26);
+}
