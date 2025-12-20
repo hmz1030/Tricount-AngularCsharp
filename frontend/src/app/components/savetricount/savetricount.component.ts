@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -55,7 +55,8 @@ export class SaveTricountComponent implements OnInit {
         private authService: AuthenticationService,
         private route: ActivatedRoute,
         private router: Router,
-        private fb: FormBuilder) {
+        private fb: FormBuilder,
+        private cdr: ChangeDetectorRef) {
         this.ctlTitle = this.fb.control('', [Validators.required, Validators.minLength(3)], [this.titleUsed()]);
         this.ctlDescription = this.fb.control('', [Validators.minLength(3)]);
         this.frm = this.fb.group({
@@ -97,6 +98,14 @@ export class SaveTricountComponent implements OnInit {
                 }
             });
         }
+
+        //champ title en rouge direct quand on ouvre la page
+        setTimeout(() => {
+            Object.keys(this.frm.controls).forEach(key => {
+                this.frm.get(key)?.markAsTouched();
+            });
+            this.cdr.detectChanges();
+        }, 100);
     }
     
     get availableUsers(): User[] {
