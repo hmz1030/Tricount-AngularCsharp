@@ -1,7 +1,6 @@
 
-<app-nav-bar [title]="tricountId == 0 ? 'Add Tricount': 'Edit Tricount'" [backUrl] = "backUrl">
-
-  <button class="header-btn" (click)="saveTricount()" [disabled]="frm.invalid">
+<app-nav-bar [title]="tricountId == 0 ? 'Add Tricount': 'Edit Tricount'" [backUrl]="backUrl">
+    <button mat-icon-button (click)="saveTricount()" [disabled]="frm.invalid">
         <mat-icon>save</mat-icon>
     </button>
 </app-nav-bar>
@@ -12,7 +11,7 @@
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Title(*)</mat-label>
             <input matInput type="text" [formControl]="ctlTitle" [errorStateMatcher]="matcher" required appSetFocus>
-            @if (ctlTitle.invalid && (ctlTitle.dirty || ctlTitle.touched)) {
+            @if (ctlTitle.invalid) {
             <mat-error>
                 @if (ctlTitle.hasError('required')) { Title is required }
                 @else if (ctlTitle.hasError('minlength')) { Minimum 3 characters }
@@ -24,7 +23,7 @@
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Description</mat-label>
             <input matInput type="text" [formControl]="ctlDescription" [errorStateMatcher]="matcher">
-            @if (ctlDescription.invalid && (ctlDescription.dirty || ctlDescription.touched)) {
+            @if (ctlDescription.invalid) {
             <mat-error>
                 @if (ctlDescription.hasError('minlength')) { Minimum 3 characters }
             </mat-error>
