@@ -1,30 +1,11 @@
 
-<app-nav-bar [title]="tricountId == 0 ? 'Add Tricount': 'Edit Tricount'">
+<app-nav-bar [title]="tricountId == 0 ? 'Add Tricount': 'Edit Tricount'" [backUrl] = "backUrl">
 
   <button class="header-btn" (click)="saveTricount()" [disabled]="frm.invalid">
         <mat-icon>save</mat-icon>
     </button>
 </app-nav-bar>
 
-
-
-
-
- <!-- Message d'erreur global 
-<header class="tc-header">
-    <button class="tc-icon-btn" (click)="cancel()">
-        <mat-icon>arrow_back</mat-icon>
-    </button>
-    <span class="tc-header-title">
-        {{tricountId=== 0 ? 'Add Tricount' : 'Edit Tricount'}}
-    </span>
-    <span class="tc-header-spacer"></span>
-
-    <button class="header-btn" (click)="saveTricount()" [disabled]="frm.invalid">
-        <mat-icon>save</mat-icon>
-    </button>
-</header>
--->
 <div class="savetricount-container">
     <form [formGroup]="frm" (ngSubmit)="saveTricount()" class="SaveTricount-form" novalidate>
 

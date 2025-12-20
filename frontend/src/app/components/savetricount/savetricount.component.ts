@@ -48,6 +48,7 @@ export class SaveTricountComponent implements OnInit {
     ctlDescription!: FormControl;
     matcher = new ImmediateErrorStateMatcher();
     selectedUserToAdd: number | null = null;
+    backUrl! : string;
 
     constructor(
         private tricountService: TricountService,
@@ -67,6 +68,7 @@ export class SaveTricountComponent implements OnInit {
     ngOnInit(): void {
         this.currentUserId = this.authService.currentUser?.id;
         this.tricountId = Number(this.route.snapshot.paramMap.get('id')) || 0;
+        this.tricountId == 0 ? this.backUrl = `/tricounts` : this.backUrl = `/tricount/${this.tricountId}`;
 
         this.authService.getAllUsers().subscribe(users => {
             this.allUsers = users;
