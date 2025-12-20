@@ -11,7 +11,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { SetFocusDirective } from '../../directives/setfocus.directive';
 import { ImmediateErrorStateMatcher } from '../../matchers/imediate-error-state.matcher';
 import { User } from 'src/app/models/user';
-
+import { NavBarComponent } from '../nav-bar/nav-bar.component';
 
 @Component({
     selector: 'app-signup',
@@ -25,7 +25,8 @@ import { User } from 'src/app/models/user';
         MatButtonModule,
         MatCardModule,
         MatIconModule,
-        SetFocusDirective
+        SetFocusDirective,
+        NavBarComponent
     ],
     templateUrl: './signup.component.html',
     styleUrls: ['./signup.component.css']
@@ -40,12 +41,13 @@ export class SignupComponent {
     public hidePassword = true;
     public hidePasswordConfirm = true;
     matcher = new ImmediateErrorStateMatcher();
-     userModel: User = new User();
+    userModel: User = new User();
+    backUrl! : string;
     constructor(
         private fb: FormBuilder,
         private router: Router,
         public authService: AuthenticationService,
-        
+
     ) {
         this.ctlEmail = this.fb.control('', [Validators.required, this.userModel.strictEmail()], [this.emailUsed()]);
         this.ctlFullName = this.fb.control('', [Validators.required, Validators.minLength(3)], [this.fullNameUsed()]);
@@ -65,6 +67,7 @@ export class SignupComponent {
             passwordConfirm: this.ctlPasswordConfirm,
             iban: this.ctlIban
         }, { validators: this.crossValidations });
+        this.backUrl = `/login`;
     }
 
     emailUsed(): AsyncValidatorFn {
@@ -104,14 +107,14 @@ export class SignupComponent {
             });
         };
     }
-    
+
     crossValidations(group: AbstractControl): ValidationErrors | null {
         const password = group.get('password')?.value;
         const passwordConfirm = group.get('passwordConfirm')?.value;
         // renvoie l'erreur au groupe si c'est pas ==
         return password === passwordConfirm ? null : { passwordNotConfirmed: true };
     }
-    
+
     signup() {
         if (this.frm.invalid) {
             return;
