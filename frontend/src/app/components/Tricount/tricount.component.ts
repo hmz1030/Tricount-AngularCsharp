@@ -129,9 +129,7 @@ export class TricountComponent implements OnInit {
 
                     this.calculateTotal();
                     this.tricount?.creator != this.userid
-                    this.balanceService.getTricountBalance(this.tricount?.id!,true).subscribe()
-                    //recupere de la cash la balance du user
-                    this.balanceService.getTricountBalance(id).subscribe({
+                    this.balanceService.getTricountBalance(this.tricount?.id!,true).subscribe({
                     next: ()=>{
                         this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)
                         }
