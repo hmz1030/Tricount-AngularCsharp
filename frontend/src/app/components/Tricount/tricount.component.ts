@@ -72,7 +72,7 @@ export class TricountComponent implements OnInit {
 
                 this.balanceService.getTricountBalance(id).subscribe({
                     next: ()=>{
-                        this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)
+                        this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!, id)
                     }
                 })
 
@@ -129,9 +129,9 @@ export class TricountComponent implements OnInit {
 
                     this.calculateTotal();
                     this.tricount?.creator != this.userid
-                    this.balanceService.getTricountBalance(this.tricount?.id!,true).subscribe({
+                    this.balanceService.getTricountBalance(id, true).subscribe({
                     next: ()=>{
-                        this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!,this.tricount?.id!)
+                        this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!, id)
                         }
                     })
                     this.authService.getAllUsers().subscribe({
