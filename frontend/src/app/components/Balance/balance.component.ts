@@ -40,10 +40,8 @@ export class BalanceComponent implements OnInit {
         this.tricountid = Number(this.route.snapshot.paramMap.get('id'));
         this.backUrl = `/tricount/${this.tricountid}`;
         
-        // Récupérer le tricount depuis le cache
         this.tricount = this.tricountService.tricounts.find(t => t.id === this.tricountid);
         
-        // Si pas en cache (accès direct URL), charger les tricounts
         if (!this.tricount) {
             this.tricountService.getMyTricounts().subscribe({
                 next: tricounts => {
@@ -84,12 +82,10 @@ export class BalanceComponent implements OnInit {
     refresh(): void {
         this.balanceService.clearcash();
         if (this.tricountid) {
-            // Recharger le tricount pour avoir les participants à jour
             this.tricountService.getMyTricounts(true).subscribe({
                 next: tricounts => {
                     this.tricount = tricounts.find(t => t.id === this.tricountid);
                     
-                    // Puis recharger les balances
                     this.balanceService.getTricountBalance(this.tricountid!, true).subscribe({
                         next: balances => {
                             this.balances = balances;

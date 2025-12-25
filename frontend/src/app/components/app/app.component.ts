@@ -12,6 +12,7 @@ import { TricountService } from '../../services/tricount.service';
 import { ResetDataBaseService } from '../../services/resetdatabase.service';
 import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
 import { ThemeService } from 'src/app/services/theme.service';
+import { BalanceService } from 'src/app/services/balance.service';
 
 @Component({
     selector: 'app-root',
@@ -36,6 +37,7 @@ export class AppComponent implements AfterViewInit {
         private drawerService: DrawerService,
         private authService: AuthenticationService,
         private tricountService: TricountService,
+        private balanceService: BalanceService,
         private resetDb: ResetDataBaseService,
         private router: Router,
         private dialog: MatDialog,
@@ -59,6 +61,7 @@ export class AppComponent implements AfterViewInit {
         this.drawer.close();
         this.authService.logout();
         this.tricountService.clearCache();
+        this.balanceService.clearcash();
         this.authService.clearcash();
         this.router.navigate(['/login']);
     }

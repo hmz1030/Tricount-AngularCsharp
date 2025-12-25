@@ -13,14 +13,14 @@ import { AuthenticationService } from "./authentication.service";
 
 export class BalanceService{
 
-    private balances : Map<Number,UserBalance[]> = new Map<Number,UserBalance[]>();
+    private balances : Map<number, UserBalance[]> = new Map<number, UserBalance[]>();
 
-    get getbalances(): Map<Number,UserBalance[]> {
+    get getbalances(): Map<number, UserBalance[]> {
         return this.balances;
     }
 
     clearcash():void{
-        this.balances = new Map<Number,UserBalance[]>();
+        this.balances = new Map<number, UserBalance[]>();
     }
 
     constructor(

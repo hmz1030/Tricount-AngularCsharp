@@ -11,7 +11,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ResetDataBaseService } from 'src/app/services/resetdatabase.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
-import { NavBarComponent } from '../nav-bar/nav-bar.component'; 
+import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { BalanceService } from 'src/app/services/balance.service';
 import { ThemeService } from 'src/app/services/theme.service';
 
@@ -57,15 +57,18 @@ export class TricountsComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadTricounts(false);
-        console.log("tricounts:",this.tricounts)
-        console.log("Tricounts that are shown:",this.tricounts)
+        console.log("tricounts:", this.tricounts)
+        console.log("Tricounts that are shown:", this.tricounts)
     }
-    
+
 
     loadTricounts(refresh: boolean = false): void {
         this.loading = true;
         this.error = null;
-        
+
+        if (refresh) {
+            this.balanceService.clearcash();
+        }
 
         this.tricountService.getMyTricounts(refresh).subscribe({
             next: t => {
@@ -81,7 +84,7 @@ export class TricountsComponent implements OnInit {
     }
 
     onAddTricount(): void {
-         this.router.navigate(['/add-tricount']);
+        this.router.navigate(['/add-tricount']);
     }
 
     home(): void {
@@ -119,20 +122,20 @@ export class TricountsComponent implements OnInit {
         });
     }
 
-    getCreatorName(creatorId: number, tricountId: number): string | undefined{
+    getCreatorName(creatorId: number, tricountId: number): string | undefined {
         // gestion optimiste -> pas besoin d'apl allusers mais chercher dans 
         // participants
         const tricount = this.tricounts.find(t => t.id === tricountId);
         const creator = tricount?.participants.find(u => u.id === creatorId);
         return creator ? creator.full_name : "Unknown";
-    } 
+    }
 
 
-    friendsCount(tricountId: number) : number| undefined {
+    friendsCount(tricountId: number): number | undefined {
         const tricount = this.tricounts.find(t => t.id === tricountId);
         return Number(tricount?.participants.length) - 1;
     }
-    toggleTheme():void{
+    toggleTheme(): void {
         this.themeService.toggleTheme();
     }
 }

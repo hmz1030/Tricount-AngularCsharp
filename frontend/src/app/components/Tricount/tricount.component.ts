@@ -74,7 +74,6 @@ export class TricountComponent implements OnInit {
                     }
                 })
                 
-                // Utiliser les participants du tricount au lieu de getAllUsers
                 this.initatorsName();
                 console.log("Found Tricount : ", this.tricount)
                 
@@ -88,7 +87,6 @@ export class TricountComponent implements OnInit {
 
     initatorsName(): void{
         this.tricount?.operations.forEach(operation=>{
-            // Utiliser tricount.participants au lieu de this.users
             operation.initiatorName = this.tricount?.participants.find(u => u.id == operation.initiator)?.full_name
         })
     }
@@ -129,7 +127,6 @@ export class TricountComponent implements OnInit {
                         this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!, id)
                         }
                     })
-                    // Utiliser les participants du tricount
                     this.initatorsName();
                     console.log("Found Tricount : ", this.tricount)
                 },
