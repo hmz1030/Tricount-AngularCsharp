@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from "@angular/common";
 import { UserBalance } from "src/app/models/UserBalance";
 import { MatDialog } from "@angular/material/dialog";
-import { User } from "src/app/models/user";
 import { BalanceService } from "src/app/services/balance.service";
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 
@@ -22,7 +21,7 @@ import { NavBarComponent } from '../nav-bar/nav-bar.component';
 
 export class BalanceComponent implements OnInit {
     tricountid?: number;
-    users: User[] = [];
+    tricount?: Tricount;
     error?: string;
     balances?: UserBalance[] = [];
     backUrl!: string;
@@ -40,50 +39,64 @@ export class BalanceComponent implements OnInit {
     ngOnInit(): void {
         this.tricountid = Number(this.route.snapshot.paramMap.get('id'));
         this.backUrl = `/tricount/${this.tricountid}`;
-        // Load balances first
-        this.balanceService.getTricountBalance(this.tricountid).subscribe({
-            next: balances =>{
-                this.balances = balances
-            }
-        })
-        this.authService.getAllUsers().subscribe({
-            next: (user) => {
-                this.users = user;
-            }
-        })
-        this.matchUserNames();
-        console.log("balance", this.balances)
-}
-
-    matchUserNames(): void {
-    if (this.balances && this.users) {
-        this.balances.forEach(balance => {
-            const user = this.users.find(u => u.id === balance.user);
-            if (user) {
-                balance.name = user.full_name; 
+        
+        // Récupérer le tricount depuis le cache
+        this.tricount = this.tricountService.tricounts.find(t => t.id === this.tricountid);
+        
+        // Si pas en cache (accès direct URL), charger les tricounts
+        if (!this.tricount) {
+            this.tricountService.getMyTricounts().subscribe({
+                next: tricounts => {
+                    this.tricount = tricounts.find(t => t.id === this.tricountid);
+                    this.loadBalances();
+                }
+            });
+        } else {
+            this.loadBalances();
+        }
+    }
+    
+    private loadBalances(): void {
+        this.balanceService.getTricountBalance(this.tricountid!).subscribe({
+            next: balances => {
+                this.balances = balances;
+                this.matchUserNames();
+                console.log("balance", this.balances);
             }
         });
-        console.log("Balances with names:", this.balances);
     }
-}
+
+    matchUserNames(): void {
+        if (this.balances && this.tricount?.participants) {
+            this.balances.forEach(balance => {
+                const user = this.tricount?.participants.find(u => u.id === balance.user);
+                if (user) {
+                    balance.name = user.full_name; 
+                }
+            });
+            console.log("Balances with names:", this.balances);
+        }
+    }
 
     goBack(): void {
        this.router.navigate(['/tricount', this.tricountid]);
     }
     refresh(): void {
         this.balanceService.clearcash();
-        this.authService.clearcash();
         if (this.tricountid) {
-            this.balanceService.getTricountBalance(this.tricountid,true).subscribe({
-                next: balances =>{
-                    this.balances = balances
-                    this.matchUserNames();
-                    console.log("balancesm",this.balances)
-                }
-            });
-            this.authService.getAllUsers().subscribe({
-                next: (user) => {
-                    this.users = user;
+            // Recharger le tricount pour avoir les participants à jour
+            this.tricountService.getMyTricounts(true).subscribe({
+                next: tricounts => {
+                    this.tricount = tricounts.find(t => t.id === this.tricountid);
+                    
+                    // Puis recharger les balances
+                    this.balanceService.getTricountBalance(this.tricountid!, true).subscribe({
+                        next: balances => {
+                            this.balances = balances;
+                            this.matchUserNames();
+                            console.log("balances", this.balances);
+                        }
+                    });
                 }
             });
         }

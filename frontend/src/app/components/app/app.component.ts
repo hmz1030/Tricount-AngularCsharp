@@ -59,6 +59,7 @@ export class AppComponent implements AfterViewInit {
         this.drawer.close();
         this.authService.logout();
         this.tricountService.clearCache();
+        this.authService.clearcash();
         this.router.navigate(['/login']);
     }
 

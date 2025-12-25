@@ -9,7 +9,6 @@ import { Tricount } from '../../models/Tricount';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ResetDataBaseService } from 'src/app/services/resetdatabase.service';
-import { User } from 'src/app/models/user';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
 import { NavBarComponent } from '../nav-bar/nav-bar.component'; 
@@ -39,7 +38,6 @@ import { ThemeService } from 'src/app/services/theme.service';
 
 export class TricountsComponent implements OnInit {
     tricounts: Tricount[] = [];
-    allUsers: User[] = [];
     loading = false;
     error: string | null = null;
 
@@ -60,7 +58,6 @@ export class TricountsComponent implements OnInit {
     ngOnInit(): void {
         this.loadTricounts(false);
         console.log("tricounts:",this.tricounts)
-        this.getAllUsers();
         console.log("Tricounts that are shown:",this.tricounts)
     }
     
@@ -122,19 +119,11 @@ export class TricountsComponent implements OnInit {
         });
     }
 
-    getAllUsers(): void {
-        this.authService.getAllUsers().subscribe({
-            next: u => {
-                this.allUsers = u;
-            },
-            error: (err) => {
-                console.log(err);
-            }
-        });
-    }
-
-    getCreatorName(creatorId: number): string | undefined{
-        const creator = this.allUsers.find(u => u.id === creatorId);
+    getCreatorName(creatorId: number, tricountId: number): string | undefined{
+        // gestion optimiste -> pas besoin d'apl allusers mais chercher dans 
+        // participants
+        const tricount = this.tricounts.find(t => t.id === tricountId);
+        const creator = tricount?.participants.find(u => u.id === creatorId);
         return creator ? creator.full_name : "Unknown";
     } 
 

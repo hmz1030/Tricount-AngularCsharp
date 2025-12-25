@@ -11,7 +11,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { DeleteTricountComponent } from "../delete-tricount/delete-tricount.component";
 import { BalanceService } from "src/app/services/balance.service";
 import { Operation } from "src/app/models/Operation";
-import { User } from "src/app/models/user";
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 
 @Component({
@@ -36,7 +35,6 @@ export class TricountComponent implements OnInit {
     mytotal: number = 0;
     canDelete: boolean = false;
     operations?: Operation[];
-    users?: User[];
     backUrl = '/tricounts';
     constructor(
         private tricountService: TricountService,
@@ -75,13 +73,9 @@ export class TricountComponent implements OnInit {
                         this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!, id)
                     }
                 })
-
-                this.authService.getAllUsers().subscribe({
-                    next: (user) =>{
-                        this.users = user;
-                        this.initatorsName();
-                    }
-                })
+                
+                // Utiliser les participants du tricount au lieu de getAllUsers
+                this.initatorsName();
                 console.log("Found Tricount : ", this.tricount)
                 
             },
@@ -94,7 +88,8 @@ export class TricountComponent implements OnInit {
 
     initatorsName(): void{
         this.tricount?.operations.forEach(operation=>{
-            operation.initiatorName = this.users?.find(u => u.id == operation.initiator)?.full_name
+            // Utiliser tricount.participants au lieu de this.users
+            operation.initiatorName = this.tricount?.participants.find(u => u.id == operation.initiator)?.full_name
         })
     }
 
@@ -134,12 +129,8 @@ export class TricountComponent implements OnInit {
                         this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!, id)
                         }
                     })
-                    this.authService.getAllUsers().subscribe({
-                    next: (user) =>{
-                        this.users = user;
-                        this.initatorsName();
-                    }
-                })
+                    // Utiliser les participants du tricount
+                    this.initatorsName();
                     console.log("Found Tricount : ", this.tricount)
                 },
             error: (err) => {
