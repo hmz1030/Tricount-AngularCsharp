@@ -122,11 +122,11 @@ export class TricountsComponent implements OnInit {
         });
     }
 
-    getCreatorName(creatorId: number, tricountId: number): string | undefined {
-        // gestion optimiste -> pas besoin d'apl allusers mais chercher dans 
-        // participants
+    getCreatorName(tricountId: number): string | undefined {
         const tricount = this.tricounts.find(t => t.id === tricountId);
-        const creator = tricount?.participants.find(u => u.id === creatorId);
+        if (!tricount) return "Unknown";
+        
+        const creator = tricount.participants.find(u => u.id === tricount.creator);
         return creator ? creator.full_name : "Unknown";
     }
 
