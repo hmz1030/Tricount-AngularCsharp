@@ -25,16 +25,20 @@
         </div>
 
         <div class="tricount-right">
-          {{friendsCount(t.id) == 0 ? 'you\'re alone' : 'with ' + friendsCount(t.id)  + ' friends'}}
+          {{friendsCount(t.id) == 0 ? 'you\'re alone' : 'with ' + friendsCount(t.id) + ' friends'}}
         </div>
       </div>
     </mat-card>
     }
 
     @empty {
-    <div class="empty">
-      <mat-icon>info</mat-icon>
-      Aucun tricount trouvé.
+    
+    <div class="empty-state">
+      <h2 class="empty-title">No tricounts yet</h2>
+      <p class="empty-subtitle">Create your first Tricount now</p>
+      <button class="add-tricount-btn" (click)="onAddTricount()">
+        Create tricount
+      </button>
     </div>
     }
   </div>

@@ -240,3 +240,38 @@
   gap: 8px;
   opacity: 0.7;
 }
+.empty-state {
+    text-align: center;
+    padding: 48px 16px;
+    color: #999;
+    font-size: 16px;
+}
+.empty-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 12px 0;
+}
+
+.empty-subtitle {
+    font-size: 16px;
+    color: #666;
+    margin: 0 0 32px 0;
+}
+
+.add-tricount-btn {
+    background-color: #5c9cdb;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.add-tricount-btn:hover {
+    background-color: #4a8ac9;
+}
