@@ -40,7 +40,6 @@ import { NavBarComponent } from "../nav-bar/nav-bar.component";
 export class SaveTricountComponent implements OnInit {
     tricountId: number = 0;
     selectedParticipantIds: number[] = [];
-    allUsers: User[] = [];
     currentUserId: number | undefined;
     error: string | null = null;
     frm!: FormGroup;
@@ -71,9 +70,7 @@ export class SaveTricountComponent implements OnInit {
         this.tricountId = Number(this.route.snapshot.paramMap.get('id')) || 0;
         this.tricountId == 0 ? this.backUrl = `/tricounts` : this.backUrl = `/tricount/${this.tricountId}`;
 
-        this.authService.getAllUsers().subscribe(users => {
-            this.allUsers = users;
-        });
+        this.authService.getAllUsers().subscribe();
 
         if (this.tricountId == 0) {
             // Mode création
@@ -109,11 +106,11 @@ export class SaveTricountComponent implements OnInit {
     }
     
     get availableUsers(): User[] {
-        return this.allUsers.filter(u => !this.selectedParticipantIds.includes(u.id!));
+        return this.authService.allUsers.filter(u => !this.selectedParticipantIds.includes(u.id!));
     }
 
     get selectedParticipants(): User[] {
-        return this.allUsers.filter(u => this.selectedParticipantIds.includes(u.id!));
+        return this.authService.allUsers.filter(u => this.selectedParticipantIds.includes(u.id!));
     }
 
     private addParticipant(userId: number): void {

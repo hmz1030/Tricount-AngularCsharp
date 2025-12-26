@@ -34,6 +34,10 @@ export class AuthenticationService {
         return this._currentUser
     }
 
+    get allUsers(): User[] {
+        return this.allusers;
+    }
+
     login(email: string, password: string): Observable<User> {
         return this.http.post<LoginResponse>(`${this.baseUrl}rpc/login`, { email, password })
             .pipe(
@@ -59,8 +63,7 @@ export class AuthenticationService {
             .pipe(
                 switchMap(res => this.login(email, password)),
                 tap(user => {
-                    // Ajouter le nouveau user au cache après signup
-                    if (!this.allusers.find(u => u.id === user.id)) {
+                    if (this.allusers.length > 0 && !this.allusers.find(u => u.id === user.id)) {
                         this.allusers.push(user);
                     }
                 })
