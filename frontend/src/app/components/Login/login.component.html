@@ -1,66 +1,61 @@
-<div class="login-container">
-  <div class="login-card">
-    <h2>Login</h2>
-
-    
-    
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()"> 
-  <!-- Email Field -->
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input [formControl]="email" type="email" id="email" placeholder="Enter your email" />
-    
-    <!-- Error messages for email -->
-     
-    <div class="error-message" *ngIf="email.invalid && (email.dirty || email.touched)">
-      <mat-error>
-        @if (email.hasError('required')) {Email is required}
-        @if (email.hasError('email')) {Please enter a valid email address}
-        @if (email.hasError('server')) {{{ email.errors?.['server'] }}}
-     </mat-error>
-    </div>
+<div class="login-page">
+  <!-- Blue Header -->
+  <div class="login-header">
+    <h1>Login</h1>
   </div>
 
-  <!-- Password Field -->
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input [formControl]="password" type="password" id="password" placeholder="Enter your password" />
-    
-    <!-- Error messages for password -->
-    <div class="error-message" *ngIf="password.invalid && (password.dirty || password.touched)">
-      <mat-error>
-        @if (password.hasError('required')) {Password is required}
-        @if (!password.hasError('required') && password.hasError('hasLowerCase')) { Password must contain at least one lowercase letter}
-        @if (!password.hasError('required') && !password.hasError('hasLowerCase') && password.hasError('hasUpperCase')) { Password must contain at least one uppercase letter}
-        @if (!password.hasError('required') && !password.hasError('hasLowerCase') && !password.hasError('hasUpperCase') && password.hasError('hasNumber')) {Password must contain at least one number}
-        @if (!password.hasError('required') && !password.hasError('hasLowerCase') && !password.hasError('hasUpperCase') && !password.hasError('hasNumber') && password.hasError('hasSpecialChar')) {Password must contain at least one special character (!@#$%^&*...)}
-        @if (!password.hasError('required') && !password.hasError('hasLowerCase') && !password.hasError('hasUpperCase') && !password.hasError('hasNumber') && !password.hasError('hasSpecialChar') && password.hasError('minlength')) {Password must be at least 8 characters}
-        @if (password.hasError('server')) {{{ password.errors?.['server'] }}}
-      </mat-error>
-    </div>
-  </div>
+  <!-- Main Content -->
+  <div class="login-content">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email Field -->
+      <mat-form-field appearance="outline" class="rounded-field">
+        <input matInput type="email" placeholder="Email" [formControl]="email">
+        @if (email.invalid && email.touched) {
+          <mat-error>
+            @if (email.hasError('required')) { Email is required }
+            @else if (email.hasError('email')) { Please enter a valid email address }
+          </mat-error>
+        }
+      </mat-form-field>
 
-  <div class="error-message general-error" *ngIf="loginError">
-    {{ loginError }}
-  </div>
+      <!-- Password Field -->
+      <mat-form-field appearance="outline" class="rounded-field">
+        <input matInput type="password" placeholder="Password" [formControl]="password">
+        @if (password.invalid && password.touched) {
+          <mat-error>
+            @if (password.hasError('required')) { Password is required }
+            @else if (password.hasError('hasLowerCase')) { Must contain lowercase }
+            @else if (password.hasError('hasUpperCase')) { Must contain uppercase }
+            @else if (password.hasError('hasNumber')) { Must contain number }
+            @else if (password.hasError('hasSpecialChar')) { Must contain special character }
+            @else if (password.hasError('minlength')) { Must be at least 8 characters }
+          </mat-error>
+        }
+      </mat-form-field>
 
-  <!-- Submit Button -->
-  <button type="submit">Login</button>
-</form>
+      <!-- General Error -->
+      @if (loginError) {
+        <div class="general-error">{{ loginError }}</div>
+      }
 
-    <!-- Lien pour signup -->
+      <!-- Submit Button -->
+      <button mat-raised-button type="submit" class="login-btn">Login</button>
+    </form>
+
     <div class="signup-link">
-      Don't have an account? <a routerLink="/signup">Sign up</a>
+      Don't have an account? <a routerLink="/signup">Sign up here!</a>
     </div>
 
-    <div class="user-list">
-        <h3>Debug - Quick Login</h3>
-        <ul>
-            <li *ngFor="let user of testUsers" (click)="quickLogin(user.email)" style="cursor: pointer;">
-                {{ user.name }} ({{ user.email }})
-            </li>
-        </ul>
+    <div class="quick-login-section">
+      @for (user of testUsers; track user.email) {
+        <a (click)="quickLogin(user.email)" class="quick-login-link">
+          Login as {{ user.email }}
+        </a>
+      }
+      
+      <div class="divider"></div>
+      
+      <a (click)="openResetPopup()" class="reset-link">Reset Database</a>
     </div>
   </div>
-  
 </div>

@@ -6,6 +6,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { User } from 'src/app/models/user';
+import { ResetDataBaseService } from 'src/app/services/resetdatabase.service';
+import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dialog.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 
 @Component({
@@ -13,7 +18,15 @@ import { User } from 'src/app/models/user';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true, 
-    imports: [CommonModule, RouterLink, RouterLinkActive, NgClass, ReactiveFormsModule,MatFormFieldModule]
+    imports: [CommonModule,
+                RouterLink,
+                RouterLinkActive,
+                NgClass,
+                ReactiveFormsModule,
+                MatFormFieldModule,
+                MatInputModule,
+                MatButtonModule,
+                MatDialogModule]
 })
 export class LoginComponent implements OnInit{
     email!: FormControl;
@@ -24,6 +37,9 @@ export class LoginComponent implements OnInit{
     constructor(
         private authService: AuthenticationService,
         private router: Router,
+        private resetDb: ResetDataBaseService,
+        private dialog: MatDialog,
+
         
     ){}
 
@@ -93,6 +109,22 @@ export class LoginComponent implements OnInit{
                 }
             });
     }
+
+   openResetPopup(): void {
+           const dialogRef = this.dialog.open(ConfirmResetDialogComponent, {
+               width: '400px'
+           });
+   
+           dialogRef.afterClosed().subscribe(result => {
+               if (result === true) {
+                   this.resetDb.resetDataBase().subscribe({
+                       error: (err) => {
+                           console.error('Erreur lors du reset:', err);
+                       }
+                   });
+               }
+           });
+       }
 
     
 }
