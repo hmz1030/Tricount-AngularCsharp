@@ -276,6 +276,25 @@
     background-color: #4a8ac9;
 }
 
+:host-context(body.dark-theme) .operations-container,
+:host-context(body.dark-theme) .tricount-footer{
+    background-color: black;
+    border: black;
+}
+
+:host-context(body.dark-theme) .operation-card{
+    background-color: rgb(41, 40, 40);
+}
+:host-context(body.dark-theme) .operation-title,
+:host-context(body.dark-theme) .operation-subtitle,
+:host-context(body.dark-theme) .operation-amount,
+:host-context(body.dark-theme) .operation-date,
+:host-context(body.dark-theme) .footer-label,
+:host-context(body.dark-theme) .footer-amount{
+    color: white
+
+}
+
 
 
 
