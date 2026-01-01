@@ -1,21 +1,32 @@
-<app-nav-bar title="Balance" [backUrl]="backUrl">
-  <button class="header-btn" (click)="refresh()">
-    <mat-icon>refresh</mat-icon>
-  </button>
-</app-nav-bar>
+<div class="balance-container">
+  <div class="balance-item" *ngFor="let balance of balances">
+    <div class="balance-row">
+      <!-- Negative balance: badge on left, name on right -->
+      <ng-container *ngIf="(balance.balance || 0) < 0">
+        <div class="balance-badge negative" [style.width.px]="getBarWidth(balance.balance || 0)">
+          {{ balance.balance | number:'1.2-2' }} €
+        </div>
+        <span class="user-name">
+          {{ balance.name || 'User ' + balance.user }}
+        </span>
+      </ng-container>
 
-<div class="balance-item" *ngFor="let balance of balances">
-  <div class="balance-content">
-    <span class="user-name">{{ balance.name || 'User ' + balance.user }}</span>
-    <div class="balance-bar-container">
-      <div class="balance-bar" 
-           [ngClass]="{
-             'negative': (balance.balance || 0) < 0,
-             'positive': (balance.balance || 0) > 0
-           }"
-           [style.width.%]="getBarWidth(balance.balance || 0)">
-      </div>
+      <!-- Positive balance: name on left, badge on right -->
+      <ng-container *ngIf="(balance.balance || 0) > 0">
+        <span class="user-name">
+          {{ balance.name || 'User ' + balance.user }}
+        </span>
+        <div class="balance-badge positive" [style.width.px]="getBarWidth(balance.balance || 0)">
+          {{ balance.balance | number:'1.2-2' }} €
+        </div>
+      </ng-container>
+
+      <!-- Zero balance: just name centered -->
+      <ng-container *ngIf="(balance.balance || 0) === 0">
+        <span class="user-name">
+          {{ balance.name || 'User ' + balance.user }}
+        </span>
+      </ng-container>
     </div>
-    <span class="balance-amount">{{ balance.balance }} €</span>
   </div>
 </div>

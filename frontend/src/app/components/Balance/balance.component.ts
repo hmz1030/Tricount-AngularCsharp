@@ -102,7 +102,12 @@ export class BalanceComponent implements OnInit {
     
     const maxBalance = Math.max(...(this.balances?.map(b => Math.abs(b.balance || 0)) || [0]));
     
-    return (Math.abs(balance) / maxBalance) * 100;
+    // Scale between 100px (min) and 300px (max)
+    const minWidth = 100;
+    const maxWidth = 300;
+    
+    const ratio = Math.abs(balance) / maxBalance;
+    return minWidth + (ratio * (maxWidth - minWidth));
 }
 
 
