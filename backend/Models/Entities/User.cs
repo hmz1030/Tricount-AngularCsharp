@@ -24,6 +24,8 @@ public class User
     public string? Iban { get; set; }
     [NotMapped]//ne pas ajouter de colonne dans la base de donner pour cette attribut
     public string? Token{ get; set; }
+    public string? RefreshToken { get; set; }
+    public DateTime? RefreshTokenExpiresAt { get; set; }
     public ICollection<TricountEntity> CreatedTricounts { get; set; } = new List<TricountEntity>();
     public ICollection<TricountEntity> ParticipatingTricounts { get; set; } = new HashSet<TricountEntity>();
     

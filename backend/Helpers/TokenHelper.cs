@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Tricount.Models;
 using Tricount.Models.Entities;
@@ -37,8 +38,8 @@ public class TokenHelper
         var tokenDescriptor = new SecurityTokenDescriptor {
             Subject = new ClaimsIdentity(claims),
             IssuedAt = DateTime.UtcNow,
-            Expires = DateTime.UtcNow.AddMinutes(300),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            Expires = DateTime.UtcNow.AddMinutes(5),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
@@ -70,20 +71,21 @@ public class TokenHelper
 
         return principal;
     }
-    /*
-        public async Task<string?> GetRefreshTokenAsync(string pseudo) {
-            var member = await _context.Users.FindAsync(pseudo);
-            return member?.RefreshToken;
+    
+        public async Task<string?> GetRefreshTokenAsync(string email) {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return user?.RefreshToken;
         }
 
-        public async Task SaveRefreshTokenAsync(string pseudo, string token) {
-            var member = await _context.Users.FindAsync(pseudo);
-            if (member != null) {
-                member.RefreshToken = token;
+        public async Task SaveRefreshTokenAsync(string email, string token, DateTime expiresAt) {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null) {
+                user.RefreshToken = token;
+                user.RefreshTokenExpiresAt = expiresAt;
                 await _context.SaveChangesAsync();
             }
         }
-    */
+    
 
     public static string GetPasswordHash(string password) {
         string salt = "Peodks;zsOK30S,s";

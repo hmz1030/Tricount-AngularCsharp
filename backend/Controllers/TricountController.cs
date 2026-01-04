@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Threading.RateLimiting;
 using Tricount.Helpers;
 using Tricount.Models;
 using Tricount.Models.DTO.Operation;
@@ -17,6 +19,9 @@ namespace Tricount.Controllers;
 [Authorize]
 public class TricountController(TricountContext context, IMapper mapper) : ControllerBase
 {
+
+    private readonly TokenHelper _tokenHelper = new(context);
+
     // GET: rpc/ping
     [AllowAnonymous]
     [HttpGet("ping")]
@@ -228,8 +233,67 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
             return BadRequest(new { message = "Invalid email or password" });
 
         var token = TokenHelper.GenerateJwtToken(user.Email, user.Role);
+        var refreshToken = TokenHelper.GenerateRefreshToken();
+        var refreshExpires = DateTime.UtcNow.AddDays(7);
 
-        return Ok(new LoginResponseDTO { Token = token });
+        await _tokenHelper.SaveRefreshTokenAsync(user.Email, refreshToken, refreshExpires);
+
+        //Coocke HttpOnly
+        Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions {
+            HttpOnly = true,
+            Secure = Request.IsHttps,
+            SameSite = SameSiteMode.Strict,
+            Expires = refreshExpires
+        });
+
+        return Ok(new LoginResponseDTO { Token = token});
+    }
+
+    [AllowAnonymous]
+    [HttpPost("refresh")]
+    public async Task<ActionResult<LoginResponseDTO>> Refresh ([FromBody] LoginResponseDTO tokens) {
+        // Recuperer refreshToken depuis Cookie
+        if(!Request.Cookies.TryGetValue("refreshToken", out var refreshTokenFromCookie))
+            return Unauthorized(new {message = "Missing refresh token cookie"});
+        
+        // Lire les claims depuis le token expiré
+        ClaimsPrincipal principal;
+        try {
+            principal = TokenHelper.GetPrincipalFromExpiredToken(tokens.Token);
+        } catch {
+            return Unauthorized(new { message = "Invalid token" });
+        }
+
+        var email = principal.Identity?.Name;
+        if(string.IsNullOrEmpty(email))
+            return Unauthorized(new {message = "Invalid Token" });
+
+        //Vérifier refresh token en bd plus expiration
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null) return Unauthorized();
+
+        if (user.RefreshToken != refreshTokenFromCookie)
+            return Unauthorized(new {message = "Invalid refresh token"});
+        
+        if(user.RefreshTokenExpiresAt == null || user.RefreshTokenExpiresAt <= DateTime.UtcNow)
+            return Unauthorized(new { message = "Refresh token expired" });
+
+        //Générer nouveaux tokens
+        var newToken = TokenHelper.GenerateJwtToken(principal.Claims);
+
+        var newRefreshToken = TokenHelper.GenerateRefreshToken();
+        var newRefreshExpires = DateTime.UtcNow.AddDays(1);
+
+        await _tokenHelper.SaveRefreshTokenAsync(email, newRefreshToken, newRefreshExpires);
+
+        Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions {
+            HttpOnly = true,
+            Secure = Request.IsHttps,
+            SameSite = SameSiteMode.Strict,
+            Expires = newRefreshExpires
+        });
+
+        return Ok(new LoginResponseDTO{ Token = newToken});
     }
 
 

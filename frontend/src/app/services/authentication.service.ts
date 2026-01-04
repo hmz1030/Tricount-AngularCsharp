@@ -6,7 +6,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { BASE_URL } from 'src/main';
 import { User } from '../models/user';
 import { plainToInstance } from 'class-transformer';  
-import { CommonModule } from '@angular/common';  
+
 interface LoginResponse {
     token: string;
 }
@@ -39,23 +39,39 @@ export class AuthenticationService {
     }
 
     login(email: string, password: string): Observable<User> {
-        return this.http.post<LoginResponse>(`${this.baseUrl}rpc/login`, { email, password })
-            .pipe(
-                switchMap(response => {
-                    if (response && response.token) {
-                        sessionStorage.setItem('authToken', response.token);
-                    }
-                    // recup data du user login
-                    return this.getUserData();
-                }),
-                map(user => {
-                    // Stocker les data du user dans session et dans dans currentuser
-                    sessionStorage.setItem('currentUser', JSON.stringify(user));
-                    this._currentUser = user;
-                    return user;
+        return this.http.post<LoginResponse>(
+            `${this.baseUrl}rpc/login`,
+            { email, password },
+            {withCredentials: true})
+                .pipe(
+                    switchMap(response => {
+                        if (response && response.token) {
+                            sessionStorage.setItem('authToken', response.token);
+                        }
+                        // recup data du user login
+                        return this.getUserData();
+                    }),
+                    map(user => {
+                        // Stocker les data du user dans session et dans dans currentuser
+                        sessionStorage.setItem('currentUser', JSON.stringify(user));
+                        this._currentUser = user;
+                        return user;
 
-                })
-            );
+                    })
+                );
+    }
+
+    refresh(): Observable<{token : string}> {
+        const token = sessionStorage.getItem('authToken');
+        if(!token) throw new Error('No access token');
+
+        return this.http.post<{token: string}> (
+            `${this.baseUrl}rpc/refresh`,
+            {token},
+            {withCredentials: true}
+        ).pipe(
+            tap(res => sessionStorage.setItem('authToken', res.token))
+        );
     }
     
     signup(email: string, password: string, fullName: string, iban?: string): Observable<User> {
