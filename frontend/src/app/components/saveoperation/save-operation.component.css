@@ -270,6 +270,108 @@
   padding-left: 4px !important;
   padding-right: 4px !important;
 }
+/* ===== DARK MODE ===== */
+
+/* Container background */
+:host-context(body.dark-theme) .op-container {
+    background-color: #121212;
+    min-height: 100vh;
+}
+
+/* Section title */
+:host-context(body.dark-theme) .section-title {
+    color: #e0e0e0;
+}
+
+/* Participant rows */
+:host-context(body.dark-theme) .participant-row {
+    background-color: #2d2d2d;
+}
+
+/* Share amount text */
+:host-context(body.dark-theme) .share-amount {
+    color: #e0e0e0;
+}
+
+/* Checkbox labels */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-checkbox label {
+    color: #e0e0e0;
+}
+
+/* Form fields background */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-form-field {
+    background-color: black; 
+}
+
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-text-field-wrapper {
+    background-color: blacklk;
+}
+
+/* Input text and select */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-form-field input,
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-input-element,
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-select-value {
+    color: #e0e0e0 !important;
+}
+
+/* Labels */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-floating-label,
+:host-context(body.dark-theme) ::ng-deep mat-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Labels when focused */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-floating-label.mdc-floating-label--float-above {
+    color: #e0e0e0 !important;
+}
+
+/* Datepicker and Select panels */
+:host-context(body.dark-theme) ::ng-deep .mat-datepicker-popup,
+:host-context(body.dark-theme) ::ng-deep .mat-datepicker-content,
+:host-context(body.dark-theme) ::ng-deep .mat-calendar,
+:host-context(body.dark-theme) ::ng-deep .mat-calendar-header,
+:host-context(body.dark-theme) ::ng-deep .mat-calendar-body,
+:host-context(body.dark-theme) ::ng-deep .mat-calendar-table,
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-select-panel {
+    background-color: #2d2d2d !important;
+}
+
+/* Calendar cells and options */
+:host-context(body.dark-theme) ::ng-deep .mat-calendar-body-cell,
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-option {
+    background-color: #2d2d2d !important;
+    color: #e0e0e0 !important;
+}
+
+:host-context(body.dark-theme) ::ng-deep .mat-calendar-body-cell:hover,
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-option:hover {
+    background-color: #424242 !important;
+}
+
+/* Icons */
+:host-context(body.dark-theme) mat-icon {
+    color: #ffffff;
+}
+
+/* Weight buttons */
+:host-context(body.dark-theme) .weight-buttons {
+    background-color: #424242;
+}
+
+/* Select arrow */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-select-arrow {
+    color: white !important;
+}
+
+/* Placeholder */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-input-element::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Prefix (€ symbol) */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-form-field-text-prefix {
+    color: #e0e0e0 !important;
+}
 
 
 

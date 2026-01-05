@@ -232,3 +232,37 @@
   border: black;
 }
 
+/* Dark mode - Input text white */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-input-element {
+    color: white !important;
+}
+
+/* Dark mode - Select text white */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-select-value,
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-select-value-text {
+    color: white !important;
+}
+
+/* Dark mode - Label white */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-floating-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Dark mode - Label when focused */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-floating-label.mdc-floating-label--float-above {
+    color: white !important;
+}
+
+/* Dark mode - Placeholder text */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-input-element::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Dark mode - Select arrow icon */
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-select-arrow {
+    color: white !important;
+}
+/* Dark mode - All mat-labels white */
+:host-context(body.dark-theme) .participants-section h3 {
+    color: white;
+}

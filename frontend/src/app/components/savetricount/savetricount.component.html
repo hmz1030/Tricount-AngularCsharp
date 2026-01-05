@@ -59,7 +59,7 @@
             <div class="add-participant-container">
         
         <mat-form-field appearance="outline" class="field-no-bottom-margin">
-            <mat-label>Add participant</mat-label>
+                <mat-label>Add participant</mat-label>
             <mat-select [(ngModel)]="selectedUserToAdd" [ngModelOptions]="{standalone: true}">
                 @for (user of availableUsers; track user.id) {
                     <mat-option [value]="user.id">
