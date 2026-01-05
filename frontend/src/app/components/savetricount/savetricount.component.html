@@ -9,7 +9,7 @@
     <form [formGroup]="frm" (ngSubmit)="saveTricount()" class="SaveTricount-form" novalidate>
 
         <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Title(*)</mat-label>
+            <mat-label>Title</mat-label>
             <input matInput type="text" [formControl]="ctlTitle" [errorStateMatcher]="matcher" required appSetFocus>
             @if (ctlTitle.invalid && ctlTitle.touched) {
             <mat-error>

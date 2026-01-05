@@ -131,6 +131,7 @@
   flex-direction: column;
   gap: 8px;
   margin-bottom: 16px;
+    
 }
 
 .participant-item {
@@ -138,9 +139,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
   min-height: 60px;
 }
 
@@ -200,6 +201,9 @@
   align-items: center;
   gap: 8px;
   width: 100%;
+}
+::ng-deep .cdk-overlay-pane .mat-mdc-select-panel {
+    background-color: white !important;
 }
 
 .add-participant-container mat-form-field {
