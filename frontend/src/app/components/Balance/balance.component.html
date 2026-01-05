@@ -1,3 +1,13 @@
+<app-nav-bar title="Balance" [backUrl]="backUrl">
+
+  <button class="header-btn" (click)="refresh()">
+
+    <mat-icon>refresh</mat-icon>
+
+  </button>
+
+</app-nav-bar>
+
 <div class="balance-container">
   <div class="balance-item" *ngFor="let balance of balances">
     <div class="balance-row">
