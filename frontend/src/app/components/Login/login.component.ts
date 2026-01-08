@@ -11,6 +11,8 @@ import { ConfirmResetDialogComponent } from '../resetdatabase/confirm-reset-dial
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TricountService } from 'src/app/services/tricount.service';
 
 
 @Component({
@@ -26,21 +28,22 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
                 MatFormFieldModule,
                 MatInputModule,
                 MatButtonModule,
-                MatDialogModule]
+                MatDialogModule,
+                MatProgressSpinnerModule]
 })
 export class LoginComponent implements OnInit{
     email!: FormControl;
     password! : FormControl;
     loginForm!: FormGroup;
     loginError: string = '';
-     userModel: User = new User();
+    isLoading: boolean = false;
+    userModel: User = new User();
     constructor(
         private authService: AuthenticationService,
         private router: Router,
         private resetDb: ResetDataBaseService,
         private dialog: MatDialog,
-
-        
+        private tricountService: TricountService
     ){}
 
     ngOnInit() {
@@ -73,17 +76,25 @@ export class LoginComponent implements OnInit{
         return;
     }
 
-    this.loginError = '';  
+    this.loginError = '';
+    this.isLoading = true;
     
     this.authService.login(this.email.value, this.password.value)
     .subscribe({
-        next: (response) => {
-            console.log("Login Successful!", response);
-            this.router.navigate(['tricounts']);
+        next: () => {
+            this.tricountService.getMyTricounts(true).subscribe({
+                next: () => {
+                    this.router.navigate(['tricounts']);
+                },
+                error: () => {
+                    this.router.navigate(['tricounts']);
+                }
+            });
         },
         error: (error) => {
             console.error("Login failed:", error);
             this.loginError = error.error?.message || 'Invalid email or password';
+            this.isLoading = false;
         }
     });
 }
@@ -97,15 +108,22 @@ export class LoginComponent implements OnInit{
     ];
 
     quickLogin(email: string) {
+        this.isLoading = true;
         this.authService.login(email, 'Password1,')
             .subscribe({
-                next: (response) => {
-                    console.log("Logged in as:", email);
-                    this.router.navigate(['tricounts']);
-
+                next: () => {
+                    this.tricountService.getMyTricounts(true).subscribe({
+                        next: () => {
+                            this.router.navigate(['tricounts']);
+                        },
+                        error: () => {
+                            this.router.navigate(['tricounts']);
+                        }
+                    });
                 },
                 error: (error) => {
                     console.error("Login failed:", error);
+                    this.isLoading = false;
                 }
             });
     }
