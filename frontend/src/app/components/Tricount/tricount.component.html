@@ -63,7 +63,13 @@
 <footer class="tricount-footer">
   <div class="footer-left">
     <div class="footer-label">MY TOTAL</div>
-    <div class="footer-amount"> {{userBalance?.balance | number:'1.2-2'}} </div>
+    <div class="footer-amount">
+      @if (isLoadingBalance) {
+        Calculating...
+      } @else {
+        {{userBalance?.balance | number:'1.2-2'}}
+      }
+    </div>
   </div>
 
   <button class="add-btn" (click)="addOperation()">

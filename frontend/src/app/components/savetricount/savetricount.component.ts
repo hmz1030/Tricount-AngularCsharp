@@ -139,18 +139,23 @@ export class SaveTricountComponent implements OnInit {
         const tricountToSave: Tricount = {
             id: this.tricountId,
             title: this.ctlTitle.value,
-            // Envoie null si la description est vide, sinon envoie la valeur
             description: this.ctlDescription.value?.trim() || null,
             creator: this.currentUserId!,
             created_at: new Date().toISOString(),
             participants: [],
             operations: []
         };
+
+        const isEdit = this.tricountId !== 0;
+
+        if (isEdit) {
+            this.router.navigate(['/tricount/', this.tricountId]);
+        } else {
+            this.router.navigate(['/tricounts']);
+        }
+
         this.tricountService.saveTricount(tricountToSave, this.selectedParticipantIds)
             .subscribe({
-                next: (savedTricount) => {
-                    this.router.navigate(['/tricount/', savedTricount.id]);
-                },
                 error: (err) => {
                     this.error = 'Erreur lors de la sauvegarde du tricount';
                     console.error(err);

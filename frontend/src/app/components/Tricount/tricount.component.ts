@@ -36,6 +36,8 @@ export class TricountComponent implements OnInit {
     canDelete: boolean = false;
     operations?: Operation[];
     backUrl = '/tricounts';
+    isLoadingBalance: boolean = false;
+    
     constructor(
         private tricountService: TricountService,
         private balanceService: BalanceService,
@@ -51,38 +53,45 @@ export class TricountComponent implements OnInit {
         // charger le user stocke dans authService session storage
         this.userid = this.authService.currentUser?.id;
 
-        this.tricountService.getMyTricounts().subscribe({
-            next: (tricounts) => {
-                //recuperer le tricount
-                this.tricount = tricounts.find(t => t.id == id);
+        const cachedTricount = this.tricountService.tricounts.find(t => t.id == id);
 
-
-                // Vérifier si le tricount existe et si l'utilisateur y a accès
-                if (!this.tricount) {
-                    console.warn('Tricount not found or access denied');
-                    this.router.navigate(['/restricted']);
-                    return;
+        if (cachedTricount) {
+            this.tricount = cachedTricount;
+            this.calculateTotal();
+            this.canDelete = this.tricount?.creator == this.userid;
+            this.initatorsName();
+            this.isLoadingBalance = true;
+            this.balanceService.getTricountBalance(id).subscribe({
+                next: () => {
+                    this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!, id);
+                    this.isLoadingBalance = false;
                 }
+            });
+        } else {
+            this.tricountService.getMyTricounts().subscribe({
+                next: (tricounts) => {
+                    this.tricount = tricounts.find(t => t.id == id);
 
-                //calculer le total amount
-                this.calculateTotal();
-                this.canDelete = this.tricount?.creator == this.userid;
-
-                this.balanceService.getTricountBalance(id).subscribe({
-                    next: ()=>{
-                        this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!, id)
+                    if (!this.tricount) {
+                        this.router.navigate(['/restricted']);
+                        return;
                     }
-                })
-                
-                this.initatorsName();
-                console.log("Found Tricount : ", this.tricount)
-                
-            },
-            error: (err) => {
-                console.error('Error loading tricount:', err);
-                this.router.navigate(['/restricted']);
-            }
-        });
+
+                    this.calculateTotal();
+                    this.canDelete = this.tricount?.creator == this.userid;
+                    this.initatorsName();
+
+                    this.balanceService.getTricountBalance(id).subscribe({
+                        next: () => {
+                            this.userBalance = this.balanceService.getUserBalanceForTricount(this.userid!, id);
+                        }
+                    });
+                },
+                error: (err) => {
+                    this.router.navigate(['/restricted']);
+                }
+            });
+        }
     }
 
     initatorsName(): void{

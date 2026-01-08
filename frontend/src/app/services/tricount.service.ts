@@ -6,6 +6,7 @@ import { Inject, Injectable } from "@angular/core";
 import { BASE_URL } from "src/main";
 import { UserBalance } from "../models/UserBalance";
 import { AuthenticationService } from "./authentication.service";
+import { BalanceService } from "./balance.service";
 
 @Injectable({
     providedIn: 'root'
@@ -23,7 +24,8 @@ export class TricountService{
     constructor(
         private http: HttpClient,
         @Inject(BASE_URL) private baseUrl: string,
-        private authService: AuthenticationService
+        private authService: AuthenticationService,
+        private balanceService: BalanceService
     ) {}
 
     getMyTricounts(forceRefresh: boolean = false): Observable<Tricount[]> {
@@ -65,12 +67,13 @@ export class TricountService{
     
     private createTricount(tricount: Tricount, participantIds: number[]): Observable<Tricount> {
         const tempId = -Date.now();
+        const currentUser = this.authService.currentUser!;
         const tempTricount: Tricount = {
             ...tricount,
             id: tempId,
             created_at: new Date().toISOString(),
-            creator: this.authService.currentUser!.id!,
-            participants: [],
+            creator: currentUser.id!,
+            participants: [currentUser],
             operations: []
         };
 
@@ -91,9 +94,12 @@ export class TricountService{
     }
     
     private updateTricount(tricount: Tricount, participantIds: number[]): Observable<Tricount> {
-        const oldTricount = this._tricounts.find(t => t.id === tricount.id);
+        const existingTricount = this._tricounts.find(t => t.id === tricount.id);
         
-        this._tricounts = this._tricounts.map(t => t.id === tricount.id ? tricount : t);
+        if (existingTricount) {
+            existingTricount.title = tricount.title;
+            existingTricount.description = tricount.description;
+        }
         
         return this.http.post<any>(`${this.baseUrl}rpc/save_tricount`, {
             id: tricount.id,
@@ -102,10 +108,10 @@ export class TricountService{
             participants: participantIds
         }).pipe(
             map(json => plainToInstance(Tricount, json, { enableImplicitConversion: true })),
+            switchMap(realTricount => this.getMyTricounts(true).pipe(map(_ => realTricount))),
             tap(realTricount => {
-                this._tricounts = this._tricounts.map(t => t.id === tricount.id ? realTricount : t);
-            }),
-            switchMap(realTricount => this.getMyTricounts(true).pipe(map(_ => realTricount)))
+                this.balanceService.getTricountBalance(tricount.id, true).subscribe();
+            })
         );
     }
 

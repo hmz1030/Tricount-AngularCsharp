@@ -37,9 +37,12 @@ import { ThemeService } from 'src/app/services/theme.service';
 })
 
 export class TricountsComponent implements OnInit {
-    tricounts: Tricount[] = [];
     loading = false;
     error: string | null = null;
+
+    get tricounts(): Tricount[] {
+        return this.tricountService.tricounts;
+    }
 
     get currentUser() {
         return this.authService.currentUser;
@@ -71,8 +74,7 @@ export class TricountsComponent implements OnInit {
         }
 
         this.tricountService.getMyTricounts(refresh).subscribe({
-            next: t => {
-                this.tricounts = t;
+            next: () => {
                 this.loading = false;
             },
             error: err => {
