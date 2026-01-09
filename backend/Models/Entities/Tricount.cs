@@ -24,6 +24,15 @@ public class TricountEntity{
             .FirstOrDefaultAsync(t => t.Id == id);
     }
 
+    // Méthode pour vérifier si un utilisateur peut accéder à un tricount (admin, créateur ou participant)
+    public bool CanUserAccess(User user) {
+        if (user.Role == Role.Admin)
+            return true;
+        
+        return CreatorId == user.Id || Participants.Any(p => p.Id == user.Id);
+    }
+    
+
     // Calcul ddla balance
     public List<TricountBalanceDTO> CalculateBalance() {
         // dictionnary, tableau associatif, key = id user et value la balance du user, comme ca

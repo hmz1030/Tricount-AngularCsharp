@@ -35,4 +35,13 @@ public class Operation {
             .Include(o => o.Repartitions)
             .FirstOrDefaultAsync(o => o.Id == id);
     }
+
+    //  vérifier si un user peut accéder à une opération 
+    public static async Task<bool> CanUserAccess(TricountContext context, int tricountId, User user) {
+        if (user.Role == Role.Admin)
+            return true;
+        
+        return await context.Participations
+            .AnyAsync(p => p.TricountId == tricountId && p.UserId == user.Id);
+    }
 }

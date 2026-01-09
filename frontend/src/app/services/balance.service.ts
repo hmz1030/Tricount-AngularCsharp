@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { map, Observable, of, switchMap, tap } from "rxjs";
-import { Tricount } from "../models/Tricount";
+import { map, Observable, of, tap } from "rxjs";
 import { plainToInstance } from "class-transformer";
 import { Inject, Injectable } from "@angular/core";
 import { BASE_URL } from "src/main";
@@ -14,6 +13,8 @@ import { AuthenticationService } from "./authentication.service";
 export class BalanceService{
 
     private balances : Map<number, UserBalance[]> = new Map<number, UserBalance[]>();
+    // les ids tricounts dont le mytotal est en "calculating"
+    private pendingLoads: Set<number> = new Set();
 
     get getbalances(): Map<number, UserBalance[]> {
         return this.balances;
@@ -21,6 +22,7 @@ export class BalanceService{
 
     clearcash():void{
         this.balances = new Map<number, UserBalance[]>();
+        this.pendingLoads.clear();
     }
 
     constructor(
@@ -43,11 +45,29 @@ export class BalanceService{
             map(json => plainToInstance(UserBalance, json, {
                 enableImplicitConversion: true
             })),
-            tap(balances => this.balances.set(id,balances))
+            tap(balances => {
+                this.balances.set(id,balances);
+            })
+            
         );
     }
 
     getUserBalanceForTricount(userId: number, tricountId: number): UserBalance|undefined{
         return this.balances.get(tricountId)?.find(balance => balance.user == userId)
+    }
+
+    // ici on supp la balance du cache pour forcer le "calculating"
+    // pendant que les appels au back se font
+    invalidateBalance(tricountId: number): void {
+        this.balances.delete(tricountId);
+        this.pendingLoads.add(tricountId);
+    }
+
+    isLoadingInBackground(tricountId: number): boolean {
+        return this.pendingLoads.has(tricountId);
+    }
+
+    clearPendingLoad(tricountId: number): void {
+        this.pendingLoads.delete(tricountId);
     }
 }

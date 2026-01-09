@@ -23,6 +23,7 @@ import { BalanceService } from 'src/app/services/balance.service';
 import { DeleteOperationComponent } from '../delete-operation/delete-operation.component';
 import { MatDialog } from '@angular/material/dialog';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
+import { switchMap, tap } from 'rxjs/operators';
 
 
 @Component({
@@ -58,7 +59,6 @@ export class SaveOperationComponent {
     public frm!: FormGroup;
     matcher = new ImmediateErrorStateMatcher();
     backUrl!: string;
-    //dialog: any;
 
     constructor(
         private router: Router,
@@ -95,10 +95,8 @@ export class SaveOperationComponent {
         if (operationId) {
             this.operationId = Number(operationId);
             this.isEditMode = true;
-            console.log('Edit mode - Operation ID:', this.operationId);
         } else {
             this.isEditMode = false;
-            console.log('Create mode');
         }
 
         this.UserConnected = this.auth.currentUser;
@@ -139,27 +137,27 @@ export class SaveOperationComponent {
             operation.initiator = formValue.paidBy;
             operation.tricount_id = this.tricountId;
 
-            console.log('Operation to save:', operation);
-            this.operationService.saveOperation(operation, activeRepartitions).subscribe({
-                next: result => {
-                    console.log('Operation saved successfully', result);
-                    this.tricountService.clearCache();
-                    this.balanceService.clearcash();
-                    this.router.navigate([this.backUrl]);
-                },
-                error: err => {
-                    console.error('Error saving operation', err);
-                    //erreurs du backend
-                    if (err.error?.message) {
-                        this.error = err.error.message;
-                    } else {
-                        this.error = 'Failed to save operations. Plese try again.';
-                    }
-                }
-            });
+            const initiatorUser = this.users.find(u => u.id === formValue.paidBy);
+            operation.initiatorName = initiatorUser?.full_name;
+
+            if (this.isEditMode) {
+                this.saveEditOperation(operation, activeRepartitions);
+            } else {
+                this.saveNewOperation(operation, activeRepartitions);
+            }
         } else {
             this.error = 'please fix the errors in the form';
         }
+    }
+
+    private saveEditOperation(operation: Operation, repartitions: Repartition[]): void {
+        this.router.navigate([this.backUrl]);
+        this.operationService.saveOperation(operation, repartitions).subscribe();
+    }
+
+    private saveNewOperation(operation: Operation, repartitions: Repartition[]): void {
+        this.router.navigate([this.backUrl]);
+        this.operationService.saveOperation(operation, repartitions).subscribe();
     }
 
     getParticipants(): void {
@@ -323,23 +321,14 @@ export class SaveOperationComponent {
 
     deleteOperation(): void {
         const dialogRef = this.dialog.open(DeleteOperationComponent, {
-                    width: '400px'
-                });
+            width: '400px'
+        });
         
-                dialogRef.afterClosed().subscribe((result: boolean | undefined) => {
-                    if (result === true) {
-                        this.operationService.deleteOperation(this.operationId).subscribe({
-                            next: () => {
-                                this.tricountService.clearCache();
-                                this.balanceService.clearcash();
-                                this.router.navigate(['/tricount/' + this.tricountId]);
-                            },
-                            error: (err) => {
-                                console.error('Erreur lors du delete:', err);
-                                this.error = 'Erreur lors du delete operation';
-                            }
-                        });
-                    }
-                });
+        dialogRef.afterClosed().subscribe((result: boolean | undefined) => {
+            if (result === true) {
+                this.router.navigate(['/tricount/' + this.tricountId]);
+                this.operationService.deleteOperation(this.operationId!, this.tricountId).subscribe();
+            }
+        });
     }
 }

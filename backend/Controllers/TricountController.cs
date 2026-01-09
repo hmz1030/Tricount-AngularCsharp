@@ -316,47 +316,47 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         if (user == null) {
             return Unauthorized();
         }
-        var isAdmin = User.IsInRole(Role.Admin.ToString());
-        if (!isAdmin) {
-            var isParticipant = await context.Participations
-                .AnyAsync(p => p.TricountId == dto.TricountId && p.UserId == user.Id);
 
-            if (!isParticipant)
-                return Forbid();
-        }
+        if (!await Operation.CanUserAccess(context, dto.TricountId, user))
+            return Forbid();
+
+        var validator = new OperationValidator(context);
+
         if (dto.Id == 0) {
             var newOperation = mapper.Map<Operation>(dto);
-            var validator = await new OperationValidator(context).ValidateOperation(newOperation);
-            if (!validator.IsValid) {
-                return BadRequest(new { message = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)) });
-            }
+            var vr = await validator.ValidateOperation(newOperation);
+            if (!vr.IsValid)
+                return BadRequest(new { message = string.Join("; ", vr.Errors.Select(e => e.ErrorMessage)) });
+
             context.Operations.Add(newOperation);
             await context.SaveChangesAsync();
+
+            //.Include(o => o.Repartitions) ne pas inclure les repartitions pour respecter l'ordre!!
             var result = await context.Operations
-          .AsNoTracking()
-          //.Include(o => o.Repartitions) ne pas inclure les repartitions pour respecter l'ordre!!
-          .FirstAsync(o => o.Id == newOperation.Id);
-            result.Repartitions = dto.Repartitions.Select(r => new Repartition { OperationId = result.Id, UserId = r.UserId, Weight = r.Weight }).ToList();
+                .AsNoTracking()
+                .FirstAsync(o => o.Id == newOperation.Id);
+            result.Repartitions = dto.Repartitions.Select(r => new Repartition { 
+                OperationId = result.Id, 
+                UserId = r.UserId, 
+                Weight = r.Weight 
+            }).ToList();
+            
             return mapper.Map<OperationDTO>(result);
         } else {
-            var operation = await Operation.GetByIdWithRepartitions(context, dto.Id);
-
+            var operation = await OperationValidator.GetByIdWithRepartitions(context, dto.Id);
             if (operation == null)
                 return NotFound();
 
             operation.Repartitions.Clear();
             mapper.Map(dto, operation);
 
-            var validator = await new OperationValidator(context).ValidateOperation(operation);
-            if (!validator.IsValid) {
-                return BadRequest(new { message = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)) });
-            }
+            var vr = await validator.ValidateOperation(operation);
+            if (!vr.IsValid)
+                return BadRequest(new { message = string.Join("; ", vr.Errors.Select(e => e.ErrorMessage)) });
 
             await context.SaveChangesAsync();
-            var result = await context.Operations
-           .AsNoTracking()
-           .Include(o => o.Repartitions)
-           .FirstAsync(o => o.Id == dto.Id);
+
+            var result = await OperationValidator.GetByIdWithRepartitions(context, dto.Id);
             return mapper.Map<OperationDTO>(result);
         }
     }
@@ -364,31 +364,21 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
     [Authorize]
     [HttpPost("delete_operation")]
     public async Task<ActionResult> DeleteOperation([FromBody] OperationDeleteDTO dto) {
-        var operation = await context.Operations.FindAsync(dto.Id);
-        var email = User.Identity?.Name;
-        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-
+        var user = await GetConnectedUser();
         if (user == null)
             return Unauthorized();
 
-        if (operation == null) {
-            {
-                return BadRequest(new {
-                    code = "P0001",
-                    details = (string?)null,
-                    hint = (string?)null,
-                    message = "operation not found"
-                });
-            }
-        }
+        var operation = await context.Operations.FindAsync(dto.Id);
+        if (operation == null)
+            return BadRequest(new {
+                code = "P0001",
+                details = (string?)null,
+                hint = (string?)null,
+                message = "operation not found"
+            });
 
-        if (user.Role != Role.Admin) {
-            var isParticipant = await context.Participations
-                .AnyAsync(p => p.TricountId == operation.TricountId && p.UserId == user.Id);
-
-            if (!isParticipant)
-                return Forbid();
-        }
+        if (!await Operation.CanUserAccess(context, operation.TricountId, user))
+            return Forbid();
 
         context.Operations.Remove(operation);
         await context.SaveChangesAsync();
@@ -450,43 +440,35 @@ public class TricountController(TricountContext context, IMapper mapper) : Contr
         if (tricount == null)
             return NotFound();
 
-        var isAdmin = User.IsInRole(Role.Admin.ToString());
-        if (!isAdmin && tricount.CreatorId != user.Id && !tricount.Participants.Any(p => p.Id == user.Id))
+        if (!tricount.CanUserAccess(user))
             return Forbid();
 
         var balance = tricount.CalculateBalance();
-
         return Ok(balance);
     }
 
     [Authorize]
     [HttpPost("delete_tricount")]
     public async Task<ActionResult> DeleteTricount([FromBody] TricountDeleteDTO dto) {
+        var user = await GetConnectedUser();
+        if (user == null)
+            return Unauthorized();
+
         var tricount = await context.Tricounts
             .Include(t => t.Operations)
                 .ThenInclude(o => o.Repartitions)
             .FirstOrDefaultAsync(t => t.Id == dto.Id);
 
-        var email = User.Identity?.Name;
-        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-
-        if (user == null)
-            return Unauthorized();
-
-        if (tricount == null) {
+        if (tricount == null)
             return BadRequest(new {
                 code = "P0001",
                 details = (string?)null,
                 hint = (string?)null,
                 message = "tricount not found"
             });
-        }
 
-        if (user.Role != Role.Admin) {
-            if (tricount.CreatorId != user.Id) {
-                return Forbid();
-            }
-        }
+        if (user.Role != Role.Admin && tricount.CreatorId != user.Id)
+            return Forbid();
 
         // Supprimer d'abord toutes les operations et les répartitions ( en cascade)
         context.Operations.RemoveRange(tricount.Operations);
