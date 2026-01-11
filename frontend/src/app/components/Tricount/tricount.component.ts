@@ -202,13 +202,11 @@ export class TricountComponent implements OnInit {
         })
 
         dialogRef.afterClosed().subscribe(result => {
+            
+            this.router.navigate(['/tricounts']);
             if(result == true) {
                 this.tricountService.deleteTricount(this.tricount!.id).subscribe({
                     next : () =>{
-                        
-                        this.tricountService.clearCache();
-                        this.router.navigate(['/tricounts']);
-                        
                     },
                     error: (err) => {
                         console.error('Erreur lors du delete tricount:', err)

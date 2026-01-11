@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { map, Observable, of, switchMap, tap } from "rxjs";
+import { catchError, map, Observable, of, switchMap, tap, throwError } from "rxjs";
 import { Tricount } from "../models/Tricount";
 import { plainToInstance } from "class-transformer";
 import { Inject, Injectable } from "@angular/core";
@@ -116,9 +116,28 @@ export class TricountService{
     }
 
     deleteTricount(id : number): Observable<any>{
+        const index = this._tricounts.findIndex(t => t.id === id);
+        const removed = index >= 0 ? this._tricounts[index] : undefined;
+
+        if(index >= 0) {
+            this._tricounts.splice(index, 1);
+        }
+        this.balanceService.invalidateBalance(id);
+        
         return this.http.post<any>(`${this.baseUrl}rpc/delete_tricount`,{
             tricount_id: id
-        });
+        }).pipe(
+            switchMap(() => this.getMyTricounts(true)),
+            map(() => undefined),
+
+            catchError(err => {
+                if(removed) {
+                    const safeIndex = Math.min(Math.max(index, 0), this._tricounts.length);
+                    this._tricounts.splice(safeIndex, 0, removed)
+                }
+                return throwError(() => err)
+            })
+        );
     }
     
     isTricountTitleAvailable(title: string, tricountId: number = 0): Observable<boolean> {

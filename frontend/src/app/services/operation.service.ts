@@ -33,7 +33,7 @@ export class OperationService {
 
     private createOperation(operation: Operation, repartitions: Repartition[]): Observable<Operation> {
         const tempId = -Date.now();
-        console.log('Creating temp operation with repartitions:', repartitions);
+        
         const tempOperation: Operation = {
             ...operation,
             id: tempId,
@@ -44,8 +44,7 @@ export class OperationService {
                     return new Repartition(r.user, r.weight);
                 })
         };
-        console.log('Temp operation created:', tempOperation);  // ✅ Debug
-        console.log('Temp operation repartitions:', tempOperation.repartitions);
+    
         const tricount = this.tricountService.tricounts.find(t => t.id === operation.tricount_id);
 
         if (tricount) {
@@ -106,7 +105,6 @@ export class OperationService {
         if (tricount) {
             const existingIndex = tricount.operations.findIndex(op => op.id === operation.id);
             if (existingIndex >= 0) {
-                // ✅ UTILISER updatedOperation (pas operation)
                 tricount.operations[existingIndex] = updatedOperation;
             }
         }
