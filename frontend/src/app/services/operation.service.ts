@@ -12,18 +12,18 @@ import { BalanceService } from "./balance.service";
     providedIn: 'root'
 })
 
-export class OperationService{
+export class OperationService {
 
     constructor(
         private http: HttpClient,
         @Inject(BASE_URL) private baseUrl: string,
         private tricountService: TricountService,
         private balanceService: BalanceService
-    ) {}
+    ) { }
 
     saveOperation(operation: Operation, repartitions: Repartition[]): Observable<Operation> {
         const isCreate = !operation.id || operation.id <= 0;
-        
+
         if (isCreate) {
             return this.createOperation(operation, repartitions);
         } else {
@@ -33,9 +33,21 @@ export class OperationService{
 
     private createOperation(operation: Operation, repartitions: Repartition[]): Observable<Operation> {
         const tempId = -Date.now();
-        const tempOperation = { ...operation, id: tempId };
+        console.log('Creating temp operation with repartitions:', repartitions);
+        const tempOperation: Operation = {
+            ...operation,
+            id: tempId,
+            repartitions: repartitions
+                .filter(r => r.weight > 0)
+                .map(r => {
+                    console.log('Mapping repartition:', r);
+                    return new Repartition(r.user, r.weight);
+                })
+        };
+        console.log('Temp operation created:', tempOperation);  // ✅ Debug
+        console.log('Temp operation repartitions:', tempOperation.repartitions);
         const tricount = this.tricountService.tricounts.find(t => t.id === operation.tricount_id);
-        
+
         if (tricount) {
             tricount.operations.unshift(tempOperation);
         }
@@ -52,10 +64,12 @@ export class OperationService{
             operation_date: formattedDate,
             tricount_id: operation.tricount_id,
             initiator: operation.initiator,
-            repartitions: repartitions.map(r => ({
-                user: r.user_id,
-                weight: r.weight
-            }))
+            repartitions: repartitions
+                .filter(r => r.weight > 0)
+                .map(r => ({
+                    user: r.user_id,
+                    weight: r.weight
+                }))
         }).pipe(
             map(json => plainToInstance(Operation, json, {
                 enableImplicitConversion: true
@@ -69,7 +83,7 @@ export class OperationService{
                     }
                 }
             }),
-            switchMap(realOperation => 
+            switchMap(realOperation =>
                 this.tricountService.getMyTricounts(true).pipe(
                     switchMap(() => this.balanceService.getTricountBalance(operation.tricount_id!, true)),
                     tap(() => this.balanceService.clearPendingLoad(operation.tricount_id!)),
@@ -81,14 +95,19 @@ export class OperationService{
 
     private updateOperation(operation: Operation, repartitions: Repartition[]): Observable<Operation> {
         const tricount = this.tricountService.tricounts.find(t => t.id === operation.tricount_id);
-        
+
+        const updatedOperation: Operation = {
+            ...operation,
+            repartitions: repartitions
+                .filter(r => r.weight > 0)
+                .map(r => new Repartition(r.user, r.weight))
+        };
+
         if (tricount) {
             const existingIndex = tricount.operations.findIndex(op => op.id === operation.id);
             if (existingIndex >= 0) {
-                tricount.operations[existingIndex] = {
-                    ...tricount.operations[existingIndex],
-                    ...operation
-                };
+                // ✅ UTILISER updatedOperation (pas operation)
+                tricount.operations[existingIndex] = updatedOperation;
             }
         }
 
@@ -104,15 +123,17 @@ export class OperationService{
             operation_date: formattedDate,
             tricount_id: operation.tricount_id,
             initiator: operation.initiator,
-            repartitions: repartitions.map(r => ({
-                user: r.user_id,
-                weight: r.weight
-            }))
+            repartitions: repartitions
+                .filter(r => r.weight > 0)
+                .map(r => ({
+                    user: r.user_id,
+                    weight: r.weight
+                }))
         }).pipe(
             map(json => plainToInstance(Operation, json, {
                 enableImplicitConversion: true
             })),
-            switchMap(realOperation => 
+            switchMap(realOperation =>
                 this.tricountService.getMyTricounts(true).pipe(
                     switchMap(() => this.balanceService.getTricountBalance(operation.tricount_id!, true)),
                     tap(() => this.balanceService.clearPendingLoad(operation.tricount_id!)),
@@ -124,7 +145,7 @@ export class OperationService{
 
     deleteOperation(operationId: number | undefined, tricountId: number): Observable<void> {
         const tricount = this.tricountService.tricounts.find(t => t.id === tricountId);
-        
+
         if (tricount) {
             tricount.operations = tricount.operations.filter(op => op.id !== operationId);
         }

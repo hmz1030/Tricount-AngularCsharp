@@ -217,6 +217,7 @@ export class SaveOperationComponent {
         }
 
         console.log('Operation found:', operation);
+        console.log('Operation repartitions:', operation.repartitions);
 
         this.frm.patchValue({
             titleCtl: operation.title,
@@ -229,7 +230,10 @@ export class SaveOperationComponent {
 
         //initialiser les repartitions avec les données existantes
         this.repartitions = this.users.map(user => {
-            const existingRep = operation.repartitions?.find((r: any) => r.user === user.id);
+            const existingRep = operation.repartitions?.find((r: any) => {
+                console.log(`Checking rep:`, r, `against user:`, user.id);  
+                return r.user === user.id;  r
+            });
             const weight = existingRep ? existingRep.weight : 0;
             console.log(`User ${user.full_name} (${user.id}): weight = ${weight}`);
             return new Repartition(user.id!, weight);
@@ -323,7 +327,7 @@ export class SaveOperationComponent {
         const dialogRef = this.dialog.open(DeleteOperationComponent, {
             width: '400px'
         });
-        
+
         dialogRef.afterClosed().subscribe((result: boolean | undefined) => {
             if (result === true) {
                 this.router.navigate(['/tricount/' + this.tricountId]);
