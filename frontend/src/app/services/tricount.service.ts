@@ -68,12 +68,17 @@ export class TricountService{
     private createTricount(tricount: Tricount, participantIds: number[]): Observable<Tricount> {
         const tempId = -Date.now();
         const currentUser = this.authService.currentUser!;
+        
+        // Créer le tricount temporaire avec tous les participants selected
+        //avant l'erreur c que je prenais que le current User !
         const tempTricount: Tricount = {
             ...tricount,
             id: tempId,
             created_at: new Date().toISOString(),
             creator: currentUser.id!,
-            participants: [currentUser],
+            participants: this.authService.allUsers.filter(
+                user => participantIds.includes(user.id!)
+            ),
             operations: []
         };
 
@@ -99,6 +104,10 @@ export class TricountService{
         if (existingTricount) {
             existingTricount.title = tricount.title;
             existingTricount.description = tricount.description;
+            // Mise à jour optimiste des participants
+            existingTricount.participants = this.authService.allUsers.filter(
+                user => participantIds.includes(user.id!)
+            );
         }
         
         return this.http.post<any>(`${this.baseUrl}rpc/save_tricount`, {
