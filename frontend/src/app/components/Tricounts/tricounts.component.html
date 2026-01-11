@@ -10,7 +10,10 @@
 <div class="tc-content">
   <div class="tricounts-container">
     @for (t of tricounts; track t.id) {
-    <mat-card class="tricount-card" [class.creating]="t.id < 0" (click)="viewTricount(t.id)" [style.cursor]="t.id < 0 ? 'wait' : 'pointer'">
+      <!-- class.creating -> angular crée une classe css .creating (du coup ".tricount-card.creating") 
+       si t.id< 0 et val'utiliser
+       -->
+    <mat-card class="tricount-card" [class.creating]="t.id < 0" (click)="t.id < 0 ? null : viewTricount(t.id)" [style.cursor]="t.id < 0 ? 'wait' : 'pointer'">
       <div class="tricount-row">
         <div class="tricount-left">
           <div class="tricount-title">
