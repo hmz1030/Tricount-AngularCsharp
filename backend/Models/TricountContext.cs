@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Tricount.Models.Entities;
 
 namespace Tricount.Models;
@@ -14,14 +15,15 @@ public class TricountContext(DbContextOptions<TricountContext> options) : DbCont
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<User>()
-            .HasData(
-                new User { Id = 1, Name = "User 1" },
-                new User { Id = 2, Name = "User 2" },
-                new User { Id = 3, Name = "User 3" }
-            );
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(TricountContext).Assembly);
+        modelBuilder.HasPostgresExtension("citext");
     }
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<Administrator> Administrators => Set<Administrator>();
+    public DbSet<TricountEntity> Tricounts => Set<TricountEntity>();
+    public DbSet<Participation> Participations => Set<Participation>();
+    public DbSet<Operation> Operations => Set<Operation>();
+    public DbSet<Repartition> Repartitions => Set<Repartition>();
+
 }

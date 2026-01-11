@@ -1,0 +1,121 @@
+:host {
+  display: block;
+  height: 100vh;
+  background-color: #f0f2f5;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* ========================================
+   HEADER (old style - kept for commented section)
+   ======================================== */
+.tc-header {
+  height: 56px;
+  background-color: #2196f3;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tc-header-title {
+  font-size: 20px;
+  margin-left: 16px;
+  font-weight: 500;
+}
+
+.tc-icon-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   CONTAINER & LAYOUT
+   ======================================== */
+.signup-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ========================================
+   FORM FIELDS - Style rectangulaire arrondi
+   ======================================== */
+::ng-deep .mat-mdc-form-field {
+  background-color: white;
+}
+
+/* Coins arrondis pour les inputs */
+::ng-deep .mat-mdc-form-field .mdc-notched-outline .mdc-notched-outline__leading {
+  border-radius: 4px 0 0 4px !important;
+  width: 12px !important;
+}
+
+::ng-deep .mat-mdc-form-field .mdc-notched-outline .mdc-notched-outline__trailing {
+  border-radius: 0 4px 4px 0 !important;
+}
+
+/* Padding interne pour le texte */
+::ng-deep .mat-mdc-form-field .mat-mdc-form-field-infix {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+::ng-deep .mat-mdc-form-field input.mat-mdc-input-element {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+
+/* ========================================
+   FORM FIELDS - Bordures invalides
+   ======================================== */
+::ng-deep .mat-mdc-form-field.mat-form-field-invalid .mat-mdc-notch-piece {
+  border-color: #f44336 !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-invalid .mat-mdc-floating-label {
+  color: #f44336 !important;
+}
+
+::ng-deep .mat-mdc-form-field .mat-mdc-form-field-error {
+  color: #f44336 !important;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* ========================================
+   BOUTON SIGNUP
+   ======================================== */
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+button[mat-raised-button] {
+  padding: 0 48px;
+  border-radius: 24px;
+  height: 48px;
+  font-size: 16px;
+}
+
+:host ::ng-deep .mat-mdc-raised-button:disabled {
+  background-color: #e0e0e0;
+  color: rgba(0, 0, 0, 0.26);
+}

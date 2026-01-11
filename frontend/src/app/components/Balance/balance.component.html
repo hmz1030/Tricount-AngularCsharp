@@ -1,0 +1,37 @@
+<app-nav-bar title="Balance" [backUrl]="backUrl">
+  <button class="header-btn" (click)="refresh()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</app-nav-bar>
+
+<div class="balance-container">
+  @for (balance of balances; track balance.user) {
+    <div class="balance-item">
+      <div class="balance-row">
+        @if ((balance.balance || 0) < 0) {
+          <div class="balance-badge negative" [style.width.px]="getBarWidth(balance.balance || 0)">
+            {{ balance.balance | number:'1.2-2' }} €
+          </div>
+          <span class="user-name">
+            {{ balance.name || 'User ' + balance.user }}
+          </span>
+        }
+
+        @if ((balance.balance || 0) > 0) {
+          <span class="user-name">
+            {{ balance.name || 'User ' + balance.user }}
+          </span>
+          <div class="balance-badge positive" [style.width.px]="getBarWidth(balance.balance || 0)">
+            {{ balance.balance | number:'1.2-2' }} €
+          </div>
+        }
+
+        @if ((balance.balance || 0) === 0) {
+          <span class="user-name">
+            {{ balance.name || 'User ' + balance.user }}
+          </span>
+        }
+      </div>
+    </div>
+  }
+</div>

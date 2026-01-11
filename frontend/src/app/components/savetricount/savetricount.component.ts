@@ -1,0 +1,212 @@
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { SetFocusDirective } from "src/app/directives/setfocus.directive";
+import { AuthenticationService } from "src/app/services/authentication.service";
+import { TricountService } from "src/app/services/tricount.service";
+import { User } from "src/app/models/user";
+import { Tricount } from "src/app/models/Tricount";
+import { ImmediateErrorStateMatcher } from '../../matchers/imediate-error-state.matcher';
+import { NavBarComponent } from "../nav-bar/nav-bar.component";
+@Component({
+    selector: 'app-save-tricount',
+    standalone: true,
+    imports: [CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RouterModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatCardModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatCheckboxModule,
+        MatIconModule,
+        SetFocusDirective,
+        NavBarComponent],
+    templateUrl: './savetricount.component.html',
+    styleUrls: ['./savetricount.component.css']
+})
+export class SaveTricountComponent implements OnInit {
+    tricountId: number = 0;
+    selectedParticipantIds: number[] = [];
+    currentUserId: number | undefined;
+    error: string | null = null;
+    frm!: FormGroup;
+    ctlTitle!: FormControl;
+    ctlDescription!: FormControl;
+    matcher = new ImmediateErrorStateMatcher();
+    selectedUserToAdd: number | null = null;
+    backUrl! : string;
+
+    constructor(
+        private tricountService: TricountService,
+        private authService: AuthenticationService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private fb: FormBuilder,
+        private cdr: ChangeDetectorRef) {
+        this.ctlTitle = this.fb.control('', [Validators.required, Validators.minLength(3)], [this.titleUsed()]);
+        this.ctlDescription = this.fb.control('', [Validators.minLength(3)]);
+        this.frm = this.fb.group({
+            title: this.ctlTitle,
+            description: this.ctlDescription
+        });
+
+
+    }
+    ngOnInit(): void {
+        this.currentUserId = this.authService.currentUser?.id;
+        this.tricountId = Number(this.route.snapshot.paramMap.get('id')) || 0;
+        this.tricountId == 0 ? this.backUrl = `/tricounts` : this.backUrl = `/tricount/${this.tricountId}`;
+
+        this.authService.getAllUsers().subscribe();
+
+        if (this.tricountId == 0) {
+            // Mode création
+            this.selectedParticipantIds = [this.currentUserId!];
+        } else {
+
+            this.tricountService.getMyTricounts().subscribe({
+                next: () => {
+                    const tricount = this.tricountService.tricounts.find(t => t.id == this.tricountId);
+                    if (tricount) {
+                        this.ctlTitle.setValue(tricount.title);
+                        this.ctlDescription.setValue(tricount.description || '');
+                        this.selectedParticipantIds = tricount.participants.map(p => p.id!);
+                    } else {
+                        this.error = 'Tricount not found';
+                        this.router.navigate(['/tricounts']);
+                    }
+                },
+                error: (err) => {
+                    console.error('Error loading tricounts:', err);
+                    this.error = 'Unable to load tricount data';
+                }
+            });
+        }
+
+        //champ title en rouge direct quand on ouvre la page
+        setTimeout(() => {
+            Object.keys(this.frm.controls).forEach(key => {
+                this.frm.get(key)?.markAsTouched();
+            });
+            this.cdr.detectChanges();
+        }, 100);
+    }
+    
+    get availableUsers(): User[] {
+        return this.authService.allUsers.filter(u => !this.selectedParticipantIds.includes(u.id!));
+    }
+
+    get selectedParticipants(): User[] {
+        return this.authService.allUsers.filter(u => this.selectedParticipantIds.includes(u.id!));
+    }
+
+    private addParticipant(userId: number): void {
+        if (!this.selectedParticipantIds.includes(userId)) {
+            this.selectedParticipantIds.push(userId);
+
+        }
+    }
+
+    removeParticipant(userId: number): void {
+        const index = this.selectedParticipantIds.indexOf(userId);
+        if (index > -1) {
+            // splice -> remove tous les elements a partir d'index
+            this.selectedParticipantIds.splice(index, 1)
+        }
+
+    }
+
+    addSelectedParticipant(): void {
+        if (this.selectedUserToAdd) {
+            this.addParticipant(this.selectedUserToAdd);
+            this.selectedUserToAdd = null; // Reset après ajout
+        }
+    }
+
+    saveTricount(): void {
+        const tricountToSave: Tricount = {
+            id: this.tricountId,
+            title: this.ctlTitle.value,
+            description: this.ctlDescription.value?.trim() || null,
+            creator: this.currentUserId!,
+            created_at: new Date().toISOString(),
+            participants: [],
+            operations: []
+        };
+
+        const isEdit = this.tricountId !== 0;
+
+        if (isEdit) {
+            this.router.navigate(['/tricount/', this.tricountId]);
+        } else {
+            this.router.navigate(['/tricounts']);
+        }
+
+        this.tricountService.saveTricount(tricountToSave, this.selectedParticipantIds)
+            .subscribe({
+                error: (err) => {
+                    this.error = 'Erreur lors de la sauvegarde du tricount';
+                    console.error(err);
+                }
+            });
+    }
+
+    cancel(): void {
+        if (this.tricountId == 0) {
+            this.router.navigate(['/tricounts']);
+        }
+        else
+            this.router.navigate(['/tricount/', this.tricountId]);
+    }
+
+    titleUsed(): AsyncValidatorFn {
+        let timeout: NodeJS.Timeout;
+        return (ctl: AbstractControl) => {
+            clearTimeout(timeout);
+            const title = ctl.value;
+            return new Promise(resolve => {
+                timeout = setTimeout(() => {
+                    if (title.length === 0) {
+                        resolve(null);
+                    } else {
+                        // Passe le tricountId pour exclure le tricount actuel en mode édition
+                        this.tricountService.isTricountTitleAvailable(title, this.tricountId).subscribe(available => {
+                            resolve(available ? null : { titleUsed: true });
+                        });
+                    }
+                }, 300);
+            });
+        };
+    }
+    canRemoveParticipant(userId: number): boolean {
+        if (this.tricountId === 0) return userId !== this.currentUserId;
+
+        const tricount = this.tricountService.tricounts.find(t => t.id === this.tricountId);
+
+        return userId !== this.currentUserId
+            && userId !== tricount?.creator
+            && !tricount?.operations.some(op =>
+                op.initiator === userId ||
+                op.repartitions?.some(r => r.user_id === userId)
+            );
+    }
+
+    get creatorId(): number | undefined {
+        return this.tricountId === 0
+            ? this.currentUserId
+            : this.tricountService.tricounts.find(t => t.id === this.tricountId)?.creator;
+    }
+}

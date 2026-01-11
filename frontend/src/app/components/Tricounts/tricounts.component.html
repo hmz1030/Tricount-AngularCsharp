@@ -1,0 +1,51 @@
+<app-nav-bar title="Your Tricounts">
+  <button mat-icon-button (click)="loadTricounts(true)">
+    <mat-icon>refresh</mat-icon>
+  </button>
+  <button mat-icon-button (click)="onAddTricount()">
+    <mat-icon>add</mat-icon>
+  </button>
+</app-nav-bar>
+
+<div class="tc-content">
+  <div class="tricounts-container">
+    @for (t of tricounts; track t.id) {
+      <!-- class.creating -> angular crée une classe css .creating (du coup ".tricount-card.creating") 
+       si t.id< 0 et val'utiliser
+       -->
+    <mat-card class="tricount-card" [class.creating]="t.id < 0" (click)="t.id < 0 ? null : viewTricount(t.id)" [style.cursor]="t.id < 0 ? 'wait' : 'pointer'">
+      <div class="tricount-row">
+        <div class="tricount-left">
+          <div class="tricount-title">
+            {{t.title}}
+            @if (t.id < 0) {
+              <span class="creating-badge">Creating...</span>
+            }
+          </div>
+          <div class="tricount-subtitle">
+            {{t.description || 'No description'}}
+          </div>
+          <div class="tricount-meta">
+            {{'by ' + getCreatorName(t.id)}}
+          </div>
+        </div>
+
+        <div class="tricount-right">
+          {{friendsCount(t.id) == 0 ? 'you\'re alone' : 'with ' + friendsCount(t.id) + ' friends'}}
+        </div>
+      </div>
+    </mat-card>
+    }
+
+    @empty {
+    
+    <div class="empty-state">
+      <h2 class="empty-title">No tricounts yet</h2>
+      <p class="empty-subtitle">Create your first Tricount now</p>
+      <button class="add-tricount-btn" (click)="onAddTricount()">
+        Create tricount
+      </button>
+    </div>
+    }
+  </div>
+</div>

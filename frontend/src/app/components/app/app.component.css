@@ -1,0 +1,47 @@
+.sidenav-container {
+    height: 100vh;
+}
+
+.sidenav {
+    width: 280px;
+     background-color:white;
+}
+
+/*
+.sidenav c'est pour la couleur de tout le truc
+.mat-icon c'est les icones
+.matListItemTitle c'est pour les titre a coter des icones
+*/
+:host-context(body.dark-theme) .sidenav{
+    background-color: black;
+}
+:host-context(body.dark-theme) .mat-icon{
+    color: white;
+}
+:host-context(body.dark-theme) [matListItemTitle] {
+    color: white;
+}
+
+
+.sidenav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #0079ea;
+    color: white;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info strong {
+    font-size: 16px;
+}
+
+.user-info small {
+    font-size: 12px;
+    opacity: 0.8;
+}

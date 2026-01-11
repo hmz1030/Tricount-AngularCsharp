@@ -1,0 +1,64 @@
+@startuml Tricount_Database_Schema
+
+!define table(x) class x << (T,#FFAAAA) >>
+!define pk(x) <b><color:red>x</color></b>
+!define fk(x) <color:blue>x</color>
+
+hide methods
+hide stereotypes
+
+table(Users) {
+  pk(Id) : int <<PK>>
+  Name : string <<unique>>
+  Email : string <<unique>>
+  Password : string
+  Role : int <<discriminator>>
+  Iban : string? <<nullable>>
+  --
+  Role = 0 : User
+  Role = 1 : Administrator
+}
+
+table(Tricounts) {
+  pk(Id) : int <<PK>>
+  Title : string
+  Description : string? <<nullable>>
+  CreatedAt : DateTime
+  fk(CreatorId) : int <<FK>>
+  --
+  <<unique>> (CreatorId, Title)
+}
+
+table(Participations) {
+  pk(fk(UserId)) : int <<PK, FK>>
+  pk(fk(TricountId)) : int <<PK, FK>>
+}
+
+table(Operations) {
+  pk(Id) : int <<PK>>
+  Title : string
+  Amount : decimal(18,2)
+  OperationDate : DateTime
+  CreatedAt : DateTime
+  fk(TricountId) : int <<FK>>
+  fk(InitiatorId) : int <<FK>>
+}
+
+table(Repartitions) {
+  pk(fk(OperationId)) : int <<PK, FK>>
+  pk(fk(UserId)) : int <<PK, FK>>
+  pk(fk(TricountId)) : int <<PK, FK>>
+  Weight : int
+}
+
+Users "1" -- "0..*" Tricounts : "Creator >"
+Users "1" -- "0..*" Participations : "Participant >"
+Users "1" -- "0..*" Operations : "Initiator >"
+
+Tricounts "1" -- "0..*" Participations : "< possède"
+Tricounts "1" -- "0..*" Operations : "< contient"
+
+Participations "1" -- "0..*" Repartitions : "< impliqué dans"
+Operations "1" -- "1..*" Repartitions : "< repartie entre"
+
+@enduml

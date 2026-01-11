@@ -1,0 +1,112 @@
+.balance-header {
+    display: flex;
+    align-items: center;
+    background-color: #5c9cdb;
+    color: white;
+    padding: 14px 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.header-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.header-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.header-btn mat-icon {
+    font-size: 24px;
+}
+
+.header-title {
+    flex: 1;
+    margin: 0 16px;
+    font-size: 22px;
+    font-weight: 400;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.balance-container {
+    padding: 32px 24px;
+    background-color: #f0f0f0;
+    min-height: calc(100vh - 64px);
+}
+
+.balance-item {
+    margin-bottom: 16px;
+}
+
+.balance-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;  
+    padding: 12px 24px;
+    gap: 12px;
+}
+
+.balance-left,
+.balance-right {
+    display: inline-flex;  
+    align-items: center;
+    gap: 8px;  
+}
+
+.balance-left {
+    justify-content: flex-start;
+}
+
+.balance-right {
+    justify-content: flex-end;
+}
+.balance-badge {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+}
+
+.balance-badge.negative {
+    background-color: #c88a85;
+}
+
+.balance-badge.positive {
+    background-color: #8bc98f;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 20px;
+    color: #2d2d2d;
+    padding: 0;  
+    margin: 0;  
+}
+
+/* Dark mode */
+:host-context(body.dark-theme) .balance-container {
+    background-color: #121212;
+}
+
+:host-context(body.dark-theme) .user-name {
+    color: #e0e0e0;
+}
+
+:host-context(body.dark-theme) .balance-badge.negative {
+    background-color: #a86560;
+}
+
+:host-context(body.dark-theme) .balance-badge.positive {
+    background-color: #6ba56e;
+}

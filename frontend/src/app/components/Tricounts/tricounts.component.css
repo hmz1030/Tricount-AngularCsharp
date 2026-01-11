@@ -1,0 +1,291 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* HEADER BLEU */
+.tc-header {
+  height: 56px;
+  background-color: #42a5f5;
+  /* bleu clair */
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tc-icon-btn {
+  border: none;
+  background: transparent;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tc-icon-btn mat-icon {
+  color: #ffffff;
+}
+
+.tc-icon-img {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.tc-header-title {
+  margin-left: 8px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.tc-header-spacer {
+  flex: 1 1 auto;
+}
+
+/* CONTENU PRINCIPAL */
+.tc-content {
+  padding: 12px;
+}
+
+/* PANNEAU LATERAL (40% largeur) */
+.tc-sidepanel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 40vw;
+  max-width: 400px;
+  background: #ffffff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.25);
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  z-index: 1000;
+}
+
+.tc-sidepanel.open {
+  transform: translateX(0);
+}
+
+.tc-sidepanel-header {
+  min-height: 80px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.tc-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tc-user-info strong {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.tc-user-info small {
+  font-size: 13px;
+  color: #666;
+  font-weight: normal;
+}
+
+.tc-sidepanel-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.tc-sidepanel-list li {
+  padding: 8px 16px;
+}
+
+.tc-sidepanel-list a,
+.tc-link-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  /* espace entre l'icône et le texte */
+  width: 100%;
+  text-align: left;
+}
+
+.tc-link-btn mat-icon {
+  color: #666;
+  font-size: 20px;
+  width: 24px;
+  height: 24px;
+}
+
+.tc-link-btn:hover {
+  background-color: #f5f5f5;
+}
+
+/* OVERLAY */
+.tc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 900;
+}
+
+/* Message vide */
+.empty {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.7;
+}
+
+/* CONTENU PRINCIPAL */
+.tc-content {
+  padding: 12px;
+}
+
+.tricounts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* espace entre les cartes */
+}
+
+/* Carte qui ressemble à la maquette */
+.tricount-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  margin: 0;
+  /* pas de marge, on utilise gap sur le container */
+}
+
+:host-context(body.dark-theme) .tricount-card {
+    background-color: rgb(48, 45, 45);
+}
+
+:host-context(body.dark-theme) {
+  background-color: black;
+}
+
+:host-context(body.dark-theme) .tricount-title{
+  color: white;
+}
+
+:host-context(body.dark-theme) .tricount-subtitle{
+  color: white;
+}
+
+:host-context(body.dark-theme) .tricount-meta{
+  color: white;
+}
+
+/* Layout interne de la carte */
+.tricount-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.tricount-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Titre style "Vacances" en gras */
+.tricount-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Ligne italique style "No description / A la mer du nord" */
+.tricount-subtitle {
+  font-size: 14px;
+  font-style: italic;
+  color: #666;
+}
+
+/* Ligne "by Boris" en petit */
+.tricount-meta {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Texte à droite : "with 3 friends" / "you're alone" */
+.tricount-right {
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* Message vide */
+.empty {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.7;
+}
+.empty-state {
+    text-align: center;
+    padding: 48px 16px;
+    color: #999;
+    font-size: 16px;
+}
+.empty-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 12px 0;
+}
+
+.empty-subtitle {
+    font-size: 16px;
+    color: #666;
+    margin: 0 0 32px 0;
+}
+
+.add-tricount-btn {
+    background-color: #5c9cdb;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.add-tricount-btn:hover {
+    background-color: #4a8ac9;
+}
+
+/* Tricount en cours de création */
+.tricount-card.creating {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.creating-badge {
+    font-size: 12px;
+    font-weight: 400;
+    color: #888;
+    margin-left: 8px;
+    font-style: italic;
+}

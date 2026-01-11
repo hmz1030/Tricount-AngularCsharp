@@ -1,0 +1,70 @@
+<div class="login-page">
+  @if (isLoading) {
+    <div class="loading-overlay">
+      <mat-progress-spinner 
+        mode="indeterminate" 
+        diameter="60">
+      </mat-progress-spinner>
+    </div>
+  }
+
+  <!-- Blue Header -->
+  <div class="login-header">
+    <h1>Login</h1>
+  </div>
+
+  <!-- Main Content -->
+  <div class="login-content">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email Field -->
+      <mat-form-field appearance="outline" class="rounded-field">
+        <input matInput type="email" placeholder="Email" [formControl]="email">
+        @if (email.invalid && email.touched) {
+          <mat-error>
+            @if (email.hasError('required')) { Email is required }
+            @else if (email.hasError('email')) { Please enter a valid email address }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Password Field -->
+      <mat-form-field appearance="outline" class="rounded-field">
+        <input matInput type="password" placeholder="Password" [formControl]="password">
+        @if (password.invalid && password.touched) {
+          <mat-error>
+            @if (password.hasError('required')) { Password is required }
+            @else if (password.hasError('hasLowerCase')) { Must contain lowercase }
+            @else if (password.hasError('hasUpperCase')) { Must contain uppercase }
+            @else if (password.hasError('hasNumber')) { Must contain number }
+            @else if (password.hasError('hasSpecialChar')) { Must contain special character }
+            @else if (password.hasError('minlength')) { Must be at least 8 characters }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- General Error -->
+      @if (loginError) {
+        <div class="general-error">{{ loginError }}</div>
+      }
+
+      <!-- Submit Button -->
+      <button mat-raised-button type="submit" class="login-btn">Login</button>
+    </form>
+
+    <div class="signup-link">
+      Don't have an account? <a routerLink="/signup">Sign up here!</a>
+    </div>
+
+    <div class="quick-login-section">
+      @for (user of testUsers; track user.email) {
+        <a (click)="quickLogin(user.email)" class="quick-login-link">
+          Login as {{ user.email }}
+        </a>
+      }
+      
+      <div class="divider"></div>
+      
+      <a (click)="openResetPopup()" class="reset-link">Reset Database</a>
+    </div>
+  </div>
+</div>

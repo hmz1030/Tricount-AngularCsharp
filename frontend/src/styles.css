@@ -16,3 +16,22 @@ code {
     background-color: #1b6ec2;
     border-color: #1861ac;
 }
+
+html,body{
+    height: 100%;
+    margin: 0;
+}
+
+body.dark-theme {
+    background-color: black;
+}
+
+body.dark-theme .operation-title,
+body.dark-theme .operation-subtitle,
+body.dark-theme .operation-amount,
+body.dark-theme .operation-date,
+body.dark-theme .footer-label,
+body.dark-theme .footer-amount{
+    color: white
+
+}

@@ -1,0 +1,93 @@
+
+<app-nav-bar title="Signup" [backUrl]="backUrl">
+    
+</app-nav-bar>
+
+
+
+ <!-- EMAIL
+<header class="tc-header">
+  <button class="tc-icon-btn" routerLink="/login">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <span class="tc-header-title">Signup</span>
+</header>
+ -->
+<div class="tc-content signup-container">
+
+  <form [formGroup]="frm" (ngSubmit)="signup()" class="signup-form" novalidate>
+
+    <!-- EMAIL -->
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" [formControl]="ctlEmail" [errorStateMatcher]="matcher" required appSetFocus>
+
+      @if (ctlEmail.invalid && (ctlEmail.dirty || ctlEmail.touched)) {
+      <mat-error>
+        @if (ctlEmail.hasError('required')) { Email is required }
+        @else if (ctlEmail.hasError('email')) { Invalid email format }
+        @else if (ctlEmail.hasError('emailUsed')) { This email is already taken }
+      </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Full Name</mat-label>
+      <input matInput type="text" [formControl]="ctlFullName" [errorStateMatcher]="matcher">
+
+      @if (ctlFullName.invalid && (ctlFullName.dirty || ctlFullName.touched)) {
+      <mat-error>
+        @if (ctlFullName.hasError('required')) { Full name is required }
+        @else if (ctlFullName.hasError('minlength')) { Minimum 3 characters }
+        @else if (ctlFullName.hasError('fullNameUsed')) { This name is already taken }
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>IBAN</mat-label>
+      <input matInput type="text" [formControl]="ctlIban">
+
+      @if (ctlIban.invalid && (ctlIban.dirty || ctlIban.touched)) {
+      <mat-error>Invalid IBAN format</mat-error>
+      }
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput [type]="hidePassword ? 'password' : 'text'" [formControl]="ctlPassword"
+        [errorStateMatcher]="matcher">
+
+      @if (ctlPassword.invalid && (ctlPassword.dirty || ctlPassword.touched)) {
+      <mat-error>
+        @if (ctlPassword.hasError('required')) { Password is required }
+        @else if (ctlPassword.hasError('minlength')) { Minimum 8 characters }
+        @else if (ctlPassword.hasError('noUpperCase')) { Must contain uppercase }
+        @else if (ctlPassword.hasError('noNumber')) { Must contain digit }
+        @else if (ctlPassword.hasError('noSpecialChar')) { Must contain special char }
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Confirm your password</mat-label>
+      <input matInput [type]="hidePasswordConfirm ? 'password' : 'text'" [formControl]="ctlPasswordConfirm"
+        [errorStateMatcher]="matcher">
+
+      @if ((ctlPasswordConfirm.invalid || frm.hasError('passwordNotConfirmed')) && (ctlPasswordConfirm.dirty ||
+      ctlPasswordConfirm.touched)) {
+      <mat-error>
+        @if (ctlPasswordConfirm.hasError('required')) { Confirmation required }
+        @else if (frm.hasError('passwordNotConfirmed')) { Passwords do not match }
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="frm.invalid || frm.pending">
+        Signup
+      </button>
+    </div>
+
+  </form>
+</div>

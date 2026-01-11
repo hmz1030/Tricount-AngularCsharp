@@ -1,0 +1,250 @@
+.login-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-overlay mat-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: #1565c0 !important;
+}
+
+::ng-deep .mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: #1565c0 !important;
+}
+
+.login-header {
+  background: linear-gradient(135deg, #5b9bd5 0%, #4a8bc7 100%);
+  padding: 20px 24px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.login-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.login-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+form {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rounded-field {
+  width: 100%;
+}
+
+.rounded-field ::ng-deep .mat-mdc-text-field-wrapper {
+  border-radius: 12px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.rounded-field ::ng-deep .mat-mdc-form-field-infix {
+  padding: 14px 20px !important;
+  min-height: 52px;
+}
+
+.rounded-field ::ng-deep .mdc-notched-outline__leading {
+  border-radius: 12px 0 0 12px !important;
+  width: 12px !important;
+}
+
+.rounded-field ::ng-deep .mdc-notched-outline__trailing {
+  border-radius: 0 12px 12px 0 !important;
+}
+
+.rounded-field ::ng-deep .mdc-notched-outline__notch {
+  display: none !important;
+}
+
+.rounded-field ::ng-deep input {
+  font-size: 16px;
+}
+
+.rounded-field ::ng-deep input::placeholder {
+  color: #9e9e9e;
+  opacity: 1;
+}
+
+.rounded-field ::ng-deep .mat-mdc-floating-label {
+  display: none !important;
+}
+
+.rounded-field.mat-focused ::ng-deep .mdc-notched-outline__leading,
+.rounded-field.mat-focused ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #5b9bd5 !important;
+  border-width: 2px !important;
+}
+
+.rounded-field.mat-form-field-invalid ::ng-deep .mdc-notched-outline__leading,
+.rounded-field.mat-form-field-invalid ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #d32f2f !important;
+}
+
+.rounded-field ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  height: 0;
+  margin-top: 0;
+}
+
+.rounded-field ::ng-deep .mat-mdc-form-field-error-wrapper {
+  padding: 4px 20px 0;
+}
+
+.rounded-field ::ng-deep mat-error {
+  font-size: 12px;
+}
+
+.login-btn {
+  width: auto !important;
+  min-width: 120px;
+  padding: 10px 32px !important;
+  background-color: #f5f5f5 !important;
+  color: #5b7a9e !important;
+  border-radius: 24px !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  margin: 16px auto 0 !important;
+  box-shadow: none !important;
+  text-transform: none !important;
+}
+
+.login-btn:hover {
+  background-color: #eeeeee !important;
+}
+
+.signup-link {
+  margin-top: 24px;
+  padding: 16px 32px;
+  background-color: #e8f4fc;
+  border-radius: 24px;
+  font-size: 14px;
+  color: #5b7a9e;
+  text-align: center;
+  width: 100%;
+  max-width: 380px;
+  box-sizing: border-box;
+}
+
+.signup-link a {
+  color: #5b9bd5;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.quick-login-section {
+  margin-top: 32px;
+  padding: 24px;
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.quick-login-link {
+  color: #c75b5b;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.quick-login-link:hover {
+  text-decoration: underline;
+}
+
+/* Divider line */
+.divider {
+  width: 60px;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 4px 0;
+}
+
+/* Reset Database link */
+.reset-link {
+  color: #c75b5b;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.reset-link:hover {
+  text-decoration: underline;
+}
+
+/* Error Messages */
+.general-error {
+  background-color: #ffebee;
+  border: 1px solid #ef5350;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  text-align: center;
+  color: #d32f2f;
+  font-size: 14px;
+}
+
+/* Dark mode */
+:host-context(body.dark-theme) .login-page {
+  background-color: #121212;
+}
+
+:host-context(body.dark-theme) .login-content {
+  background-color: #121212;
+}
+
+:host-context(body.dark-theme) .rounded-field ::ng-deep .mdc-notched-outline__leading,
+:host-context(body.dark-theme) .rounded-field ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #555 !important;
+}
+
+:host-context(body.dark-theme) .rounded-field ::ng-deep input {
+  color: #e0e0e0;
+}
+
+:host-context(body.dark-theme) .signup-link {
+  background-color: #1e3a52;
+  color: #90caf9;
+}
+
+:host-context(body.dark-theme) .signup-link a {
+  color: #90caf9;
+}
+
+:host-context(body.dark-theme) .quick-login-section {
+  background-color: #2d2d2d;
+  border-color: #444;
+}
