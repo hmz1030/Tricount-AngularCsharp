@@ -116,7 +116,25 @@ export class SaveTricountComponent implements OnInit {
     private addParticipant(userId: number): void {
         if (!this.selectedParticipantIds.includes(userId)) {
             this.selectedParticipantIds.push(userId);
+            this.updateParticipantList(userId)
+
         }
+    }
+
+    private updateParticipantList(id: number): void{
+        this.tricountService
+            .tricounts
+            .find(t=>t.id == this.tricountId)?.participants.push(this.getUser(id)!)
+    }
+
+    private getUser(id: number): User|null{
+       
+        this.authService.getAllUsers().subscribe({
+            next : (users) =>{
+                return users.find(u=>u.id == id)
+            }
+        })
+        return null
     }
 
     removeParticipant(userId: number): void {
