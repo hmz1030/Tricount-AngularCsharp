@@ -10,11 +10,14 @@
 <div class="tc-content">
   <div class="tricounts-container">
     @for (t of tricounts; track t.id) {
-    <mat-card class="tricount-card" (click)="viewTricount(t.id)" style="cursor: pointer;">
+    <mat-card class="tricount-card" [class.creating]="t.id < 0" (click)="viewTricount(t.id)" [style.cursor]="t.id < 0 ? 'wait' : 'pointer'">
       <div class="tricount-row">
         <div class="tricount-left">
           <div class="tricount-title">
             {{t.title}}
+            @if (t.id < 0) {
+              <span class="creating-badge">Creating...</span>
+            }
           </div>
           <div class="tricount-subtitle">
             {{t.description || 'No description'}}

@@ -275,3 +275,17 @@
 .add-tricount-btn:hover {
     background-color: #4a8ac9;
 }
+
+/* Tricount en cours de création */
+.tricount-card.creating {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.creating-badge {
+    font-size: 12px;
+    font-weight: 400;
+    color: #888;
+    margin-left: 8px;
+    font-style: italic;
+}

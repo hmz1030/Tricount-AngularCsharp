@@ -101,6 +101,10 @@ export class TricountsComponent implements OnInit {
     }
 
     viewTricount(id: number): void {
+        // Ne pas naviguer si le tricount est en cours de création (ID temporaire négatif)
+        if (id < 0) {
+            return;
+        }
         this.router.navigate(['/tricount', id]);
     }
 
